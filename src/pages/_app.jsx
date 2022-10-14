@@ -1,4 +1,5 @@
 import '../../styles/style.css'
+import 'antd/dist/antd.css';
 import "react-datepicker/dist/react-datepicker.css";
 
 function MyApp({ Component, pageProps }) {

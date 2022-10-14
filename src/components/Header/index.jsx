@@ -53,16 +53,28 @@ export default function Header () {
                     <div className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${navbar ? "block" : "hidden"}`}>
                         <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
                             <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="#">Home</a>
+                                <a href="#">Início</a>
                             </li>
                             <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="#">Blog</a>
+                                <a href="/consultas">Consultas</a>
                             </li>
                             <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="#">About US</a>
+                                <a href="/vendas">Vendas</a>
                             </li>
                             <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="#">Contact US</a>
+                                <a href="/usuarios">Usuários</a>
+                            </li>
+                            <li className="text-gray-900 font-semibold hover:text-gray-700">
+                                <a href="/animais">Animais</a>
+                            </li>
+                            <li className="text-gray-900 font-semibold hover:text-gray-700">
+                                <a href="/especies">Espécies</a>
+                            </li>
+                            <li className="text-gray-900 font-semibold hover:text-gray-700">
+                                <a href="/racas">Raças</a>
+                            </li>
+                            <li className="text-gray-900 font-semibold hover:text-gray-700">
+                                <a href="/produtos">Produtos</a>
                             </li>
                         </ul>
                         <div className="mt-3 space-y-2 lg:hidden md:hidden">
