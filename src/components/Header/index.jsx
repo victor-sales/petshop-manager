@@ -1,16 +1,18 @@
 import { useState } from "react";
 import HeaderLink from "./HeaderLink";
 
-export default function Header () {
+export default function Header() {
     const [navbar, setNavbar] = useState(false);
 
     return (
         <nav className="w-full bg-white border-b border-gray-300 shadow-md">
-            <div className="justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8">
+            <div className="justify-between px-4 mx-auto items-center lg:max-w-7xl md:items-center md:flex md:px-8">
                 <div>
                     <div className="flex items-center justify-between py-3 md:py-5 md:block">
                         <a href="#">
-                            <h2 className="font-bold text-gray-900">LOGO</h2>
+                            <h2 className="m-0 font-bold text-gray-900">
+                                LOGO
+                            </h2>
                         </a>
                         <div className="md:hidden">
                             <button
@@ -51,8 +53,12 @@ export default function Header () {
                     </div>
                 </div>
                 <div>
-                    <div className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${navbar ? "block" : "hidden"}`}>
-                        <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
+                    <div
+                        className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
+                            navbar ? "block" : "hidden"
+                        }`}
+                    >
+                        <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 m-0">
                             <HeaderLink url="/" title="Início" />
                             <HeaderLink url="/consultas" title="Consultas" />
                             <HeaderLink url="/vendas" title="Vendas" />
@@ -63,12 +69,22 @@ export default function Header () {
                             <HeaderLink url="/produtos" title="Produtos" />
                         </ul>
                         <div className="mt-3 space-y-2 lg:hidden md:hidden">
-                            <a href="#" className="inline-block w-full px-4 py-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">Sign out</a>
+                            <a
+                                href="#"
+                                className="inline-block w-full px-4 py-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800"
+                            >
+                                Sign out
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div className="hidden space-x-2 md:inline-block">
-                    <a href="#"className="px-4 py-2 text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">Sign Out</a>
+                    <a
+                        href="#"
+                        className="px-4 py-2 text-white bg-gray-600 rounded-md shadow hover:bg-gray-800"
+                    >
+                        Sign Out
+                    </a>
                 </div>
             </div>
         </nav>

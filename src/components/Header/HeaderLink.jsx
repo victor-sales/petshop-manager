@@ -4,9 +4,9 @@ export default function HeaderLink (props) {
     const { url, title } = props
     
     return (
-        <li className="text-gray-900 font-semibold hover:text-gray-700">
+        <li>
             <Link href={url} >
-                <a>{title}</a>
+                <a className="text-gray-900 font-semibold hover:text-gray-700">{title}</a>
             </Link>
         </li>
     )
