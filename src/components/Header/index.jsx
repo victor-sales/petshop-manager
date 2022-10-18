@@ -1,4 +1,5 @@
 import { useState } from "react";
+import HeaderLink from "./HeaderLink";
 
 export default function Header () {
     const [navbar, setNavbar] = useState(false);
@@ -52,30 +53,14 @@ export default function Header () {
                 <div>
                     <div className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${navbar ? "block" : "hidden"}`}>
                         <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
-                            <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="#">Início</a>
-                            </li>
-                            <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="/consultas">Consultas</a>
-                            </li>
-                            <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="/vendas">Vendas</a>
-                            </li>
-                            <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="/usuarios">Usuários</a>
-                            </li>
-                            <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="/animais">Animais</a>
-                            </li>
-                            <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="/especies">Espécies</a>
-                            </li>
-                            <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="/racas">Raças</a>
-                            </li>
-                            <li className="text-gray-900 font-semibold hover:text-gray-700">
-                                <a href="/produtos">Produtos</a>
-                            </li>
+                            <HeaderLink url="/" title="Início" />
+                            <HeaderLink url="/consultas" title="Consultas" />
+                            <HeaderLink url="/vendas" title="Vendas" />
+                            <HeaderLink url="/usuarios" title="Usuários" />
+                            <HeaderLink url="/animais" title="Animais" />
+                            <HeaderLink url="/especies" title="Espécies" />
+                            <HeaderLink url="/racas" title="Raças" />
+                            <HeaderLink url="/produtos" title="Produtos" />
                         </ul>
                         <div className="mt-3 space-y-2 lg:hidden md:hidden">
                             <a href="#" className="inline-block w-full px-4 py-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">Sign out</a>

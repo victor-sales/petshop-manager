@@ -1,101 +1,99 @@
 import Container from "../components/Container"
 import Layout from "../components/Layout"
 import { Table } from "antd"
+import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Racas (props) {
     const dataSource = [
         {
-          key: '1',
-          name: 'Mike',
-          age: 32,
-          address1: '10 Downing Street',
+          id: '1',
+          nome: 'SRD',
+          especie: "Gato",
+          descricao: 'Várias características possíveis',
         },
         {
-          key: '2',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '2',
+          nome: 'SRD',
+          especie: 'Cachorro',
+          descricao: 'Várias características possíveis',
         },
         {
-          key: '3',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '3',
+          nome: 'Pug',
+          especie: 'Cachorro',
+          descricao: 'Porte pequeno, pelo curto, focinho achatado',
         },
         {
-          key: '4',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '4',
+          nome: 'Pastor Alemão',
+          especie: 'Cachorro',
+          descricao: 'Porte grande, pleo médio em cores marrom e preto majoritariamente, com orelhas pontudas',
         },
         {
-          key: '5',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '5',
+          nome: 'Fila',
+          especie: 'Cachorro',
+          descricao: 'Porte grande, pelo curto, pele do rosto e orelhas caídas',
         },
         {
-          key: '6',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '6',
+          nome: 'Sphynx',
+          especie: 'Gato',
+          descricao: 'Gato pelado',
         },
         {
-          key: '7',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '7',
+          nome: 'Persa',
+          especie: 'Gato',
+          descricao: 'Pelagem longa, cara mais achatada, olhos mais juntos',
         },
         {
-          key: '8',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '8',
+          nome: 'Siames',
+          especie: 'Gato',
+          descricao: 'Pelagem curta, normalmente em cores pretas e cinzas. Cor preta predominante nas patas e cara',
         },
         {
-          key: '9',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
-        {
-          key: '10',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '9',
+          nome: 'Ashera',
+          especie: "Gato",
+          descricao: 'Porte grande, pelagem curta, muito similar a um felino selvagem',
         },
       ];
       
       const columns = [
         {
-          title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
+          title: 'ID',
+          dataIndex: 'id',
+          key: 'id',
         },
         {
-          title: 'Age',
-          dataIndex: 'age',
-          key: 'age',
+          title: 'Nome',
+          dataIndex: 'nome',
+          key: 'nome',
         },
         {
-          title: 'Address',
-          dataIndex: 'address1',
-          key: 'address',
+          title: 'Especie',
+          dataIndex: 'especie',
+          key: 'especie',
         },
         {
-          title: 'Address',
-          dataIndex: 'address2',
-          key: 'address',
+          title: 'Descrição',
+          dataIndex: 'descricao',
+          key: 'descricao',
         },
         {
-          title: 'Address',
-          dataIndex: 'address3',
-          key: 'address',
-        },
-        {
-          title: 'Address',
-          dataIndex: 'address4',
-          key: 'address',
+          title: 'Ações',
+          key: 'actions',
+          render: () => {
+            return (
+              <div className="flex flex-row gap-3">
+                <button><FontAwesomeIcon className="h-4 w-4 text-blue-600" icon={faPencil}/></button>
+                <button><FontAwesomeIcon className="h-4 w-4 text-red-600" icon={faTrash}/></button>
+              </div>
+            )
+          }
         },
       ];
       
@@ -103,7 +101,14 @@ export default function Racas (props) {
     return (
         <Layout>
             <Container>
-                <Table size="small" dataSource={dataSource} columns={columns} />;
+              <div className="w-full flex flex-row-reverse">
+              <button className="flex flex-col justify-center items-center text-blue-600 p-1 ">
+                  <FontAwesomeIcon className="h-6 w-6" icon={faPlusCircle} />
+                  <span className="text-sm">Nova Raça</span>
+                </button>
+              </div>
+                
+              <Table size="small" dataSource={dataSource} columns={columns}  />;
             </Container>
         </Layout>
     )
