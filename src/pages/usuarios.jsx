@@ -1,110 +1,147 @@
-import Container from "../components/Container"
-import Layout from "../components/Layout"
-import { Table } from "antd"
+import Container from "../components/Container";
+import Layout from "../components/Layout";
+import { Modal, Table } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
+import { useState } from "react";
 
-export default function Usuarios (props) {
+export default function Usuarios(props) {
+    const [visible, setVisible] = useState(false);
+
     const dataSource = [
         {
-          key: '1',
-          name: 'Mike',
-          age: 32,
-          address1: '10 Downing Street',
+            id: "1",
+            nome: "Mario Alberto",
+            email: "mario.alberto@email.com",
+            telefone: "(32) 3838-8091",
+            perfil: "Cliente",
         },
         {
-          key: '2',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+            id: "2",
+            nome: "Carla Patrícia",
+            email: "carla.patricia@email.com",
+            telefone: "(32) 2738-4604",
+            perfil: "Cliente",
         },
         {
-          key: '3',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+            id: "3",
+            nome: "Maria Paula",
+            email: "maria.paula@email.com",
+            telefone: "(32) 3642-8091",
+            perfil: "Cliente",
         },
         {
-          key: '4',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+            id: "4",
+            nome: "Victor Andrade",
+            email: "victor.andrade@email.com",
+            telefone: "(31) 2408-3828",
+            perfil: "Cliente",
         },
         {
-          key: '5',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+            id: "5",
+            nome: "Eduardo Souza",
+            email: "eduardo.souza@email.com",
+            telefone: "(35) 2211-1382",
+            perfil: "Cliente",
         },
         {
-          key: '6',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+            id: "6",
+            nome: "Jordânia Peixoto",
+            email: "jordania.peixoto@email.com",
+            telefone: "(37) 3874-5863",
+            perfil: "Cliente",
         },
         {
-          key: '7',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+            id: "7",
+            nome: "Paulo Ricardo",
+            email: "paulo.ricardo@email.com",
+            telefone: "(37) 2133-6317",
+            perfil: "Funcionario",
         },
         {
-          key: '8',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+            id: "8",
+            nome: "Antonio Lopes",
+            email: "mario.alberto@email.com",
+            telefone: "(35) 2815-0182",
+            perfil: "Veterinário",
         },
         {
-          key: '9',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+            id: "9",
+            nome: "Ronald Luiz",
+            email: "ronald.luiz@email.com",
+            telefone: "(35) 3304-2788",
+            perfil: "Admin",
+        },
+    ];
+
+    const columns = [
+        {
+            title: "ID",
+            dataIndex: "id",
+            key: "id",
         },
         {
-          key: '10',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
-      ];
-      
-      const columns = [
-        {
-          title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
+            title: "Nome",
+            dataIndex: "nome",
+            key: "nome",
         },
         {
-          title: 'Age',
-          dataIndex: 'age',
-          key: 'age',
+            title: "E-mail",
+            dataIndex: "email",
+            key: "email",
         },
         {
-          title: 'Address',
-          dataIndex: 'address1',
-          key: 'address',
+            title: "Telefone",
+            dataIndex: "telefone",
+            key: "telefone",
         },
         {
-          title: 'Address',
-          dataIndex: 'address2',
-          key: 'address',
+            title: "Perfil",
+            dataIndex: "perfil",
+            key: "perfil",
         },
         {
-          title: 'Address',
-          dataIndex: 'address3',
-          key: 'address',
+            title: "Ações",
+            key: "actions",
+            render: (data) => {
+                 
+                return (
+                    <div className="flex flex-row gap-3">
+                        <button className="disabled:text-gray-400 text-blue-600" disabled={data.perfil.toLowerCase() === "cliente" ? true : false} onClick={(e) => setVisible(true)}>
+                            <FontAwesomeIcon
+                                className="h-4 w-4 "
+                                icon={faPencil}
+                            />
+                        </button>
+                        <button className="disabled:text-gray-400 text-red-600" disabled={data.perfil.toLowerCase() === "cliente" ? true : false} onClick={(e) => setVisible(true)}>
+                            <FontAwesomeIcon
+                                className="h-4 w-4 "
+                                icon={faTrash}
+                            />
+                        </button>
+                    </div>
+                );
+            },
         },
-        {
-          title: 'Address',
-          dataIndex: 'address4',
-          key: 'address',
-        },
-      ];
-      
-      
+    ];
+
     return (
         <Layout>
             <Container>
-                <Table size="small" dataSource={dataSource} columns={columns} />;
+                <div className="w-full flex flex-row-reverse">
+                    <IconButton iconName={faPlusCircle} title="Novo Usuário" />
+                </div>
+                <Table size="small" dataSource={dataSource} columns={columns} />
             </Container>
+            <Modal
+                key={"new-breed"}
+                onOk={() => setVisible(false)}
+                title="Modal"
+                open={visible}
+            >
+                Isso é um teste
+            </Modal>
         </Layout>
-    )
-}   
+    );
+}

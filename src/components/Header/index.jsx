@@ -60,7 +60,7 @@ export default function Header() {
                     >
                         <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 m-0">
                             <HeaderLink url="/" title="Início" />
-                            <HeaderLink url="/consultas" title="Consultas" />
+                            <HeaderLink url="/servicos" title="Serviços" />
                             <HeaderLink url="/vendas" title="Vendas" />
                             <HeaderLink url="/usuarios" title="Usuários" />
                             <HeaderLink url="/animais" title="Animais" />
