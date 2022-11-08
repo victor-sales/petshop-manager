@@ -1,102 +1,108 @@
 import Container from "../components/Container"
 import Layout from "../components/Layout"
 import { Table } from "antd"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default function vendas (props) {
     const dataSource = [
         {
-          key: '1',
-          name: 'Mike',
-          age: 32,
-          address1: '10 Downing Street',
+          id: '1',
+          datetime: '12/10 15:00',
+          cashier: "Paulo Ricardo",
+          buyer_name: "Maria Paula",
+          buyer_email: "maria.paula@email.com",
+          item: "Petisco Miau",
+          amount: "1",
+          observations: "",
         },
         {
-          key: '2',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '2',
+          datetime: '12/10 15:00',
+          cashier: "Paulo Ricardo",
+          buyer_name: "Maria Paula",
+          buyer_email: "maria.paula@email.com",
+          item: "Petisco Au Au",
+          amount: "3",
+          observations: "",
         },
         {
-          key: '3',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
+          id: '3',
+          datetime: '19/10 16:00',
+          cashier: "Paulo Ricardo",
+          buyer_name: "Maria Paula",
+          buyer_email: "maria.paula@email.com",
+          item: "Arranhador",
+          amount: "1",
+          observations: "",
         },
-        {
-          key: '4',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
-        {
-          key: '5',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
-        {
-          key: '6',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
-        {
-          key: '7',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
-        {
-          key: '8',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
-        {
-          key: '9',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
-        {
-          key: '10',
-          name: 'John',
-          age: 42,
-          address1: '10 Downing Street',
-        },
+        
       ];
-      
+
       const columns = [
         {
-          title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
+          title: 'ID',
+          dataIndex: 'id',
+          key: 'id',
         },
         {
-          title: 'Age',
-          dataIndex: 'age',
-          key: 'age',
+          title: 'Data/Hora',
+          dataIndex: 'datetime',
+          key: 'datetime',
         },
         {
-          title: 'Address',
-          dataIndex: 'address1',
-          key: 'address',
+          title: 'vendedor',
+          dataIndex: 'cashier',
+          key: 'cashier',
         },
         {
-          title: 'Address',
-          dataIndex: 'address2',
-          key: 'address',
+          title: 'comprador',
+          dataIndex: 'buyer',
+          key: 'buyer',
         },
         {
-          title: 'Address',
-          dataIndex: 'address3',
-          key: 'address',
+          title: 'Produto',
+          dataIndex: 'product_name',
+          key: 'product_name',
         },
         {
-          title: 'Address',
-          dataIndex: 'address4',
-          key: 'address',
+          title: 'Quantidade',
+          dataIndex: 'amount',
+          key: 'amount',
         },
+        {
+          title: 'Observações',
+          dataIndex: 'observations',
+          key: 'observations',
+        },
+        {
+          title: "Ações",
+          key: "actions",
+          render: (data) => {
+              return (
+                  <div className="flex flex-row gap-3">
+                      <button
+                          className="disabled:text-gray-400 text-blue-600"
+                          onClick={(e) => setVisible(true)}
+                      >
+                          <FontAwesomeIcon
+                              className="h-4 w-4 "
+                              icon={faPencil}
+                          />
+                      </button>
+                      <button
+                          className="disabled:text-gray-400 text-red-600"
+                          onClick={(e) => setVisible(true)}
+                      >
+                          <FontAwesomeIcon
+                              className="h-4 w-4 "
+                              icon={faTrash}
+                          />
+                      </button>
+                  </div>
+              );
+          },
+      },
       ];
       
       

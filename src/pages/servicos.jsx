@@ -35,7 +35,7 @@ export default function Servicos(props) {
         },
         {
             id: "3",
-            servico: "Consulta",
+            servico: "Banho e tosa",
             datetime: "26/10 14:00",
             especie: "Cachorro",
             raca: "SRD",

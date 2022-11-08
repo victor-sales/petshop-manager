@@ -61,12 +61,12 @@ export default function Header() {
                         <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 m-0">
                             <HeaderLink url="/" title="Início" />
                             <HeaderLink url="/servicos" title="Serviços" />
-                            <HeaderLink url="/vendas" title="Vendas" />
                             <HeaderLink url="/usuarios" title="Usuários" />
                             <HeaderLink url="/animais" title="Animais" />
                             <HeaderLink url="/especies" title="Espécies" />
                             <HeaderLink url="/racas" title="Raças" />
                             <HeaderLink url="/produtos" title="Produtos" />
+                            <HeaderLink url="/vendas" title="Vendas" />
                         </ul>
                         <div className="mt-3 space-y-2 lg:hidden md:hidden">
                             <a

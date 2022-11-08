@@ -16,6 +16,7 @@ export default function Usuarios(props) {
             email: "mario.alberto@email.com",
             telefone: "(32) 3838-8091",
             perfil: "Cliente",
+            funcao: "Cliente"
         },
         {
             id: "2",
@@ -23,6 +24,7 @@ export default function Usuarios(props) {
             email: "carla.patricia@email.com",
             telefone: "(32) 2738-4604",
             perfil: "Cliente",
+            funcao: "Cliente"
         },
         {
             id: "3",
@@ -30,6 +32,7 @@ export default function Usuarios(props) {
             email: "maria.paula@email.com",
             telefone: "(32) 3642-8091",
             perfil: "Cliente",
+            funcao: "Cliente"
         },
         {
             id: "4",
@@ -37,6 +40,7 @@ export default function Usuarios(props) {
             email: "victor.andrade@email.com",
             telefone: "(31) 2408-3828",
             perfil: "Cliente",
+            funcao: "Cliente"
         },
         {
             id: "5",
@@ -44,6 +48,7 @@ export default function Usuarios(props) {
             email: "eduardo.souza@email.com",
             telefone: "(35) 2211-1382",
             perfil: "Cliente",
+            funcao: "Cliente"
         },
         {
             id: "6",
@@ -51,6 +56,7 @@ export default function Usuarios(props) {
             email: "jordania.peixoto@email.com",
             telefone: "(37) 3874-5863",
             perfil: "Cliente",
+            funcao: "Cliente"
         },
         {
             id: "7",
@@ -58,20 +64,23 @@ export default function Usuarios(props) {
             email: "paulo.ricardo@email.com",
             telefone: "(37) 2133-6317",
             perfil: "Funcionario",
+            funcao: "Caixa"
         },
         {
             id: "8",
             nome: "Antonio Lopes",
             email: "mario.alberto@email.com",
             telefone: "(35) 2815-0182",
-            perfil: "Veterinário",
+            perfil: "Funcionario",
+            funcao: "Veterinário"
         },
         {
             id: "9",
             nome: "Ronald Luiz",
             email: "ronald.luiz@email.com",
             telefone: "(35) 3304-2788",
-            perfil: "Admin",
+            perfil: "Administrador",
+            funcao: "Administrador"
         },
     ];
 
@@ -102,19 +111,24 @@ export default function Usuarios(props) {
             key: "perfil",
         },
         {
+            title: "Função",
+            dataIndex: "funcao",
+            key: "funcao",
+        },
+        {
             title: "Ações",
             key: "actions",
             render: (data) => {
                  
                 return (
                     <div className="flex flex-row gap-3">
-                        <button className="disabled:text-gray-400 text-blue-600" disabled={data.perfil.toLowerCase() === "cliente" ? true : false} onClick={(e) => setVisible(true)}>
+                        <button className="disabled:text-gray-400 text-blue-600" onClick={(e) => setVisible(true)}>
                             <FontAwesomeIcon
                                 className="h-4 w-4 "
                                 icon={faPencil}
                             />
                         </button>
-                        <button className="disabled:text-gray-400 text-red-600" disabled={data.perfil.toLowerCase() === "cliente" ? true : false} onClick={(e) => setVisible(true)}>
+                        <button className="disabled:text-gray-400 text-red-600" onClick={(e) => setVisible(true)}>
                             <FontAwesomeIcon
                                 className="h-4 w-4 "
                                 icon={faTrash}
