@@ -9,9 +9,15 @@ import {
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
+import ConfirmRemoveText from "../components/ConfirmRemoveText";
+import AddScheduleForm from "../components/Form/Forms/Schedules/AddScheduleForm";
+import EditScheduleForm from "../components/Form/Forms/Schedules/EditScheduleForm";
+
 
 export default function Servicos(props) {
     const [visible, setVisible] = useState(false);
+    const [action, setAction] = useState("")
+
 
     const dataSource = [
         {
@@ -23,6 +29,7 @@ export default function Servicos(props) {
             descricao: "",
             sintomas:
                 "mancando bastante, sinais de dor na pata traseira esquerda",
+            confirmado: true
         },
         {
             id: "2",
@@ -32,6 +39,8 @@ export default function Servicos(props) {
             raca: "SRD",
             descricao: "",
             sintomas: "",
+            confirmado: true
+
         },
         {
             id: "3",
@@ -41,6 +50,8 @@ export default function Servicos(props) {
             raca: "SRD",
             descricao: "",
             sintomas: "",
+            confirmado: false
+
         },
     ];
 
@@ -71,6 +82,12 @@ export default function Servicos(props) {
             key: "raca",
         },
         {
+            title: "Confirmado",
+            dataIndex: "confirmado",
+            key: "confirmado",
+            render: (status) => status ? "SIM" : "NÃO" 
+        },
+        {
             title: "Descrição",
             dataIndex: "descricao",
             key: "descricao",
@@ -83,24 +100,18 @@ export default function Servicos(props) {
         {
             title: "Ações",
             key: "actions",
-            render: (data) => {
+            render: () => {
                 return (
                     <div className="flex flex-row gap-3">
-                        <button
-                            className="disabled:text-gray-400 text-blue-600"
-                            onClick={(e) => setVisible(true)}
-                        >
+                        <button onClick={(e) => { setAction("EDIT"); setVisible(true) }}>
                             <FontAwesomeIcon
-                                className="h-4 w-4 "
+                                className="h-4 w-4 text-blue-600"
                                 icon={faPencil}
                             />
                         </button>
-                        <button
-                            className="disabled:text-gray-400 text-red-600"
-                            onClick={(e) => setVisible(true)}
-                        >
+                        <button onClick={(e) => { setAction("REMOVE"); setVisible(true) }}>
                             <FontAwesomeIcon
-                                className="h-4 w-4 "
+                                className="h-4 w-4 text-red-600"
                                 icon={faTrash}
                             />
                         </button>
@@ -114,20 +125,19 @@ export default function Servicos(props) {
         <Layout>
             <Container>
                 <div className="w-full flex flex-row-reverse">
-                    <IconButton
-                        iconName={faPlusCircle}
-                        title="Novo Agendamento"
-                    />
+                    <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/>
                 </div>
                 <Table size="small" dataSource={dataSource} columns={columns} />
             </Container>
             <Modal
-                key={"new-breed"}
+                key={"new-specie"}
                 onOk={() => setVisible(false)}
+                okText="Confirmar"
+                cancelText="Fechar"
                 title="Modal"
                 open={visible}
             >
-                Isso é um teste
+                {action === "ADD" ? <AddScheduleForm /> : action === "EDIT" ? <EditScheduleForm /> : <ConfirmRemoveText />}
             </Modal>
         </Layout>
     );

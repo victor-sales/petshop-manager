@@ -5,7 +5,7 @@ export default function Input (props) {
     const { id, type, value, onChange, labelText, required } = props
     
     return (
-        <>
+        <div className="flex flex-col">
             <Label htmlFor={id} text={labelText}/>
             <input
                 required={required}
@@ -15,6 +15,6 @@ export default function Input (props) {
                 value={value}
                 onChange={onChange}
             />
-        </>
+        </div>
     )
 }

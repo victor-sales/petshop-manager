@@ -1,10 +1,20 @@
 import Container from "../components/Container"
 import Layout from "../components/Layout"
-import { Table } from "antd"
+import { Modal, Table } from "antd"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
+import AddSellForm from "../components/Form/Forms/Sells/AddSellForm";
+import EditSellForm from "../components/Form/Forms/Sells/EditSellForm";
+import ConfirmRemoveText from "../components/ConfirmRemoveText";
 
-export default function vendas (props) {
+
+export default function Vendas (props) {
+    
+  const [visible, setVisible] = useState(false);
+    const [action, setAction] = useState("")
+
     const dataSource = [
         {
           id: '1',
@@ -57,13 +67,13 @@ export default function vendas (props) {
         },
         {
           title: 'comprador',
-          dataIndex: 'buyer',
-          key: 'buyer',
+          dataIndex: 'buyer_email',
+          key: 'buyer_email',
         },
         {
           title: 'Produto',
-          dataIndex: 'product_name',
-          key: 'product_name',
+          dataIndex: 'item',
+          key: 'item',
         },
         {
           title: 'Quantidade',
@@ -78,24 +88,18 @@ export default function vendas (props) {
         {
           title: "Ações",
           key: "actions",
-          render: (data) => {
+          render: () => {
               return (
                   <div className="flex flex-row gap-3">
-                      <button
-                          className="disabled:text-gray-400 text-blue-600"
-                          onClick={(e) => setVisible(true)}
-                      >
+                      <button onClick={(e) => { setAction("EDIT"); setVisible(true) }}>
                           <FontAwesomeIcon
-                              className="h-4 w-4 "
+                              className="h-4 w-4 text-blue-600"
                               icon={faPencil}
                           />
                       </button>
-                      <button
-                          className="disabled:text-gray-400 text-red-600"
-                          onClick={(e) => setVisible(true)}
-                      >
+                      <button onClick={(e) => { setAction("REMOVE"); setVisible(true) }}>
                           <FontAwesomeIcon
-                              className="h-4 w-4 "
+                              className="h-4 w-4 text-red-600"
                               icon={faTrash}
                           />
                       </button>
@@ -103,14 +107,26 @@ export default function vendas (props) {
               );
           },
       },
-      ];
-      
-      
-    return (
-        <Layout>
-            <Container>
-                <Table size="small" dataSource={dataSource} columns={columns} />;
-            </Container>
-        </Layout>
-    )
+  ];
+
+  return (
+      <Layout>
+          <Container>
+              <div className="w-full flex flex-row-reverse">
+                  <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/>
+              </div>
+              <Table size="small" dataSource={dataSource} columns={columns} />
+          </Container>
+          <Modal
+              key={"new-specie"}
+              onOk={() => setVisible(false)}
+              okText="Confirmar"
+              cancelText="Fechar"
+              title="Modal"
+              open={visible}
+          >
+              {action === "ADD" ? <AddSellForm /> : action === "EDIT" ? <EditSellForm /> : <ConfirmRemoveText />}
+          </Modal>
+      </Layout>
+  );
 }   

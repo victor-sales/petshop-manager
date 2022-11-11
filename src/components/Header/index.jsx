@@ -1,8 +1,12 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
+import ChangePasswordForm from "../Form/Forms/ChangePasswordForm";
 import HeaderLink from "./HeaderLink";
 
 export default function Header() {
     const [navbar, setNavbar] = useState(false);
+    const [changePassword, setChangePassword] = useState(false)
+    const router = useRouter();
 
     return (
         <nav className="w-full bg-white border-b border-gray-300 shadow-md">
@@ -56,35 +60,51 @@ export default function Header() {
                     <div
                         className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
                             navbar ? "block" : "hidden"
-                        }`}
-                    >
+                        }`}>
                         <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 m-0">
-                            <HeaderLink url="/" title="Início" />
-                            <HeaderLink url="/servicos" title="Serviços" />
-                            <HeaderLink url="/usuarios" title="Usuários" />
-                            <HeaderLink url="/animais" title="Animais" />
-                            <HeaderLink url="/especies" title="Espécies" />
-                            <HeaderLink url="/racas" title="Raças" />
-                            <HeaderLink url="/produtos" title="Produtos" />
-                            <HeaderLink url="/vendas" title="Vendas" />
+                            {router.asPath === "/agendamento" ? <></> :
+                            <>
+                                <HeaderLink url="/" title="Início" />
+                                <HeaderLink url="/servicos" title="Serviços" />
+                                <HeaderLink url="/usuarios" title="Usuários" />
+                                <HeaderLink url="/animais" title="Animais" />
+                                <HeaderLink url="/especies" title="Espécies" />
+                                <HeaderLink url="/racas" title="Raças" />
+                                <HeaderLink url="/produtos" title="Produtos" />
+                                <HeaderLink url="/vendas" title="Vendas" /></>}
                         </ul>
-                        <div className="mt-3 space-y-2 lg:hidden md:hidden">
+                        <div className="mt-3 space-y-2 lg:hidden md:hidden flex">
                             <a
                                 href="#"
                                 className="inline-block w-full px-4 py-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800"
                             >
                                 Sign out
                             </a>
+                            <div className="">
+                                <button className="text-sm text-black">Alterar Senha</button>
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
-                <div className="hidden space-x-2 md:inline-block">
+                
+                <div className="hidden space-x-2 md:flex md:items-center">
+                    <div className="relative mr-3">
+                            <button onClick={() => setChangePassword(!changePassword)} className="text-sm text-black">Alterar Senha</button>
+                        
+                        {changePassword ? 
+                            <div className="absolute z-10 bg-white p-2 border border-gray-300 rounded-md top-5 right-10 w-60">
+                                <ChangePasswordForm />
+                            </div>
+                            : <></>}
+                            </div>
                     <a
                         href="#"
                         className="px-4 py-2 text-white bg-gray-600 rounded-md shadow hover:bg-gray-800"
                     >
                         Sign Out
                     </a>
+                    
                 </div>
             </div>
         </nav>

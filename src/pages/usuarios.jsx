@@ -4,10 +4,16 @@ import { Modal, Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
+import ConfirmRemoveText from "../components/ConfirmRemoveText";
+
 import { useState } from "react";
+import AddUserForm from "../components/Form/Forms/Users/AddUserForm";
+import EditUserForm from "../components/Form/Forms/Users/EditUserForm";
 
 export default function Usuarios(props) {
     const [visible, setVisible] = useState(false);
+    const [action, setAction] = useState("")
+
 
     const dataSource = [
         {
@@ -118,19 +124,18 @@ export default function Usuarios(props) {
         {
             title: "Ações",
             key: "actions",
-            render: (data) => {
-                 
+            render: () => {
                 return (
                     <div className="flex flex-row gap-3">
-                        <button className="disabled:text-gray-400 text-blue-600" onClick={(e) => setVisible(true)}>
+                        <button onClick={(e) => { setAction("EDIT"); setVisible(true) }}>
                             <FontAwesomeIcon
-                                className="h-4 w-4 "
+                                className="h-4 w-4 text-blue-600"
                                 icon={faPencil}
                             />
                         </button>
-                        <button className="disabled:text-gray-400 text-red-600" onClick={(e) => setVisible(true)}>
+                        <button onClick={(e) => { setAction("REMOVE"); setVisible(true) }}>
                             <FontAwesomeIcon
-                                className="h-4 w-4 "
+                                className="h-4 w-4 text-red-600"
                                 icon={faTrash}
                             />
                         </button>
@@ -144,17 +149,19 @@ export default function Usuarios(props) {
         <Layout>
             <Container>
                 <div className="w-full flex flex-row-reverse">
-                    <IconButton iconName={faPlusCircle} title="Novo Usuário" />
+                    <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/>
                 </div>
                 <Table size="small" dataSource={dataSource} columns={columns} />
             </Container>
             <Modal
-                key={"new-breed"}
+                key={"new-specie"}
                 onOk={() => setVisible(false)}
+                okText="Confirmar"
+                cancelText="Fechar"
                 title="Modal"
                 open={visible}
             >
-                Isso é um teste
+                {action === "ADD" ? <AddUserForm /> : action === "EDIT" ? <EditUserForm /> : <ConfirmRemoveText />}
             </Modal>
         </Layout>
     );
