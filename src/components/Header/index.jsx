@@ -1,11 +1,14 @@
+import { Modal } from "antd";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import ConfirmSignOutText from "../ConfirmSignOutText";
 import ChangePasswordForm from "../Form/Forms/ChangePasswordForm";
 import HeaderLink from "./HeaderLink";
 
 export default function Header() {
     const [navbar, setNavbar] = useState(false);
     const [changePassword, setChangePassword] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
     const router = useRouter();
 
     return (
@@ -74,12 +77,12 @@ export default function Header() {
                                 <HeaderLink url="/vendas" title="Vendas" /></>}
                         </ul>
                         <div className="mt-3 space-y-2 lg:hidden md:hidden flex">
-                            <a
-                                href="#"
+                            <button
+                                onClick={() => setModalVisible(true)}
                                 className="inline-block w-full px-4 py-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800"
                             >
                                 Sign out
-                            </a>
+                            </button>
                             <div className="">
                                 <button className="text-sm text-black">Alterar Senha</button>
                             </div>
@@ -98,15 +101,24 @@ export default function Header() {
                             </div>
                             : <></>}
                             </div>
-                    <a
-                        href="#"
+                    <button
+                        onClick={() => setModalVisible(true)}                        
                         className="px-4 py-2 text-white bg-gray-600 rounded-md shadow hover:bg-gray-800"
                     >
                         Sign Out
-                    </a>
+                    </button>
                     
                 </div>
             </div>
+            <Modal
+                key={"new-specie"}
+                onOk={() => setModalVisible(false)}
+                okText="Confirmar"
+                cancelText="Fechar"
+                title="Modal"
+                open={modalVisible}>
+                    <ConfirmSignOutText />
+                </Modal>
         </nav>
     );
 }
