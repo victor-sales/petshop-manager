@@ -5,27 +5,7 @@ import Conflict from '../../../utils/ErrorsObj/Conflict';
 import NotFound from '../../../utils/ErrorsObj/NotFound';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
 import NormalizedUser from '../../../utils/NormalizedUser';
-
-function userIsInvalid (req) {
-
-    let error = BadRequest()
-
-    if (!req.body) {
-        error = {...error, details: "Body not found"}
-
-        return error
-    } 
-
-    const body = JSON.parse(req.body)
-    
-    if (!body.email) {
-        error = {...error, details: "Email is required"}
-        
-        return error
-    }
-
-    return false
-}
+import { userIsInvalid } from '../../../utils/Helpers';
 
 async function duplicatedUser (req) {
 
@@ -79,12 +59,12 @@ export default async function handler (req, res) {
             case "POST":
 
                 // Valida campos obrigatórios
-                invalid = userIsInvalid(req, res)
+                invalid = userIsInvalid(req)
                 
                 if (invalid) return res.json(invalid)
 
                 // Valida duplicidade de usuários
-                duplicated = await duplicatedUser(req, res)
+                duplicated = await duplicatedUser(req)
 
                 if (duplicated) return res.json(duplicated)
 
@@ -107,7 +87,7 @@ export default async function handler (req, res) {
                 break;
             case "PUT":
                 // Valida campos obrigatórios
-                invalid = userIsInvalid(req, res)
+                invalid = userIsInvalid(req)
                 
                 if (invalid) return res.json(invalid)
 
