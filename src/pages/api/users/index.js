@@ -1,18 +1,30 @@
-export default function handler (req, res) {
-    
-    const headers = req.headers
+import dbConnect from '../../../../db/connect';
+import User from '../../../../models/User';
+import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
+import NormalizedUser from '../../../utils/NormalizedUser';
+
+export default async function handler (req, res) {
+
+    await dbConnect()
+
+    const headers = req.headers;
+
+    let result = null;
+    let error = null;
 
     if (!headers["access-token"]) {
-        res.json({status: 401, message: "Not authorized"})
+
+        error = NotAuthorized()
+        
+        return res.json(error)
+
     } else {
-        res.status(200).json({
-            data: [
-                {id: 1, name: 'Victor'},
-                {id: 2, name: 'Jordânia'},
-                {id: 3, name: 'Geyza'},
-            ]
-        })
+
+        result = await User.find().exec()
+
+        if (result.length > 0) result = result.map(e => NormalizedUser(e))
+
+        return res.json({ response: { status: 200, message: "success"}, data: result })
     }
 
-   
 }
