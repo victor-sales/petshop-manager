@@ -15,6 +15,7 @@ export default function EditBreedForm(params) {
                     labelText={"Espécie"}
                     
                     >
+                        <option value={""}>...</option>
                     <option value={"cachorro"}>Cachorro</option>
                     <option value={"gato"}>Gato</option>
                 </Select>

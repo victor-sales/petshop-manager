@@ -1,9 +1,12 @@
+import { useState } from "react";
 import DatePicker from "../../FormInputs/DatePicker";
 import Input from "../../FormInputs/Input";
 import Select from "../../FormInputs/Select";
 import Textarea from "../../FormInputs/Textarea";
 
 export default function AddScheduleForm(params) {
+    const [startDate, setStartDate] = useState("");
+
     return (
         <form>
                 <Select 
@@ -13,6 +16,8 @@ export default function AddScheduleForm(params) {
                     // value={userName}
                     // onChange={(e) => setUserName(e.target.value)}
                     >
+                                                    <option value={""}>...</option>
+
                     <option value={"consulta"}>Consulta</option>
                     <option value={"banho-tosa"}>Banho e Tosa</option>
                 </Select>
@@ -25,6 +30,7 @@ export default function AddScheduleForm(params) {
                             required
                             id={"hour"}
                             labelText={"Hora"}>
+                            <option value={""}>...</option>
                             <option value={"8"}>08:00</option>
                             <option value={"9"}>09:00</option>
                             <option value={"10"}>10:00</option>
@@ -46,6 +52,8 @@ export default function AddScheduleForm(params) {
                             // value={userName}
                             // onChange={(e) => setUserName(e.target.value)}
                             >
+                                                            <option value={""}>...</option>
+
                             <option value={"cachorro"}>Cachorro</option>
                             <option value={"gato"}>Gato</option>
                         </Select>
@@ -58,6 +66,8 @@ export default function AddScheduleForm(params) {
                             // value={userName}
                             // onChange={(e) => setUserName(e.target.value)}
                             >
+                                                            <option value={""}>...</option>
+
                             <option value={"raca-1"}>Raça 1</option>
                             <option value={"raca-2"}>Raça 2</option>
                             <option value={"raca-3"}>Raça 3</option>

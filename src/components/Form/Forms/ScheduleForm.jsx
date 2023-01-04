@@ -4,7 +4,7 @@ import Select from "../FormInputs/Select";
 import Textarea from "../FormInputs/Textarea";
 
 export default function ScheduleForm () {
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState("");
     return (
         <section className="lg:col-span-3 border border-gray-300 rounded bg-white p-6 shadow-md">
             <h1 className="font-bold text-xl tracking-wide mb-6">Novo Agendamento</h1>
@@ -16,6 +16,7 @@ export default function ScheduleForm () {
                     // value={userName}
                     // onChange={(e) => setUserName(e.target.value)}
                     >
+                        <option value={""}>...</option>
                     <option value={"consulta"}>Consulta</option>
                     <option value={"banho-tosa"}>Banho e Tosa</option>
                 </Select>
@@ -28,6 +29,7 @@ export default function ScheduleForm () {
                             required
                             id={"hour"}
                             labelText={"Hora"}>
+                                <option value={""}>...</option>
                             <option value={"8"}>08:00</option>
                             <option value={"9"}>09:00</option>
                             <option value={"10"}>10:00</option>
@@ -49,6 +51,7 @@ export default function ScheduleForm () {
                             // value={userName}
                             // onChange={(e) => setUserName(e.target.value)}
                             >
+                                <option value={""}>...</option>
                             <option value={"cachorro"}>Cachorro</option>
                             <option value={"gato"}>Gato</option>
                         </Select>
@@ -61,6 +64,7 @@ export default function ScheduleForm () {
                             // value={userName}
                             // onChange={(e) => setUserName(e.target.value)}
                             >
+                                <option value={""}>...</option>
                             <option value={"raca-1"}>Raça 1</option>
                             <option value={"raca-2"}>Raça 2</option>
                             <option value={"raca-3"}>Raça 3</option>

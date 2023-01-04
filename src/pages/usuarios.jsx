@@ -6,7 +6,7 @@ import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-ico
 import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
 import ConfirmRemoveText from "../components/ConfirmRemoveText";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddUserForm from "../components/Form/Forms/Users/AddUserForm";
 import EditUserForm from "../components/Form/Forms/Users/EditUserForm";
 
@@ -145,11 +145,36 @@ export default function Usuarios(props) {
         },
     ];
 
+    const handleGetData = async () => {
+        let response = await fetch("/api/users/5204f876-4067-449d-89eb-e7ad3774e9b4", { method: "GET" })
+        response = await response.json()
+        console.log(response)
+    }
+
+    const handleAddUser = async () => {
+        const user = {
+            _id: "a731f84e-abdf-4326-bd52-720756746259",
+            user_name: "Teste da silva 2",
+            email: "teste.silva@email.com",
+            phone_number: "1234565654",
+            profile: "customer",
+            role: "customer"
+        }
+
+        console.log(user)
+
+        let response = await fetch(`/api/users/${user._id}`, { method: "POST", body: JSON.stringify(user) })
+        response = await response.json()
+        console.log(response)
+
+    }
+
     return (
         <Layout>
             <Container>
                 <div className="w-full flex flex-row-reverse">
-                    <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/>
+                    <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { handleAddUser() }}/>
+                    {/* <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/> */}
                 </div>
                 <Table size="small" dataSource={dataSource} columns={columns} />
             </Container>

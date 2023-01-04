@@ -67,7 +67,7 @@ export default function Header() {
                         <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 m-0">
                             {router.asPath === "/agendamento" ? <></> :
                             <>
-                                <HeaderLink url="/" title="Início" />
+                                <HeaderLink url="/" title="Dashboard" />
                                 <HeaderLink url="/servicos" title="Serviços" />
                                 <HeaderLink url="/usuarios" title="Usuários" />
                                 <HeaderLink url="/animais" title="Animais" />
