@@ -1,27 +1,6 @@
-import BadRequest from "../../../utils/ErrorsObj/BadRequest"
-import { userIsInvalid } from "../../../utils/Helpers"
-
-describe("Validate User" , () => {
-    it("should return a Bad Request if body not present", () => {
-        
-        let error = BadRequest()
-        error = {...error, details: "Body not found"}
-        
-        let invalid = userIsInvalid()
-
-        expect(invalid).toStrictEqual(error)
-        expect(invalid.status).toBe(400)
-        expect(invalid.details).toBe("Body not found")
-        expect(invalid.message).toBe("Bad request")
-    })
-    
-    it.todo("should return a Bad Request if email not present")
-    
-    it.todo("should return a Bad Request if user_name not present")
-
-    it.todo("should return false if user is valid")
-    
-})
+import mongoose from "mongoose";
+import { createMocks } from "node-mocks-http"
+import handleUsers from "../../pages/api/users"
 
 describe("Duplicated User" , () => {
     it.todo("should return a Conflict if user already exists")
@@ -31,7 +10,28 @@ describe("Duplicated User" , () => {
 })
 
 describe("Get Users", () => {
-    it.todo("should return 401 if token not present")
+
+    // beforeAll(() => {
+    //     dbConnect()
+    // })
+
+    afterAll(async () => {
+        await mongoose.disconnect()
+    })
+
+    it("should return 401 if token not present", async () => {
+        const { req, res } = createMocks({
+            headers: {},
+            method: 'GET',
+        });
+
+        await handleUsers(req, res)
+
+        const response = res._getJSONData()
+
+        expect(response.status).toBe(401)
+        expect(response.message.toLowerCase()).toBe("not authorized")
+    })
 
     it.todo("should return a list of normalized users")
 

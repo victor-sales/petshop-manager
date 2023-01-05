@@ -1,13 +1,12 @@
 import dbConnect from '../../../../db/connect';
 import User from '../../../../models/User';
-import BadRequest from '../../../utils/ErrorsObj/BadRequest';
 import Conflict from '../../../utils/ErrorsObj/Conflict';
 import NotFound from '../../../utils/ErrorsObj/NotFound';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
 import NormalizedUser from '../../../utils/NormalizedUser';
 import { userIsInvalid } from '../../../utils/Helpers';
 
-async function duplicatedUser (req) {
+async function userIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
     const userExists = await User.find({email: body.email}).exec()
@@ -64,7 +63,7 @@ export default async function handler (req, res) {
                 if (invalid) return res.json(invalid)
 
                 // Valida duplicidade de usuários
-                duplicated = await duplicatedUser(req)
+                duplicated = await userIsDuplicated(req)
 
                 if (duplicated) return res.json(duplicated)
 
@@ -75,7 +74,7 @@ export default async function handler (req, res) {
                     _id: user.id, 
                     user_name: user.user_name, 
                     email: user.email, 
-                    phone_number: user.phone_number, 
+                    phone_number: user.phone_number ?? "", 
                     profile: user.profile, 
                     role: user.role
                 })

@@ -18,5 +18,11 @@ export function userIsInvalid (req) {
         return error
     }
 
+    if (!body.user_name) {
+        error = {...error, details: "Username is required"}
+        
+        return error
+    }
+
     return false
 }
