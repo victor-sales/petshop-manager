@@ -5,6 +5,7 @@ import NotFound from '../../../utils/ErrorsObj/NotFound';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
 import NormalizedUser from '../../../utils/NormalizedUser';
 import { userIsInvalid } from '../../../utils/Helpers';
+import BadRequest from '../../../utils/ErrorsObj/BadRequest';
 
 async function userIsDuplicated (req) {
 
@@ -43,6 +44,13 @@ export default async function handler (req, res) {
     } else {
         switch (method) {
             case "GET":
+                if (!userId) {
+                    error = BadRequest()
+                    error = {...error, detail: `User ID is mandatory`}
+                    
+                    return res.json(error)
+                }
+                
                 result = await User.findById(userId).exec()
                 
                 if (!result) {
@@ -81,8 +89,7 @@ export default async function handler (req, res) {
 
                 result = await User.create(user)
 
-                res.json({ response: { status: 201, message: "success"}, data: NormalizedUser(result) })
-
+                return res.json({ response: { status: 201, message: "success"}, data: NormalizedUser(result) })
                 break;
             case "PUT":
                 // Valida campos obrigatórios
@@ -104,8 +111,13 @@ export default async function handler (req, res) {
 
                 result = await User.findByIdAndUpdate(userId, user, { returnDocument: "after" })
 
-                res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(result) })
+                return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(result) })
                                 
+                break;
+            case "DELETE":
+                result = await User.findByIdAndDelete(userId)
+                return res.json({ response: { status: 200, message: "success" }, data: []})
+
                 break;
             default:
                 error = MethodNotFound(method)
