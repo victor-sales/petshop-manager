@@ -7,13 +7,14 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import { Modal } from "antd";
+import useAuthContext from "../../../hooks/useAuthContext"
 
 export default function SignInForm (props) {
 
     const { setSignUp } = props
     const router = useRouter()
 
-    const [userName, setUserName] = useState("")
+    const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [visible, setVisible] = useState(false)
 
@@ -24,8 +25,8 @@ export default function SignInForm (props) {
                 id={"username"}
                 type={"text"}
                 labelText={"E-mail"}
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
             />
             <Input 
                 required
