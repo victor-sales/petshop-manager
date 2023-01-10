@@ -1,11 +1,9 @@
 import Label from "../Label"
 
-export default function Input (props) {
-    
-    const { id, type, value, onChange, labelText, required } = props
-    
+export default function Input ({id, type, value, onChange, labelText, required, onBlur, onFocus, error }) {
+        
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full mb-2">
             <Label htmlFor={id} text={labelText}/>
             <input
                 required={required}
@@ -14,7 +12,10 @@ export default function Input (props) {
                 type={type}
                 value={value}
                 onChange={onChange}
+                onBlur={onBlur}
+                onFocus={onFocus}
             />
+            {error ? <span className="pt-0.5 text-xs text-red-500 font-semibold">{error}</span> : <></>}
         </div>
     )
 }

@@ -1,34 +1,75 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import LoginButton from "../FormInputs/Buttons/LoginButton";
-import SocialMediaLoginButton from "../FormInputs/Buttons/SocialMediaLoginButton";
-import Input from "../FormInputs/Input";
-import { useRouter } from "next/router";
-import useAuthContext from "../../../hooks/useAuthContext";
-import { useEffect, useState } from "react";
-import useUsersContext from "../../../hooks/useUsersContext";
 
-export default function SignUpForm (props) {
+import Input from "../FormInputs/Input";
+import useAuthContext from "../../../hooks/useAuthContext";
+import { useState } from "react";
+import useUsersContext from "../../../hooks/useUsersContext";
+import LoginButton from "../FormInputs/Buttons/LoginButton";
+
+export default function SignUpForm ({setSignUp}) {
     
-    const { setSignUp } = props
-    const router = useRouter()
     const { handleCreateUserWithEmailPassword } = useAuthContext()
     const { handleCreateUser } = useUsersContext()
 
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
 
-    const createUser = async () => {
+    const [usernameError, setUsernameError] = useState("")
+    const [emailError, setEmailError] = useState("")
+    const [passwordError, setPasswordError] = useState("")
+    const [confirmPasswordError, setConfirmPasswordError] = useState("")
+
+    async function createUser () {
+        const valid = [checkUsernameValidity(), checkEmailValidity(), checkPasswordValidity(), checkPasswordEquality()].every(e => e)
+        
+        if (!valid) {
+            return false
+        }
+
         const firebaseUser = await handleCreateUserWithEmailPassword(email, password)
-        console.log(firebaseUser)
-        const user = await handleCreateUser(firebaseUser.accessToken, username, firebaseUser.email)
-        console.log(user)
+        
+        if (firebaseUser) {
+            await handleCreateUser(firebaseUser.accessToken, username, firebaseUser.email)
+        }
     }
 
-    useEffect(() => {
-        console.log(username)
-    }, [username])
+    function checkUsernameValidity () {
+        if (!username) {
+            setUsernameError("Nome não pode ser vazio.")
+            return false
+        }
+
+        return true
+    }
+
+    function checkEmailValidity () {
+        if (!email) {
+            setEmailError("Email não pode ser vazio")
+        }
+        return true
+    }
+
+    function checkPasswordValidity () {
+        if (password.length < 6) {
+            setPasswordError("Sua senha precisa conter pelo menos 6 caractéres.")
+            return false
+        } 
+
+        setPasswordError("")
+        return true
+    }
+
+    function checkPasswordEquality () {
+        if (confirmPassword !== password) {
+            setConfirmPasswordError("As senhas precisam ser iguais.")
+            return false
+        } 
+
+        setConfirmPasswordError("")
+        return true
+        
+    }
     
     return ( 
         <form>
@@ -36,40 +77,45 @@ export default function SignUpForm (props) {
                 required
                 id={"name"}
                 type={"text"}
-                labelText={"Nome"}
+                labelText={"Nome*"}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                error={usernameError}
+                
             />
             <Input 
                 required
                 id={"email"}
                 type={"text"}
-                labelText={"E-mail"}
+                labelText={"E-mail*"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                error={emailError}
             />
             <Input 
                 required
                 id={"password"}
                 type={"password"}
-                labelText={"Senha"}
+                labelText={"Senha*"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                error={passwordError}
             />
-            {/* <Input 
+            <Input 
                 required
-                id={"password"}
+                id={"confirmPassword"}
                 type={"password"}
-                labelText={"Confirmar senha"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            /> */}
+                labelText={"Confirmar senha*"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={confirmPasswordError}
+                onBlur={checkPasswordEquality}
+            />
             <section className="flex flex-col gap-2">
                 <LoginButton 
-                    onClick={() => createUser()}
+                    onClick={createUser}
                     text="Cadastrar-me"/>
-                <span onClick={() => {console.log("teste"); setSignUp(false)}} className="text-sm text-center underline">Já possuo uma conta. Entrar</span>
-               
+                <span onClick={() => setSignUp(false)} className="text-sm text-center underline">Já possuo uma conta. Entrar</span>
             </section>
         </form>
     )

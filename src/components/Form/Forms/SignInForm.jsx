@@ -8,15 +8,27 @@ import { useRouter } from "next/router";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import { Modal } from "antd";
 import useAuthContext from "../../../hooks/useAuthContext"
+import { AuthProviders } from "../../../utils/Enums";
+import useUsersContext from "../../../hooks/useUsersContext";
 
-export default function SignInForm (props) {
+export default function SignInForm ({setSignUp}) {
 
-    const { setSignUp } = props
     const router = useRouter()
+    const { handleCreateUserWithProvider } = useAuthContext()
+    const { handleCreateUser } = useUsersContext()
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [visible, setVisible] = useState(false)
+
+    async function createUserWithProvider (authProvider) {
+        
+        const firebaseUser = await handleCreateUserWithProvider(authProvider)
+        
+        if (firebaseUser) {
+            await handleCreateUser(firebaseUser.accessToken, firebaseUser.displayName, firebaseUser.email)
+        }
+    }
 
     return (
         <form>
@@ -44,7 +56,7 @@ export default function SignInForm (props) {
                 <SocialMediaLoginButton 
                     socialMediaName={"Google"} 
                     socialMediaIcon={<FontAwesomeIcon icon={faGoogle} />} 
-                    onClick={() => console.log('teste')}/>
+                    onClick={() => createUserWithProvider(AuthProviders.GOOGLE)}/>
                 <SocialMediaLoginButton 
                     socialMediaName={"Facebook"} 
                     socialMediaIcon={<FontAwesomeIcon icon={faFacebook} />} 
