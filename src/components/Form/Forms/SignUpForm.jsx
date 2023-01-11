@@ -1,13 +1,14 @@
 
 import Input from "../FormInputs/Input";
 import useAuthContext from "../../../hooks/useAuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useUsersContext from "../../../hooks/useUsersContext";
 import LoginButton from "../FormInputs/Buttons/LoginButton";
+import BannerError from "../../BannerError/BannerError";
 
 export default function SignUpForm ({setSignUp}) {
     
-    const { handleCreateUserWithEmailPassword } = useAuthContext()
+    const { handleCreateUserWithEmailPassword , authMessage, setAuthMessage, authMessageType, setAuthMessageType} = useAuthContext()
     const { handleCreateUser } = useUsersContext()
 
     const [username, setUsername] = useState("")
@@ -70,6 +71,12 @@ export default function SignUpForm ({setSignUp}) {
         return true
         
     }
+
+    useEffect(() => {
+        setAuthMessage("")
+        setAuthMessageType("")
+        //eslint-disable-next-line
+    }, [setSignUp])
     
     return ( 
         <form>
@@ -111,7 +118,8 @@ export default function SignUpForm ({setSignUp}) {
                 error={confirmPasswordError}
                 onBlur={checkPasswordEquality}
             />
-            <section className="flex flex-col gap-2">
+            <BannerError type={authMessageType} setType={setAuthMessageType} message={authMessage} setMessage={setAuthMessage}/>
+            <section className="flex flex-col gap-2 mt-2">
                 <LoginButton 
                     onClick={createUser}
                     text="Cadastrar-me"/>

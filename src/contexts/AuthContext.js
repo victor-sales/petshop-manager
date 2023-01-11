@@ -1,15 +1,20 @@
 import { createContext, useEffect, useState } from "react"
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
 import firebase from "../utils/FirebaseConfig"
 import { FirebaseError } from "firebase/app"
 import { AuthProviders, MessageTypes } from "../utils/Enums"
+import Cookies from "js-cookie"
+import { useRouter } from "next/router"
 
 const AuthContext = createContext()
 
 export function AuthProvider({children}) {
 
+    const Router = useRouter()
+
     const [authMessage, setAuthMessage] = useState("")
     const [authMessageType, setAuthMessageType] = useState("")
+    const [token, setToken] = useState(null)
 
     function FirebaseErrorHandler (error) {
 
@@ -20,13 +25,19 @@ export function AuthProvider({children}) {
                 setAuthMessage("E-mail já está em uso.")
                 break;
             case "auth/wrong-password":
-                setAuthMessage("Senha incorreta.")
+                setAuthMessage("E-mail ou Senha incorretos.")
                 break;
             case "auth/network-request-failed":
                 setAuthMessage("Erro na rede. Verifique sua conexão com a internet.")
                 break;
             case "auth/weak-password":
                 setAuthMessage("Senha fraca. Sua senha precisa conter pelo menos 6 caractéres.")
+                break;
+            case "auth/invalid-email":
+                setAuthMessage("Este e-mail é inválido.")
+                break;
+            case "auth/user-not-found": 
+                setAuthMessage("Usuário não encontrado")
                 break;
             default:
                 setAuthMessage("Erro interno. Contate o suporte ou tente novamente mais tarde.")
@@ -36,7 +47,34 @@ export function AuthProvider({children}) {
         return false
     }
 
-    async function handleCreateUserWithProvider (authProvider) {
+    function manageUser (firebaseUser) {
+        
+        if (firebaseUser) setToken(firebaseUser.accessToken)
+        else setToken(null)
+    }
+
+    function manageSession (firebaseUser) {
+        if (!Cookies.get("logged-in")) {
+            
+            if (firebaseUser) {
+
+                Cookies.set("logged-in", true)
+            } else {
+                
+                Cookies.remove("logged-in")
+            }
+        }
+        
+    }
+
+    function handleUserAndSession (firebaseUser) {
+        manageUser(firebaseUser)
+        manageSession(firebaseUser)
+
+        Router.push("/")
+    }
+
+    async function handleConnectUserWithProvider (authProvider) {
         let provider = null
         
         if (authProvider === AuthProviders.GOOGLE) {
@@ -71,13 +109,58 @@ export function AuthProvider({children}) {
         }
     }
 
+    async function handleSignInWithEmailPassword (email, password) {
+        
+        try {
+            const auth = getAuth()
+
+            const credentials = await signInWithEmailAndPassword(auth, email, password)
+            
+            handleUserAndSession(credentials.user)
+
+        } catch (error) {
+            FirebaseErrorHandler(error)
+        }
+    }
+
+    async function handleSignOut () {
+       
+        try {
+            const auth = getAuth()
+
+            await signOut(auth)
+
+        } catch (error) {
+            FirebaseErrorHandler(error)
+        }
+        
+    }
+
+    async function checkIfUserIsLoggedIn() {
+        
+        try {
+            const auth = getAuth()
+            onAuthStateChanged(auth, handleUserAndSession)
+
+        } catch (error) {
+            FirebaseErrorHandler(error)
+        }
+    }
+
+    useEffect(() => {
+        // checkIfUserIsLoggedIn()
+        //eslint-disable-next-line
+    }, [])
+
     return ( 
         <AuthContext.Provider
             value={{
                 handleCreateUserWithEmailPassword,
-                handleCreateUserWithProvider,
-                authMessage,
-                authMessageType
+                handleConnectUserWithProvider,
+                handleSignInWithEmailPassword,
+                authMessage, setAuthMessage,
+                authMessageType, setAuthMessageType,
+                token
             }}
         >
             { children }

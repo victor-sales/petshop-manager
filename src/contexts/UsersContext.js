@@ -1,10 +1,15 @@
-import { createContext, useEffect } from "react"
+import { createContext, useEffect, useState } from "react"
 import { v4 as uuid } from 'uuid';
-import { APIMethods } from "../utils/Enums";
+import { APIMethods, MessageTypes } from "../utils/Enums";
 
 const UsersContext = createContext()
 
 export function UsersProvider({children}) {
+
+    const [userMessage, setUserMessage] = useState("")
+    const [userMessageType, setUserMessageType] = useState("")
+    const [counter, setCounter] = useState(5)
+    const [startTimer, setStartTimer] = useState(false)
 
     const handleRequest = async (url, method, body, accessToken) => {
         
@@ -32,18 +37,50 @@ export function UsersProvider({children}) {
         const method = APIMethods.POST
         const body = user
 
-        console.log(user)
         try {
-            
             let response = await handleRequest(url, method, body, accessToken)
-
             console.log(response)
-            return response
+            if (response.response.status === 201) {
+                startCounterToRedirect()
+                setUserMessageType(MessageTypes.SUCCESS)
+                setUserMessage(`Usuário criado com sucesso. Você sera redirecionado para o login em: ${counter}s`)
+                return response
+
+            } else {
+                console.log(JSON.stringify(response))
+                throw new Error(JSON.stringify(response))
+            }
 
         } catch (error) {
-            console.log(error)
+            console.error(JSON.parse(error))
+            console.error(error)
+            // setUserMessageType(MessageTypes.ERROR)
+            // setUserMessage(error.message)
+            // return false
         }
     }
+
+    const startCounterToRedirect = () => setInterval(() => setCounter(counter - 1), 1000);
+
+    useEffect(() => {
+        if (counter < 1) {
+            clearInterval(startCounterToRedirect)
+            setCounter(5)
+        }
+        //eslint-disable-next-line
+    }, [counter])
+
+    // useEffect(() => {
+    //     let timer = null
+    //     if (startTimer) {
+
+    //     } 
+    // }, [startTimer, counter])
+
+    useEffect(() => {
+        console.log(counter)
+    }, [counter])
+    
 
     return ( 
         <UsersContext.Provider
