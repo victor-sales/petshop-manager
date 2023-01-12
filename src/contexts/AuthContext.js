@@ -39,6 +39,9 @@ export function AuthProvider({children}) {
             case "auth/user-not-found": 
                 setAuthMessage("Usuário não encontrado")
                 break;
+            case "auth/popup-closed-by-user": 
+                setAuthMessage("A janela foi fechada antes da conclusão do LOGIN")
+                break
             default:
                 setAuthMessage("Erro interno. Contate o suporte ou tente novamente mais tarde.")
                 break;
@@ -58,7 +61,7 @@ export function AuthProvider({children}) {
             
             if (firebaseUser) {
 
-                Cookies.set("logged-in", true)
+                Cookies.set("logged-in", true), { expires: 7 }
             } else {
                 
                 Cookies.remove("logged-in")
@@ -72,6 +75,7 @@ export function AuthProvider({children}) {
         manageSession(firebaseUser)
 
         Router.push("/")
+        
     }
 
     async function handleConnectUserWithProvider (authProvider) {
@@ -83,15 +87,21 @@ export function AuthProvider({children}) {
             provider = new FacebookAuthProvider()
         }
 
+        provider.setCustomParameters({
+            prompt: "select_account"
+        })
+
         const auth = getAuth()
 
         try {
             const credentials = await signInWithPopup(auth, provider)
-
-            return credentials.user
+            
+            if (credentials) return credentials.user
             
         } catch (error) {
             FirebaseErrorHandler(error)
+            return false
+            
         }
     }
 
@@ -158,6 +168,7 @@ export function AuthProvider({children}) {
                 handleCreateUserWithEmailPassword,
                 handleConnectUserWithProvider,
                 handleSignInWithEmailPassword,
+                handleUserAndSession,
                 authMessage, setAuthMessage,
                 authMessageType, setAuthMessageType,
                 token

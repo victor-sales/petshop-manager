@@ -14,24 +14,60 @@ import BannerError from "../../BannerError/BannerError";
 
 export default function SignInForm ({setSignUp}) {
 
-    const router = useRouter()
-    const { handleConnectUserWithProvider, handleSignInWithEmailPassword, authMessage, setAuthMessage, authMessageType, setAuthMessageType } = useAuthContext()
-    const { handleCreateUser } = useUsersContext()
+    const Router = useRouter()
+    const { handleConnectUserWithProvider, handleSignInWithEmailPassword, handleUserAndSession, authMessage, setAuthMessage, authMessageType, setAuthMessageType } = useAuthContext()
+    const { handleCreateUser, handleGetUserById } = useUsersContext()
 
-    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [visible, setVisible] = useState(false)
+   
+    const [emailError, setEmailError] = useState("")
+    const [passwordError, setPasswordError] = useState("")
 
     async function connectUserWithProvider (authProvider) {
-        // 
+ 
         const firebaseUser = await handleConnectUserWithProvider(authProvider)
+        
+        if (firebaseUser) {
+            const user = await handleGetUserById(firebaseUser.accessToken, firebaseUser.uid)
+            
+            if (!user) {
+                await handleCreateUser(firebaseUser.accessToken, firebaseUser.uid, firebaseUser.displayName, firebaseUser.email)
+                
+                handleUserAndSession(firebaseUser)
 
-        if (!firebaseUser) {
-            await handleCreateUser(firebaseUser.accessToken, firebaseUser.displayName, firebaseUser.email)
-        } else {
-            //logar usuário
-            // redirect to login
+            } else {
+                Router.push("/")
+            }
         }
+    }
+
+    async function handleConnectWithEmailPassword () {
+        
+        const valid = [checkEmailValidity(), checkPasswordValidity()].every(e => e)
+        
+        if (!valid) {
+            return false
+        }
+ 
+        await handleSignInWithEmailPassword(email, password)
+    }
+
+    function checkEmailValidity () {
+        if (!email) {
+            setEmailError("Email não pode ser vazio")
+            return false
+        }
+        return true
+    }
+
+    function checkPasswordValidity () {
+        if (!password) {
+            setPasswordError("Senha não pode ser vazia")
+            return false
+        }
+        return true
     }
 
     useEffect(() => {
@@ -44,11 +80,12 @@ export default function SignInForm ({setSignUp}) {
         <form>
             <Input 
                 required
-                id={"username"}
+                id={"email"}
                 type={"text"}
                 labelText={"E-mail"}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={emailError}
             />
             <Input 
                 required
@@ -57,11 +94,12 @@ export default function SignInForm ({setSignUp}) {
                 labelText={"Senha"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                error={passwordError}
             />
             <BannerError type={authMessageType} setType={setAuthMessageType} message={authMessage} setMessage={setAuthMessage}/>
             <section className="flex flex-col gap-2 mt-2">
                 <LoginButton 
-                    onClick={() => handleSignInWithEmailPassword(username, password)}
+                    onClick={handleConnectWithEmailPassword}
                     text="Entrar"/>
                 <span onClick={() => setSignUp(true)} className="text-sm text-center underline">Não possui cadastro? Criar uma conta</span>                
                 <SocialMediaLoginButton 

@@ -31,7 +31,7 @@ export default function SignUpForm ({setSignUp}) {
         const firebaseUser = await handleCreateUserWithEmailPassword(email, password)
         
         if (firebaseUser) {
-            await handleCreateUser(firebaseUser.accessToken, username, firebaseUser.email)
+            await handleCreateUser(firebaseUser.accessToken, firebaseUser.uid, username, firebaseUser.email)
         }
     }
 
@@ -47,6 +47,7 @@ export default function SignUpForm ({setSignUp}) {
     function checkEmailValidity () {
         if (!email) {
             setEmailError("Email não pode ser vazio")
+            return false
         }
         return true
     }

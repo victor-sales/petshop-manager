@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react"
 import { v4 as uuid } from 'uuid';
 import { APIMethods, MessageTypes } from "../utils/Enums";
@@ -6,20 +7,22 @@ const UsersContext = createContext()
 
 export function UsersProvider({children}) {
 
+    const Router = useRouter()
     const [userMessage, setUserMessage] = useState("")
     const [userMessageType, setUserMessageType] = useState("")
-    const [counter, setCounter] = useState(5)
-    const [startTimer, setStartTimer] = useState(false)
 
-    const handleRequest = async (url, method, body, accessToken) => {
+    const handleRequest = async (accessToken, url, method, body) => {
         
-        const options = {
+        let options = {
             headers: { 
                 "access-token": accessToken 
             },
-            method: method,
-            body: JSON.stringify(body)
+            method: method
         }
+
+        if (body) {
+            options = {...options, body: JSON.stringify(body)}
+        } 
 
         let response =  await fetch(url, options)
         response = await response.json()
@@ -28,9 +31,8 @@ export function UsersProvider({children}) {
 
     }
 
-    const handleCreateUser = async (accessToken, username, email, profile = "customer", role = "customer") => {
+    const handleCreateUser = async (accessToken, userId, username, email, profile = "customer", role = "customer") => {
         
-        const userId = uuid()
         const user = { id: userId, user_name: username, email: email, phone_number: "", profile: profile, role: role }
         
         const url = `/api/users/${userId}`
@@ -38,54 +40,55 @@ export function UsersProvider({children}) {
         const body = user
 
         try {
-            let response = await handleRequest(url, method, body, accessToken)
-            console.log(response)
-            if (response.response.status === 201) {
-                startCounterToRedirect()
+            let response = await handleRequest(accessToken, url, method, body)
+
+            if (response.response?.status === 201) {
+                
                 setUserMessageType(MessageTypes.SUCCESS)
-                setUserMessage(`Usuário criado com sucesso. Você sera redirecionado para o login em: ${counter}s`)
+                setUserMessage(`Usuário criado com sucesso. Retorne à página de SigIn para acessar a aplicação`)
+                console.log(Router)//Router.push("/")
                 return response
 
             } else {
-                console.log(JSON.stringify(response))
                 throw new Error(JSON.stringify(response))
             }
 
         } catch (error) {
-            console.error(JSON.parse(error))
-            console.error(error)
-            // setUserMessageType(MessageTypes.ERROR)
-            // setUserMessage(error.message)
-            // return false
+            let e = JSON.parse(error.message)
+            setUserMessageType(MessageTypes.ERROR)
+            setUserMessage(e.message)
+            return false
         }
     }
+ 
+    async function handleGetUserById (accessToken, userId) {
+        const url = `/api/users/${userId}`
+        const method = APIMethods.GET
 
-    const startCounterToRedirect = () => setInterval(() => setCounter(counter - 1), 1000);
-
-    useEffect(() => {
-        if (counter < 1) {
-            clearInterval(startCounterToRedirect)
-            setCounter(5)
+        try {
+            let response = await handleRequest(accessToken, url, method)
+        
+            if (response.response?.status === 200) {
+                return response.data
+            } else {
+                throw new Error(JSON.stringify(response))
+            }
+                       
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setUserMessageType(MessageTypes.ERROR)
+            setUserMessage(e.message)
+            return false
         }
-        //eslint-disable-next-line
-    }, [counter])
-
-    // useEffect(() => {
-    //     let timer = null
-    //     if (startTimer) {
-
-    //     } 
-    // }, [startTimer, counter])
-
-    useEffect(() => {
-        console.log(counter)
-    }, [counter])
-    
+    }
 
     return ( 
         <UsersContext.Provider
             value={{
-                handleCreateUser
+                handleCreateUser,
+                handleGetUserById,
+                userMessage,
+                userMessageType
             }}
         >
             { children }

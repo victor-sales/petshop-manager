@@ -159,16 +159,16 @@ export default function Usuarios(props) {
     const handleAddUser = async () => {
         const user = {
             id: "a731f84e-abdf-4326-bd52-720756946258",
-            user_name: "Teste da silva editado",
-            email: "teste.silva22@email.com",
-            phone_number: "1234565654",
-            profile: "customer",
-            role: "customer"
+            user_name: null,
+            email: null,
+            phone_number: null,
+            profile: null,
+            role: null
         }
 
         // const user = {"_id":"a731f84e-abdf-4326-bd52-720756746259","user_name":"Teste da silva editado novamente","email":"teste.silva@email.com","phone_number":"1234565654","profile":"customer","role":"customer",}
 
-        let response = await fetch(`/api/users/${user.id}`, { method: "PUT", body: JSON.stringify(user) })
+        let response = await fetch(`/api/users/${user.id}`, { method: "GET", body: JSON.stringify(user) })
         console.log(response)
 
         response = await response.json()
