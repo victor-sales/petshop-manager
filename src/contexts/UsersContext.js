@@ -46,7 +46,7 @@ export function UsersProvider({children}) {
                 
                 setUserMessageType(MessageTypes.SUCCESS)
                 setUserMessage(`Usuário criado com sucesso. Retorne à página de SigIn para acessar a aplicação`)
-                console.log(Router)//Router.push("/")
+
                 return response
 
             } else {

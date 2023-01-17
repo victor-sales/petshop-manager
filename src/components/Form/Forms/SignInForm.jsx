@@ -10,12 +10,12 @@ import { Modal } from "antd";
 import useAuthContext from "../../../hooks/useAuthContext"
 import { AuthProviders } from "../../../utils/Enums";
 import useUsersContext from "../../../hooks/useUsersContext";
-import BannerError from "../../BannerError/BannerError";
+import BannerMessage from "../../BannerMessage/BannerMessage";
 
 export default function SignInForm ({setSignUp}) {
 
     const Router = useRouter()
-    const { handleConnectUserWithProvider, handleSignInWithEmailPassword, handleUserAndSession, authMessage, setAuthMessage, authMessageType, setAuthMessageType } = useAuthContext()
+    const { handleConnectUserWithProvider, handleSignInWithEmailPassword, handleUserAndSession, handleResetPassword, authMessage, setAuthMessage, authMessageType, setAuthMessageType, emailSent, setEmailSent, loadingEmailSent } = useAuthContext()
     const { handleCreateUser, handleGetUserById } = useUsersContext()
 
     const [email, setEmail] = useState("")
@@ -35,7 +35,7 @@ export default function SignInForm ({setSignUp}) {
             if (!user) {
                 await handleCreateUser(firebaseUser.accessToken, firebaseUser.uid, firebaseUser.displayName, firebaseUser.email)
                 
-                handleUserAndSession(firebaseUser)
+                handleUserAndSession(firebaseUser, true)
 
             } else {
                 Router.push("/")
@@ -52,6 +52,12 @@ export default function SignInForm ({setSignUp}) {
         }
  
         await handleSignInWithEmailPassword(email, password)
+    }
+
+    async function handleGetNewPassword () {
+        await handleResetPassword(email); 
+        setEmail(""); 
+        setVisible(!visible)
     }
 
     function checkEmailValidity () {
@@ -96,7 +102,7 @@ export default function SignInForm ({setSignUp}) {
                 onChange={(e) => setPassword(e.target.value)}
                 error={passwordError}
             />
-            <BannerError type={authMessageType} setType={setAuthMessageType} message={authMessage} setMessage={setAuthMessage}/>
+            <BannerMessage type={authMessageType} setType={setAuthMessageType} message={authMessage} setMessage={setAuthMessage}/>
             <section className="flex flex-col gap-2 mt-2">
                 <LoginButton 
                     onClick={handleConnectWithEmailPassword}
@@ -112,14 +118,18 @@ export default function SignInForm ({setSignUp}) {
                     onClick={() => createUserWithProvider(AuthProviders.FACEBOOK)}/> */}
                 <span onClick={() => setVisible(true)} className="text-sm text-center underline">Esqueci minha senha</span>
             </section>
+
             <Modal
                 key={"forgot_pw"}
-                onOk={() => setVisible(false)}
+                onOk={() => handleGetNewPassword()}
+                onCancel={() => { setEmail(""); setVisible(false) }}
                 okText="Enviar"
                 cancelText="Fechar"
-                title="Modal"
+                title="Esqueci minha senha"
+
+                confirmLoading={loadingEmailSent}
                 open={visible}>
-                <ForgotPasswordForm />
+                <ForgotPasswordForm email={email} setEmail={setEmail}/>
             </Modal>
         </form>
     )

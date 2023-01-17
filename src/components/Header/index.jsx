@@ -1,15 +1,19 @@
 import { Modal } from "antd";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import useAuthContext from "../../hooks/useAuthContext";
 import ConfirmSignOutText from "../ConfirmSignOutText";
 import ChangePasswordForm from "../Form/Forms/ChangePasswordForm";
 import HeaderLink from "./HeaderLink";
 
 export default function Header() {
+
+    const { handleSignOut } = useAuthContext()
+    const router = useRouter();
+
     const [navbar, setNavbar] = useState(false);
     const [changePassword, setChangePassword] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
-    const router = useRouter();
 
     return (
         <nav className="w-full bg-white border-b border-gray-300 shadow-md">
@@ -111,11 +115,12 @@ export default function Header() {
                 </div>
             </div>
             <Modal
-                key={"new-specie"}
-                onOk={() => setModalVisible(false)}
+                key={"log-out"}
+                onOk={() => handleSignOut()}
+                onCancel={() => setModalVisible(false)}
                 okText="Confirmar"
                 cancelText="Fechar"
-                title="Modal"
+                title="Sair"
                 open={modalVisible}>
                     <ConfirmSignOutText />
                 </Modal>

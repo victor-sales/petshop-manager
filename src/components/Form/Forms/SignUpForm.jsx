@@ -4,7 +4,7 @@ import useAuthContext from "../../../hooks/useAuthContext";
 import { useEffect, useState } from "react";
 import useUsersContext from "../../../hooks/useUsersContext";
 import LoginButton from "../FormInputs/Buttons/LoginButton";
-import BannerError from "../../BannerError/BannerError";
+import BannerMessage from "../../BannerMessage/BannerMessage";
 
 export default function SignUpForm ({setSignUp}) {
     
@@ -119,7 +119,7 @@ export default function SignUpForm ({setSignUp}) {
                 error={confirmPasswordError}
                 onBlur={checkPasswordEquality}
             />
-            <BannerError type={authMessageType} setType={setAuthMessageType} message={authMessage} setMessage={setAuthMessage}/>
+            <BannerMessage type={authMessageType} setType={setAuthMessageType} message={authMessage} setMessage={setAuthMessage}/>
             <section className="flex flex-col gap-2 mt-2">
                 <LoginButton 
                     onClick={createUser}

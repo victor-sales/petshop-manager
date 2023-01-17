@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { MessageTypes } from "../../utils/Enums";
 
-export default function BannerError ({type, setType, message, setMessage}) {
+export default function BannerMessage ({type, setType, message, setMessage}) {
     
     const [bgColor, setBgColor] = useState("")
     const [textColor, setTextColor] = useState("")

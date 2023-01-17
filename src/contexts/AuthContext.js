@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "firebase/auth"
 import firebase from "../utils/FirebaseConfig"
 import { FirebaseError } from "firebase/app"
 import { AuthProviders, MessageTypes } from "../utils/Enums"
@@ -15,6 +15,9 @@ export function AuthProvider({children}) {
     const [authMessage, setAuthMessage] = useState("")
     const [authMessageType, setAuthMessageType] = useState("")
     const [token, setToken] = useState(null)
+
+    const [emailSent, setEmailSent] = useState(false)
+    const [loadingEmailSent, setLoadingEmailSent] = useState(false)
 
     function FirebaseErrorHandler (error) {
 
@@ -52,29 +55,37 @@ export function AuthProvider({children}) {
 
     function manageUser (firebaseUser) {
         
-        if (firebaseUser) setToken(firebaseUser.accessToken)
-        else setToken(null)
+        if (firebaseUser) {
+            setToken(firebaseUser.accessToken)
+            return true
+        } 
+        setToken(null)
+        return false
     }
 
-    function manageSession (firebaseUser) {
+    function manageSession (firebaseUser, exit) {
         if (!Cookies.get("logged-in")) {
-            
             if (firebaseUser) {
-
-                Cookies.set("logged-in", true), { expires: 7 }
+                Cookies.set("logged-in", "true", { expires: 7 })
+                return true
             } else {
-                
                 Cookies.remove("logged-in")
+                return false
+            }
+        } else {
+            if (exit) { 
+                Cookies.remove("logged-in")
+                return false
             }
         }
-        
     }
 
-    function handleUserAndSession (firebaseUser) {
-        manageUser(firebaseUser)
-        manageSession(firebaseUser)
+    function handleUserAndSession (firebaseUser, isLogin = false, exit = false) {
 
-        Router.push("/")
+        manageUser(firebaseUser)
+        manageSession(firebaseUser, exit)
+        console.log("teste")
+        if (firebaseUser && isLogin) Router.push("/")
         
     }
 
@@ -126,7 +137,7 @@ export function AuthProvider({children}) {
 
             const credentials = await signInWithEmailAndPassword(auth, email, password)
             
-            handleUserAndSession(credentials.user)
+            handleUserAndSession(credentials.user, true)
 
         } catch (error) {
             FirebaseErrorHandler(error)
@@ -137,13 +148,31 @@ export function AuthProvider({children}) {
        
         try {
             const auth = getAuth()
-
+            
             await signOut(auth)
-
+            handleUserAndSession(null, false, true)
         } catch (error) {
             FirebaseErrorHandler(error)
         }
         
+    }
+
+    async function handleResetPassword (email) {
+        try {
+            setLoadingEmailSent(true)
+            const auth = getAuth()
+            
+            await sendPasswordResetEmail(auth, email)
+            setEmailSent(true)
+            setLoadingEmailSent(false)
+            setAuthMessageType(MessageTypes.SUCCESS)
+            setAuthMessage(`Um link para redefinição de senha foi enviado para ${email}`)
+        } catch (error) {
+            FirebaseErrorHandler(error)
+        }
+
+        setLoadingEmailSent(false)
+
     }
 
     async function checkIfUserIsLoggedIn() {
@@ -158,7 +187,7 @@ export function AuthProvider({children}) {
     }
 
     useEffect(() => {
-        // checkIfUserIsLoggedIn()
+        checkIfUserIsLoggedIn()
         //eslint-disable-next-line
     }, [])
 
@@ -169,8 +198,12 @@ export function AuthProvider({children}) {
                 handleConnectUserWithProvider,
                 handleSignInWithEmailPassword,
                 handleUserAndSession,
+                handleSignOut,
+                handleResetPassword,
                 authMessage, setAuthMessage,
                 authMessageType, setAuthMessageType,
+                emailSent, setEmailSent,
+                loadingEmailSent,
                 token
             }}
         >
