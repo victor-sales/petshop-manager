@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 import useUsersContext from "../../../hooks/useUsersContext";
 import LoginButton from "../FormInputs/Buttons/LoginButton";
 import BannerMessage from "../../BannerMessage/BannerMessage";
+import { RequestActionType } from "../../../utils/Enums";
 
 export default function SignUpForm ({setSignUp}) {
     
-    const { handleCreateUserWithEmailPassword , authMessage, setAuthMessage, authMessageType, setAuthMessageType} = useAuthContext()
-    const { handleCreateUser } = useUsersContext()
+    const { handleCreateUserWithEmailPassword} = useAuthContext()
+    const { handleCreateUser, userMessageType, setUserMessageType, userMessage, setUserMessage } = useUsersContext()
 
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
@@ -28,11 +29,9 @@ export default function SignUpForm ({setSignUp}) {
             return false
         }
 
-        const firebaseUser = await handleCreateUserWithEmailPassword(email, password)
+        await handleCreateUser(null, RequestActionType.SIGNUP, username, email, password)
         
-        if (firebaseUser) {
-            await handleCreateUser(firebaseUser.accessToken, firebaseUser.uid, username, firebaseUser.email)
-        }
+        clearFields()
     }
 
     function checkUsernameValidity () {
@@ -69,13 +68,19 @@ export default function SignUpForm ({setSignUp}) {
         } 
 
         setConfirmPasswordError("")
-        return true
-        
+        return true   
+    }
+
+    function clearFields () {
+        setUsernameError("")
+        setEmailError("")
+        setPasswordError("")
+        setConfirmPasswordError("")
     }
 
     useEffect(() => {
-        setAuthMessage("")
-        setAuthMessageType("")
+        setUserMessageType("")
+        setUserMessage("")
         //eslint-disable-next-line
     }, [setSignUp])
     
@@ -119,7 +124,7 @@ export default function SignUpForm ({setSignUp}) {
                 error={confirmPasswordError}
                 onBlur={checkPasswordEquality}
             />
-            <BannerMessage type={authMessageType} setType={setAuthMessageType} message={authMessage} setMessage={setAuthMessage}/>
+            <BannerMessage type={userMessageType} setType={setUserMessageType} message={userMessage} setMessage={setUserMessage}/>
             <section className="flex flex-col gap-2 mt-2">
                 <LoginButton 
                     onClick={createUser}

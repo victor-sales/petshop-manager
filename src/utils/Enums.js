@@ -15,3 +15,7 @@ export const AuthProviders = {
     FACEBOOK: "facebook.com",
     GOOGLE: "google.com"
 }
+
+export const RequestActionType = {
+    SIGNUP: "SIGNUP"
+}

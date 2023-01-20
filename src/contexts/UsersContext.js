@@ -7,15 +7,18 @@ const UsersContext = createContext()
 
 export function UsersProvider({children}) {
 
+    const SIGNUP = "SIGNUP"
     const Router = useRouter()
     const [userMessage, setUserMessage] = useState("")
     const [userMessageType, setUserMessageType] = useState("")
+    const [loadingUsers, setLoadingUsers] = useState(false)
 
-    const handleRequest = async (accessToken, url, method, body) => {
+    const handleRequest = async (accessToken, url, method, body, actionType) => {
         
         let options = {
             headers: { 
-                "access-token": accessToken 
+                "access-token": accessToken,
+                "action-type": actionType
             },
             method: method
         }
@@ -24,26 +27,28 @@ export function UsersProvider({children}) {
             options = {...options, body: JSON.stringify(body)}
         } 
 
-        let response =  await fetch(url, options)
+        let response = await fetch(url, options)
+        
         response = await response.json()
 
         return response
 
     }
 
-    const handleCreateUser = async (accessToken, userId, username, email, profile = "customer", role = "customer") => {
+    const handleCreateUser = async (accessToken, actionType, username, email, password = null, profile = "customer", role = "customer", isProvider = false) => {
+        const uid = uuid()
         
-        const user = { id: userId, user_name: username, email: email, phone_number: "", profile: profile, role: role }
+        const user = { id: uid, user_name: username, email: email, password: password, phone_number: "", profile: profile, role: role, isProvider: isProvider }
         
-        const url = `/api/users/${userId}`
+        const url = `/api/users/${uid}`
         const method = APIMethods.POST
         const body = user
 
         try {
-            let response = await handleRequest(accessToken, url, method, body)
+            let response = await handleRequest(accessToken, url, method, body, actionType)
 
             if (response.response?.status === 201) {
-                
+                console.log(response)
                 setUserMessageType(MessageTypes.SUCCESS)
                 setUserMessage(`Usuário criado com sucesso. Retorne à página de SigIn para acessar a aplicação`)
 
@@ -56,7 +61,7 @@ export function UsersProvider({children}) {
         } catch (error) {
             let e = JSON.parse(error.message)
             setUserMessageType(MessageTypes.ERROR)
-            setUserMessage(e.message)
+            setUserMessage(e.message + ": " + e.details ?? "")
             return false
         }
     }
@@ -82,13 +87,42 @@ export function UsersProvider({children}) {
         }
     }
 
+    async function handleGetUsers (accessToken) {
+        setLoadingUsers(true)
+
+        const url = `/api/users`
+        const method = APIMethods.GET
+
+        try {
+            let response = await handleRequest(accessToken, url, method)
+        
+            if (response.response?.status === 200) {
+                setLoadingUsers(false)
+                return response.data
+            } else {
+                setLoadingUsers(false)
+                throw new Error(JSON.stringify(response))
+            }
+                       
+        } catch (error) {
+            setLoadingUsers(false)
+            let e = JSON.parse(error.message)
+            setUserMessageType(MessageTypes.ERROR)
+            setUserMessage(e.message)
+            return false
+        }
+
+    }
+
     return ( 
         <UsersContext.Provider
             value={{
                 handleCreateUser,
                 handleGetUserById,
-                userMessage,
-                userMessageType
+                handleGetUsers,
+                userMessage, setUserMessage,
+                userMessageType, setUserMessageType,
+                loadingUsers
             }}
         >
             { children }
