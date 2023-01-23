@@ -29,7 +29,7 @@ export default function SignUpForm ({setSignUp}) {
             return false
         }
 
-        await handleCreateUser(null, RequestActionType.SIGNUP, username, email, password)
+        await handleCreateUser(null, RequestActionType.SIGNUP, null, username, email, password)
         
         clearFields()
     }

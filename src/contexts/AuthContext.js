@@ -53,10 +53,11 @@ export function AuthProvider({children}) {
         return false
     }
 
-    function manageUser (firebaseUser) {
-        
+    async function manageUser (firebaseUser) {
+        const idToken = await firebaseUser.getIdTokenResult(true)
+
         if (firebaseUser) {
-            setToken(firebaseUser.accessToken)
+            setToken(idToken.token)
             return true
         } 
         setToken(null)
@@ -80,11 +81,9 @@ export function AuthProvider({children}) {
         }
     }
 
-    function handleUserAndSession (firebaseUser, isLogin = false, exit = false) {
-
-        manageUser(firebaseUser)
+    async function handleUserAndSession (firebaseUser, isLogin = false, exit = false) {        
+        await manageUser(firebaseUser)
         manageSession(firebaseUser, exit)
-        console.log("teste")
         if (firebaseUser && isLogin) Router.push("/")
         
     }
@@ -137,7 +136,7 @@ export function AuthProvider({children}) {
 
             const credentials = await signInWithEmailAndPassword(auth, email, password)
             
-            handleUserAndSession(credentials.user, true)
+            await handleUserAndSession(credentials.user, true)
 
         } catch (error) {
             FirebaseErrorHandler(error)
@@ -150,7 +149,7 @@ export function AuthProvider({children}) {
             const auth = getAuth()
             
             await signOut(auth)
-            handleUserAndSession(null, false, true)
+            await handleUserAndSession(null, false, true)
         } catch (error) {
             FirebaseErrorHandler(error)
         }
@@ -179,6 +178,7 @@ export function AuthProvider({children}) {
         
         try {
             const auth = getAuth()
+           
             onAuthStateChanged(auth, handleUserAndSession)
 
         } catch (error) {
@@ -187,9 +187,12 @@ export function AuthProvider({children}) {
     }
 
     useEffect(() => {
-        checkIfUserIsLoggedIn()
-        //eslint-disable-next-line
-    }, [])
+        const interval = setInterval(() => {
+            checkIfUserIsLoggedIn()
+        }, 3300000)
+
+        return () => clearInterval(interval)
+    })
 
     return ( 
         <AuthContext.Provider

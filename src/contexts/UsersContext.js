@@ -35,11 +35,12 @@ export function UsersProvider({children}) {
 
     }
 
-    const handleCreateUser = async (accessToken, actionType, username, email, password = null, profile = "customer", role = "customer", isProvider = false) => {
-        const uid = uuid()
+    const handleCreateUser = async (accessToken, actionType, userId, username, email, password = null, profile = "customer", role = "customer", isProvider = false) => {
+        
+        const uid = isProvider ? userId : uuid()
         
         const user = { id: uid, user_name: username, email: email, password: password, phone_number: "", profile: profile, role: role, isProvider: isProvider }
-        
+
         const url = `/api/users/${uid}`
         const method = APIMethods.POST
         const body = user
@@ -48,7 +49,7 @@ export function UsersProvider({children}) {
             let response = await handleRequest(accessToken, url, method, body, actionType)
 
             if (response.response?.status === 201) {
-                console.log(response)
+
                 setUserMessageType(MessageTypes.SUCCESS)
                 setUserMessage(`Usuário criado com sucesso. Retorne à página de SigIn para acessar a aplicação`)
 

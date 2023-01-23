@@ -31,6 +31,14 @@ async function createUserOnFirebase (body) {
     return response
 }
 
+async function updateUserOnFirebase (body) {
+    let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "PATCH", body: body })
+
+    response = await response.json()
+
+    return response
+}
+
 async function createUser (res, user) {
     try {
         const result = await User.create(user)
@@ -127,16 +135,24 @@ export default async function handler (req, res) {
                     return res.json(firebaseResponse)
                 }
             } else {
-                user = new User({
-                    _id: reqUser.uid, 
-                    user_name: reqUser.user_name, 
-                    email: reqUser.email, 
-                    phone_number: reqUser.phone_number ?? "", 
-                    profile: reqUser.profile, 
-                    role: reqUser.role
-                })
 
-                await createUser(res, user)
+                const firebaseResponse = await updateUserOnFirebase(req.body)
+
+                if (firebaseResponse.response?.status === 200) {
+                    user = new User({
+                        _id: reqUser.id, 
+                        user_name: reqUser.user_name, 
+                        email: reqUser.email, 
+                        phone_number: reqUser.phone_number ?? "", 
+                        profile: reqUser.profile, 
+                        role: reqUser.role
+                    })
+
+                    await createUser(res, user)
+
+                } else {
+                    return res.json(firebaseResponse)
+                }
             }
   
             break;
