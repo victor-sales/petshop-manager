@@ -39,7 +39,7 @@ async function updateUserOnFirebase (body) {
     return response
 }
 
-async function createUser (res, user) {
+export async function createUser (res, user) {
     try {
         const result = await User.create(user)
 

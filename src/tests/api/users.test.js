@@ -1,16 +1,17 @@
 import { createMocks } from "node-mocks-http"
 import handleUsers from "../../pages/api/users"
-import handleUserById from "../../pages/api/users/[userId]"
+import handleUserById, { createUser } from "../../pages/api/users/[userId]"
+import NormalizedUser from "../../utils/NormalizedUser"
 
-const user = { id: "123", user_name: "user teste", email: "user.teste@email.com", phone_number: "", profile: "customer", role: "customer" }
-const userWithNoEmail = { id: "123", user_name: "user teste", email: "", phone_number: "", profile: "customer", role: "customer" }
-const userWithNoUsername = { id: "123", user_name: "", email: "user.teste@email.com", phone_number: "", profile: "customer", role: "customer" }
+const user = { _id: "123", user_name: "user teste", email: "user.teste@email.com", phone_number: "", profile: "customer", role: "customer" }
+const userWithNoEmail = { _id: "123", user_name: "user teste", email: "", phone_number: "", profile: "customer", role: "customer" }
+const userWithNoUsername = { _id: "123", user_name: "", email: "user.teste@email.com", phone_number: "", profile: "customer", role: "customer" }
 
 async function createUserForTest (user) {
     const { req, res } = createMocks({ headers: { "access-token": "123" }, method: 'POST', query: { userId: "123" }, body: JSON.stringify(user) });
-    
-    await handleUserById(req, res)
 
+    await createUser(res, user)
+   
     return res._getJSONData()
 }   
 
@@ -80,7 +81,7 @@ describe("Get User By ID", () => {
 
         expect(response.response.status).toBe(200)
         expect(response.response.message).toBe("success")
-        expect(response.data).toStrictEqual(user)
+        expect(response.data).toStrictEqual(NormalizedUser(user))
     })
 
 })
@@ -88,7 +89,12 @@ describe("Get User By ID", () => {
 describe("Create User by ID", () => {
 
     it("should return 400 if email not present", async () => {
-        const response = await createUserForTest(userWithNoEmail)
+
+        const { req, res } = createMocks({ headers: { "access-token": "123" }, method: 'POST', query: { userId: "123" }, body: JSON.stringify(userWithNoEmail) });
+    
+        await handleUserById(req, res)
+
+        const response = res._getJSONData()
 
         expect(response.status).toBe(400)
         expect(response.message.toLowerCase()).toBe("bad request")
@@ -98,7 +104,11 @@ describe("Create User by ID", () => {
 
     it("should return 400 if user_name not present", async () => {
 
-        const response = await createUserForTest(userWithNoUsername)
+        const { req, res } = createMocks({ headers: { "access-token": "123" }, method: 'POST', query: { userId: "123" }, body: JSON.stringify(userWithNoUsername) });
+    
+        await handleUserById(req, res)
+
+        const response = res._getJSONData()
 
         expect(response.status).toBe(400)
         expect(response.message.toLowerCase()).toBe("bad request")
@@ -111,8 +121,12 @@ describe("Create User by ID", () => {
         await createUserForTest(user)
 
         // 2 - Create again
+        
+        const { req, res } = createMocks({ headers: { "access-token": "123" }, method: 'POST', query: { userId: "123" }, body: JSON.stringify(user) });
+    
+        await handleUserById(req, res)
 
-        const response = await createUserForTest(user)
+        const response = res._getJSONData()
 
         // 3 - Delete created
 
@@ -134,7 +148,7 @@ describe("Create User by ID", () => {
         
         expect(response.response.status).toBe(201)
         expect(response.response.message).toBe("success")
-        expect(response.data).toStrictEqual(user)
+        expect(response.data).toStrictEqual(NormalizedUser(user))
     })
 })
 
