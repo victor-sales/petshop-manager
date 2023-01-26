@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Input from "../../FormInputs/Input";
 import Select from "../../FormInputs/Select";
 import { Profiles } from "../../../../entities/Profiles"
-import { Roles } from "../../../../Entities/Roles";
+import { Roles } from "../../../../entities/Roles";
 import InputPhoneNumber from "../../FormInputs/InputPhoneNumber";
 import { capitalizeFirst, checkEmailValidity, checkProfileValidity, checkRoleValidity, checkUsernameValidity } from "../../../../utils/Helpers";
 import useUsersContext from "../../../../hooks/useUsersContext";

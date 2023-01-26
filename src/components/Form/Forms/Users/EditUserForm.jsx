@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Profiles } from "../../../../entities/Profiles";
-import { Roles } from "../../../../Entities/Roles";
+import { Roles } from "../../../../entities/Roles";
 import { capitalizeFirst, checkProfileValidity, checkRoleValidity, checkUsernameValidity } from "../../../../utils/Helpers";
 import Input from "../../FormInputs/Input";
 import InputPhoneNumber from "../../FormInputs/InputPhoneNumber";
