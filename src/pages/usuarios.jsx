@@ -3,7 +3,7 @@ import Container from "../components/Container";
 import Layout from "../components/Layout";
 import { Modal, Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
 import ConfirmRemoveText from "../components/ConfirmRemoveText";
 import { useEffect, useState } from "react";
@@ -11,15 +11,25 @@ import AddUserForm from "../components/Form/Forms/Users/AddUserForm";
 import EditUserForm from "../components/Form/Forms/Users/EditUserForm";
 import useUsersContext from "../hooks/useUsersContext"
 import useAuthContext from "../hooks/useAuthContext";
+import DivActionButtons from '../components/Table/DivActionButtons';
+import { RequestActionType, UserActions } from '../utils/Enums';
+import AntdModal from '../components/AntdModal';
+import Input from '../components/Form/FormInputs/Input';
+import { capitalizeFirst } from '../utils/Helpers';
 
 export default function Usuarios(props) {
     
-    const { handleGetUsers, handleCreateUser, loadingUsers } = useUsersContext()
+    const { handleGetUsers, loadingUsers, loadingCreateUser, loadingUpdateUser, userMessage, setUserMessage, userMessageType, setUserMessageType, } = useUsersContext()
     const { token } = useAuthContext()
 
     const [visible, setVisible] = useState(false);
     const [action, setAction] = useState("")
     const [users, setUsers] = useState([])
+    const [modalTitle, setModalTitle] = useState("")
+
+    const [loading, setLoading] = useState(false)
+
+    const [user, setUser] = useState({})
 
     async function listUsers () {
         const arr = await handleGetUsers(token)
@@ -28,7 +38,17 @@ export default function Usuarios(props) {
         else setUsers([])
     }
 
-    
+    const onClickNew = () => {
+        setAction(UserActions.ADD)
+        setVisible(true)
+    }
+
+    const onClickEdit = (record) => {
+        setUser(record)
+        setAction(UserActions.EDIT)
+        setVisible(true)
+    }
+
     const columns = [
         {
             title: "Nome",
@@ -50,28 +70,25 @@ export default function Usuarios(props) {
             title: "Perfil",
             dataIndex: "profile",
             key: "profile",
+            render: (profile) => capitalizeFirst(profile)
         },
         {
             title: "Função",
             dataIndex: "role",
             key: "role",
+            render: (role) => capitalizeFirst(role)
+
         },
         {
             title: "Ações",
             key: "actions",
-            render: () => {
+            render: (record) => {
                 return (
                     <div className="flex flex-row gap-3">
-                        <button onClick={(e) => { setAction("EDIT"); setVisible(true) }}>
+                        <button onClick={(e) => onClickEdit(record)}>
                             <FontAwesomeIcon
                                 className="h-4 w-4 text-blue-600"
                                 icon={faPencil}
-                            />
-                        </button>
-                        <button onClick={(e) => { setAction("REMOVE"); setVisible(true) }}>
-                            <FontAwesomeIcon
-                                className="h-4 w-4 text-red-600"
-                                icon={faTrash}
                             />
                         </button>
                     </div>
@@ -80,51 +97,31 @@ export default function Usuarios(props) {
         },
     ];
 
-
-    const handleAddUser = async () => {
-        const user = {
-            id: "a731f84e-abdf-4326-bd52-720756946258",
-            user_name: null,
-            email: null,
-            phone_number: null,
-            profile: null,
-            role: null
+    useEffect(() => {
+        switch (action) {
+            case UserActions.ADD:
+                setModalTitle("Adicionar usuário")
+                break;
+            case UserActions.EDIT:
+                setModalTitle("Editar usuário")
+                break;
+            default:
+                break;
         }
-
-        // const user = {"_id":"a731f84e-abdf-4326-bd52-720756746259","user_name":"Teste da silva editado novamente","email":"teste.silva@email.com","phone_number":"1234565654","profile":"customer","role":"customer",}
-
-        let response = await fetch(`/api/users/${user.id}`, { method: "GET", body: JSON.stringify(user) })
-        console.log(response)
-
-        response = await response.json()
-        console.log(response)
-
-    }
-
-
+    }, [action])
 
     useEffect(() => {
         listUsers()
         //eslint-disable-next-line
     }, [token])
 
-    useEffect(() => {
-        console.log(users)
-    }, [users])
-
-    useEffect(() => {
-        console.log(token)
-    }, [token])
-
     return (
-        <Layout>
-            <Container>
-            <div className="flex flex-col min-h-full gap-2 md:px-2 lg:px-0">
-                    <div className="w-full flex flex-row-reverse">
-                        <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { handleCreateUser(token, uuid(), "teste2", "tesac38130@nevyxus.com") }}/>
-                        {/* <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/> */}
-                    </div>
-                        <div className="w-full">
+        <>
+            <Layout>
+                <Container>
+                    <div className="flex flex-col w-full">
+                        <DivActionButtons onClickNew={() => onClickNew()} onClickUpdate={listUsers}/>
+                        <div className="w-full border border-gray-300">
                             <Table
                                 size="small" 
                                 dataSource={users}
@@ -134,17 +131,28 @@ export default function Usuarios(props) {
                                 pagination={{}}/>
                         </div>
                     </div>
-            </Container>
-            <Modal
-                key={"new-specie"}
-                onOk={() => setVisible(false)}
-                okText="Confirmar"
-                cancelText="Fechar"
-                title="Modal"
-                open={visible}
-            >
-                {action === "ADD" ? <AddUserForm /> : action === "EDIT" ? <EditUserForm /> : <ConfirmRemoveText />}
-            </Modal>
-        </Layout>
+                </Container>
+            </Layout>
+
+            <AntdModal 
+                visible={visible} 
+                setVisible={setVisible} 
+                id={"add-user"} 
+                title={modalTitle} 
+                loading={ action=== UserActions.ADD ? loadingCreateUser : action=== UserActions.EDIT ? loadingUpdateUser : false} 
+                message={userMessage}
+                setMessage={setUserMessage}
+                messageType={userMessageType}
+                setMessageType={setUserMessageType}>
+                { 
+                    action === UserActions.ADD ? 
+                        <AddUserForm users={users} setUsers={setUsers} /> : 
+                    action === UserActions.EDIT ? 
+                        <EditUserForm users={users} setUsers={setUsers} user={user} setUser={setUser}/> : 
+                        <></>
+                }
+            </AntdModal>
+        </>
+        
     );
 }

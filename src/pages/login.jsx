@@ -5,9 +5,6 @@ import SignUpForm from "../components/Form/Forms/SignUpForm";
 export default function Login (props) {
 
     const [signUp, setSignUp] = useState(false)
-    useEffect(() => {
-        console.log(signUp)
-    }, [signUp])
 
     return (
         <div className="bg-gray-300 min-w-full min-h-screen flex items-center justify-center">

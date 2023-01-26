@@ -1,8 +1,6 @@
 import Label from "../Label"
 
-export default function Select (props) {
-
-    const { id, value, onChange, labelText, required, children } = props
+export default function Select ({id, value, onChange, labelText, required, children}) {
 
     return (
         <>

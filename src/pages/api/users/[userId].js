@@ -54,6 +54,24 @@ export async function createUser (res, user) {
 
 }
 
+export async function updateUser (res, user) {
+    try {
+        const oldUser = await User.findById(user.id).exec()
+        const newUser = await User.findByIdAndUpdate(user.id, user, { returnDocument: "after" }).select('-__v')
+
+        if (oldUser.profile !== newUser.profile) await updateUserOnFirebase(newUser)
+
+        return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(newUser) })
+
+    } catch (e) {
+        let error = Internal()
+        error = {...error, details: e.message}
+        
+        return res.json(error)
+    }
+
+}
+
 export default async function handler (req, res) {
     
     await dbConnect()
@@ -174,9 +192,7 @@ export default async function handler (req, res) {
                 role: user.role
             })
 
-            result = await User.findByIdAndUpdate(userId, user, { returnDocument: "after" })
-
-            return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(result) })
+            await updateUser(res, user)
                             
             break;
         case "DELETE":

@@ -17,5 +17,13 @@ export const AuthProviders = {
 }
 
 export const RequestActionType = {
-    SIGNUP: "SIGNUP"
+    SIGNUP: "SIGNUP",
+    CREATE_USER: "CREATE_USER",
+    UPDATE_USER: "UPDATE_USER"
+}
+
+export const UserActions = {
+    ADD: "ADD",
+    EDIT: "EDIT",
+    DELETE: "DELETE"
 }

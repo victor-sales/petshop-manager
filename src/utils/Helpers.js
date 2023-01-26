@@ -26,3 +26,40 @@ export function userIsInvalid (req) {
 
     return false
 }
+
+export const capitalizeFirst = (string) => string.charAt(0).toUpperCase() + string.slice(1);
+
+export function checkUsernameValidity (value, setError) {
+        if (!value) {
+            setError("Nome não pode ser vazio.")
+            return false
+        }
+
+        return true
+    }
+
+export function checkEmailValidity (value, setError) {
+    if (!value) {
+        setError("Email não pode ser vazio")
+        return false
+    }
+    return true
+}
+
+export function checkProfileValidity (value, setError) {
+    if (!value) {
+        setError("Profile não pode ser vazio.")
+        return false
+    }
+
+    return true
+}
+
+export function checkRoleValidity (value, setError) {
+    if (!value) {
+        setError("Função não pode ser vazia.")
+        return false
+    }
+
+    return true
+}

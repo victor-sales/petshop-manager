@@ -20,7 +20,6 @@ export default async function handler (req, res) {
 
                 return res.json({ response: { status: 201, message: "success"}, data: user })
             } catch (e) {
-                
                 error = Internal()
                 error = {...error, details: e.message}
                 
@@ -30,12 +29,11 @@ export default async function handler (req, res) {
             break;
 
         case "PATCH":
-            body = JSON.parse(req.body)
 
             try {
-                let user = await admin.auth().getUser(body.id)
-                console.log(user)
-                await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })
+                let user = await admin.auth().getUser(req.body.id)
+
+                await admin.auth().setCustomUserClaims(user.uid, { profile: req.body.profile })
                 
                 return res.json({ response: { status: 200, message: "success"}, data: []})
             } catch (e) {
