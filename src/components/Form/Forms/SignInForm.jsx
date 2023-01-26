@@ -38,6 +38,7 @@ export default function SignInForm ({setSignUp}) {
                 if (response) await handleUserAndSession(firebaseUser, true)
 
             } else {
+                await handleUserAndSession(firebaseUser, true)
                 Router.push("/")
             }
         }

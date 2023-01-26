@@ -54,9 +54,9 @@ export function AuthProvider({children}) {
     }
 
     async function manageUser (firebaseUser) {
-        const idToken = await firebaseUser.getIdTokenResult(true)
 
         if (firebaseUser) {
+            const idToken = await firebaseUser.getIdTokenResult(true)
             setToken(idToken.token)
             return true
         } 
@@ -144,10 +144,10 @@ export function AuthProvider({children}) {
     }
 
     async function handleSignOut () {
-       
+
         try {
             const auth = getAuth()
-            
+
             await signOut(auth)
             await handleUserAndSession(null, false, true)
         } catch (error) {
@@ -192,7 +192,8 @@ export function AuthProvider({children}) {
         }, 3300000)
 
         return () => clearInterval(interval)
-    })
+        //eslint-disable-next-line
+    }, [])
 
     return ( 
         <AuthContext.Provider
