@@ -43,13 +43,13 @@ export async function createUser (res, user) {
     try {
         const result = await User.create(user)
 
-        return res.json({ response: { status: 201, message: "success"}, data: NormalizedUser(result) })
+        res.json({ response: { status: 201, message: "success"}, data: NormalizedUser(result) })
 
     } catch (e) {
         let error = Internal()
         error = {...error, details: e.message}
         
-        return res.json(error)
+        res.json(error)
     }
 
 }
