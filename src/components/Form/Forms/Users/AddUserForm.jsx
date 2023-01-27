@@ -63,7 +63,8 @@ export default function AddUserForm({users, setUsers, ...props}) {
             const button = document.getElementById("confirm-button")
             if (button) button.removeEventListener("click", createUser)
         }
-    })
+        //eslint-disable-next-line
+    }, [token, user])
 
     return (
             <div className="flex flex-col gap-1">
