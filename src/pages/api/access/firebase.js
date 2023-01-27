@@ -11,9 +11,9 @@ export default async function handler (req, res) {
     switch (method) {
         case "POST":
 
-            body = JSON.parse(req.body)
-
             try {
+                body = JSON.parse(req.body)
+
                 let user = await admin.auth().createUser({ uid: body.id, password: body.password ?? body.email, email: body.email, displayName: body.user_name, disabled: false})
                 
                 await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })

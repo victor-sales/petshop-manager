@@ -114,6 +114,7 @@ export function UsersProvider({children}) {
             }
 
         } catch (error) {
+            console.log(error)
             let e = JSON.parse(error.message)
             setUserMessageType(MessageTypes.ERROR)
             setUserMessage(e.message + ": " + e.details ?? "")
