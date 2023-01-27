@@ -24,7 +24,7 @@ async function userIsDuplicated (req) {
 }
 
 async function createUserOnFirebase (body) {
-    let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "POST", body: body })
+    let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "POST", body: JSON.stringify(body) })
     
     response = await response.json()
     
@@ -32,7 +32,7 @@ async function createUserOnFirebase (body) {
 }
 
 async function updateUserOnFirebase (body) {
-    let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "PATCH", body: body })
+    let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "PATCH", body: JSON.stringify(body) })
 
     response = await response.json()
 

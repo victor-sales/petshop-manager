@@ -31,13 +31,14 @@ export default async function handler (req, res) {
         case "PATCH":
 
             try {
-                let user = await admin.auth().getUser(req.body.id)
+                body = JSON.parse(req.body)
 
-                await admin.auth().setCustomUserClaims(user.uid, { profile: req.body.profile })
+                let user = await admin.auth().getUser(body._id)
+
+                await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })
                 
                 return res.json({ response: { status: 200, message: "success"}, data: []})
             } catch (e) {
-                
                 error = Internal()
                 error = {...error, details: e.message}
                 
