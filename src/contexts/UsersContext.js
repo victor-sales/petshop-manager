@@ -109,6 +109,7 @@ export function UsersProvider({children}) {
                 return response
 
             } else {
+                console.log(response)
                 setLoadingCreateUser(false)
                 throw new Error(JSON.stringify(response))
             }
