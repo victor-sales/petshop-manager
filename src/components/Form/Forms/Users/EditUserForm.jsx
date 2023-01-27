@@ -34,10 +34,8 @@ export default function EditUserForm({users, setUsers, user, setUser}) {
             if (response) {
                 const arr = users
                 const idx = arr.map(e => e.email).indexOf(response.data.email)
-                console.log(arr)
-                arr[idx] = response.data
-                console.log(arr)
 
+                arr[idx] = response.data
                 setUsers(arr)
             } 
 
