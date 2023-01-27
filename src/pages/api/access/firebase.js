@@ -15,7 +15,7 @@ export default async function handler (req, res) {
                 body = JSON.parse(req.body)
 
                 let user = await admin.auth().createUser({ uid: body.id, password: body.password ?? body.email, email: body.email, displayName: body.user_name, disabled: false})
-                
+
                 await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })
 
                 return res.json({ response: { status: 201, message: "success"}, data: user })
@@ -39,6 +39,7 @@ export default async function handler (req, res) {
                 
                 return res.json({ response: { status: 200, message: "success"}, data: []})
             } catch (e) {
+
                 error = Internal()
                 error = {...error, details: e.message}
                 

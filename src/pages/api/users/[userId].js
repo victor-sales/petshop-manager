@@ -56,8 +56,8 @@ export async function createUser (res, user) {
 
 export async function updateUser (res, user) {
     try {
-        const oldUser = await User.findById(user.id).exec()
-        const newUser = await User.findByIdAndUpdate(user.id, user, { returnDocument: "after" }).select('-__v')
+        const oldUser = await User.findById(user._id).exec()
+        const newUser = await User.findByIdAndUpdate(user._id, user, { returnDocument: "after" }).select('-__v')
 
         if (oldUser.profile !== newUser.profile) await updateUserOnFirebase(newUser)
 
@@ -134,7 +134,7 @@ export default async function handler (req, res) {
             
             // Valida se a conta esta sendo criada via provedor
             if (!reqUser.isProvider) {
-                const firebaseResponse = await createUserOnFirebase(req.body)
+                const firebaseResponse = await createUserOnFirebase(reqUser)
                 
                 if (firebaseResponse.response?.status === 201) {
                     
