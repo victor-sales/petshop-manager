@@ -135,7 +135,6 @@ export default async function handler (req, res) {
             // Valida se a conta esta sendo criada via provedor
             if (!reqUser.isProvider) {
                 const firebaseResponse = await createUserOnFirebase(req.body)
-                console.log(firebaseResponse)
                 
                 if (firebaseResponse.response?.status === 201) {
                     

@@ -17,7 +17,7 @@ export function UsersProvider({children}) {
         
         let options = {
             headers: { 
-                "access-token": accessToken,
+                "access-token": accessToken ?? false,
                 "action-type": actionType
             },
             method: method
@@ -26,8 +26,6 @@ export function UsersProvider({children}) {
         if (body) {
             options = {...options, body: JSON.stringify(body)}
         } 
-
-        console.log(options)
 
         let response = await fetch(url, options)
         
@@ -99,7 +97,6 @@ export function UsersProvider({children}) {
             setLoadingCreateUser(true)
             
             let response = await handleRequest(accessToken, url, method, body, actionType)
-            console.log(response)
 
             if (response.response?.status === 201) {
                 setLoadingCreateUser(false)
@@ -112,13 +109,11 @@ export function UsersProvider({children}) {
                 return response
 
             } else {
-                console.log(response)
                 setLoadingCreateUser(false)
                 throw new Error(JSON.stringify(response))
             }
 
         } catch (error) {
-            console.log(error)
             let e = JSON.parse(error.message)
             setUserMessageType(MessageTypes.ERROR)
             setUserMessage(e.message + ": " + e.details ?? "")

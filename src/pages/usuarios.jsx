@@ -111,7 +111,7 @@ export default function Usuarios(props) {
     }, [action])
 
     useEffect(() => {
-        listUsers()
+        if (token) listUsers()
         //eslint-disable-next-line
     }, [token])
 

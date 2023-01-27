@@ -195,6 +195,11 @@ export function AuthProvider({children}) {
         //eslint-disable-next-line
     }, [])
 
+    useEffect(() => {
+        checkIfUserIsLoggedIn()
+        //eslint-disable-next-line
+    }, [])
+
     return ( 
         <AuthContext.Provider
             value={{
