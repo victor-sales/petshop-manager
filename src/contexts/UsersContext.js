@@ -140,6 +140,7 @@ export function UsersProvider({children}) {
 
             } else {
                 setLoadingUpdateUser(false)
+                console.log(response)
                 throw new Error(JSON.stringify(response))
             }
 
