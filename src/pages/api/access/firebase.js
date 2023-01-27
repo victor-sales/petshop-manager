@@ -32,17 +32,14 @@ export default async function handler (req, res) {
 
             try {
                 body = JSON.parse(req.body)
-                console.log(body)
-
                 let user = await admin.auth().getUser(body._id)
-                console.log(user)
+                
                 await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })
                 
-                return res.json({ response: { status: 200, message: "success"}, data: []})
+                return res.json({ response: { status: 200, message: "success"}, data: body})
             } catch (e) {
-                console.log(e)
                 error = Internal()
-                error = {...error, details: e.message, info: e}
+                error = {...error, details: e.message}
                 
                 return res.json(error)
             }

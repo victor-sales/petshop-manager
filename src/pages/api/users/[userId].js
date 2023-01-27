@@ -31,12 +31,25 @@ async function createUserOnFirebase (body) {
     return response
 }
 
-async function updateUserOnFirebase (body) {
-    let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "PATCH", body: JSON.stringify(body) })
-
-    response = await response.json()
-
-    return response
+async function updateUserOnFirebase (res, body) {
+    try {
+        let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "PATCH", body: JSON.stringify(body) })
+        
+        response = await response.json()
+        
+        if (response.response?.status === 200) {
+            return res.json(response)
+        } else {
+            throw new Error(JSON.stringify(response))
+        }
+      
+    } catch (e) {
+        let error = Internal()
+        error = {...error, details: e.message}
+        
+        return res.json(error)
+    }
+    
 }
 
 export async function createUser (res, user) {
@@ -59,9 +72,11 @@ export async function updateUser (res, user) {
         const oldUser = await User.findById(user._id).exec()
         const newUser = await User.findByIdAndUpdate(user._id, user, { returnDocument: "after" }).select('-__v')
 
-        if (oldUser.profile !== newUser.profile) await updateUserOnFirebase(newUser)
-
-        return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(newUser) })
+        if (oldUser.profile !== newUser.profile) {
+            await updateUserOnFirebase(res, newUser)
+        } else {
+            return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(newUser) })
+        } 
 
     } catch (e) {
         let error = Internal()
