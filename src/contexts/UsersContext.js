@@ -27,6 +27,8 @@ export function UsersProvider({children}) {
             options = {...options, body: JSON.stringify(body)}
         } 
 
+        console.log(options)
+
         let response = await fetch(url, options)
         
         response = await response.json()
@@ -97,6 +99,7 @@ export function UsersProvider({children}) {
             setLoadingCreateUser(true)
             
             let response = await handleRequest(accessToken, url, method, body, actionType)
+            console.log(response)
 
             if (response.response?.status === 201) {
                 setLoadingCreateUser(false)
