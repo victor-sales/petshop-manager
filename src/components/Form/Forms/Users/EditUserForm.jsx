@@ -30,12 +30,14 @@ export default function EditUserForm({users, setUsers, user, setUser}) {
 
         if (areValid) {
             const response = await handleUpdateUser(token, user)
-
+            console.log(response)
             if (response) {
                 const arr = users
                 const idx = arr.map(e => e.email).indexOf(response.data.email)
-
+                console.log(arr)
                 arr[idx] = response.data
+                console.log(arr)
+
                 setUsers(arr)
             } 
 

@@ -55,10 +55,14 @@ export async function createUser (res, user) {
 }
 
 export async function updateUser (res, user) {
+    console.log(user)
+    console.log(typeof user)
     try {
         const oldUser = await User.findById(user._id).exec()
         const newUser = await User.findByIdAndUpdate(user._id, user, { returnDocument: "after" }).select('-__v')
 
+        console.log(oldUser)
+        console.log(newUser)
         if (oldUser.profile !== newUser.profile) await updateUserOnFirebase(newUser)
 
         return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(newUser) })
