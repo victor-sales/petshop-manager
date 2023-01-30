@@ -140,12 +140,10 @@ export function UsersProvider({children}) {
 
             } else {
                 setLoadingUpdateUser(false)
-                console.log(response)
                 throw new Error(JSON.stringify(response))
             }
 
         } catch (error) {
-            console.log(error)
             let e = JSON.parse(error.message)
             setUserMessageType(MessageTypes.ERROR)
             setUserMessage(e.message + ": " + e.details ?? "")

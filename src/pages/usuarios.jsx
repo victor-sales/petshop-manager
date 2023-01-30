@@ -115,10 +115,6 @@ export default function Usuarios(props) {
         //eslint-disable-next-line
     }, [token])
 
-    useEffect(() => {
-        console.log(token)
-    }, [token])
-
     return (
         <>
             <Layout>

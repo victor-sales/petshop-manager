@@ -7,6 +7,8 @@ import NormalizedUser from '../../../utils/NormalizedUser';
 import { userIsInvalid } from '../../../utils/Helpers';
 import BadRequest from '../../../utils/ErrorsObj/BadRequest';
 import Internal from '../../../utils/ErrorsObj/Internal';
+import axios from "axios"
+import admin from '../../../utils/FirebaseAdmin/FirebaseAdmin';
 
 async function userIsDuplicated (req) {
 
@@ -23,33 +25,34 @@ async function userIsDuplicated (req) {
     return false
 }
 
-async function createUserOnFirebase (body) {
-    let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "POST", body: JSON.stringify(body) })
-    
-    response = await response.json()
-    
-    return response
-}
-
-async function updateUserOnFirebase (res, body) {
+async function createUserOnFirebase ( body) {
     try {
-        let response = await fetch("http://www.localhost:3000/api/access/firebase", { method: "PATCH", body: JSON.stringify(body) })
-        
-        response = await response.json()
-        
-        if (response.response?.status === 200) {
-            return res.json(response)
-        } else {
-            throw new Error(JSON.stringify(response))
-        }
-      
+        let user = await admin.auth().createUser({ uid: body.id, password: body.password ?? body.email, email: body.email, displayName: body.user_name, disabled: false})
+
+        await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })
+
+        return { response: { status: 201, message: "success"}, data: user }
     } catch (e) {
         let error = Internal()
         error = {...error, details: e.message}
         
-        return res.json(error)
+        return error
     }
-    
+}
+
+async function updateUserOnFirebase (body) {
+    try {
+        let user = await admin.auth().getUser(body._id)
+        
+        await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })
+        
+        return { response: { status: 200, message: "success"}, data: body}
+    } catch (e) {
+        let error = Internal()
+        error = {...error, details: e.message}
+        
+        return error
+    }
 }
 
 export async function createUser (res, user) {
@@ -73,10 +76,13 @@ export async function updateUser (res, user) {
         const newUser = await User.findByIdAndUpdate(user._id, user, { returnDocument: "after" }).select('-__v')
 
         if (oldUser.profile !== newUser.profile) {
-            await updateUserOnFirebase(res, newUser)
-        } else {
-            return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(newUser) })
-        } 
+            let user = await updateUserOnFirebase(newUser)
+            
+            return res.json(user)
+        }
+           
+        return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(newUser) })
+        
 
     } catch (e) {
         let error = Internal()
