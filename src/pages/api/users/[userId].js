@@ -28,7 +28,7 @@ async function userIsDuplicated (req) {
 async function createUserOnFirebase ( body) {
     try {
         let user = await admin.auth().createUser({ uid: body.id, password: body.password ?? body.email, email: body.email, displayName: body.user_name, disabled: false})
-
+        
         await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })
 
         return { response: { status: 201, message: "success"}, data: user }
@@ -41,9 +41,9 @@ async function createUserOnFirebase ( body) {
 }
 
 async function updateUserOnFirebase (body) {
-    try {
-        let user = await admin.auth().getUser(body._id)
-        
+    try {        
+        let user = await admin.auth().getUser(body.id)
+
         await admin.auth().setCustomUserClaims(user.uid, { profile: body.profile })
         
         return { response: { status: 200, message: "success"}, data: body}
@@ -142,7 +142,7 @@ export default async function handler (req, res) {
             
             // Valida campos obrigatórios
             invalid = userIsInvalid(req)
-            
+
             if (invalid) return res.json(invalid)
 
             // Valida duplicidade de usuários
@@ -152,7 +152,7 @@ export default async function handler (req, res) {
 
             // Cria novo usuário
             const reqUser = JSON.parse(req.body)
-            
+
             // Valida se a conta esta sendo criada via provedor
             if (!reqUser.isProvider) {
                 const firebaseResponse = await createUserOnFirebase(reqUser)
@@ -174,8 +174,7 @@ export default async function handler (req, res) {
                     return res.json(firebaseResponse)
                 }
             } else {
-
-                const firebaseResponse = await updateUserOnFirebase(req.body)
+                const firebaseResponse = await updateUserOnFirebase(reqUser)
 
                 if (firebaseResponse.response?.status === 200) {
                     user = new User({
@@ -198,7 +197,6 @@ export default async function handler (req, res) {
         case "PUT":
             // Valida campos obrigatórios
             invalid = userIsInvalid(req)
-            
             if (invalid) return res.json(invalid)
 
             //Edita usuário

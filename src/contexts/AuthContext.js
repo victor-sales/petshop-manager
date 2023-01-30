@@ -101,11 +101,13 @@ export function AuthProvider({children}) {
             prompt: "select_account"
         })
 
+        provider.addScope('email');
+
         const auth = getAuth()
 
         try {
             const credentials = await signInWithPopup(auth, provider)
-            
+
             if (credentials) return credentials.user
             
         } catch (error) {

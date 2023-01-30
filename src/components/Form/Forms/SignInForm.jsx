@@ -31,9 +31,9 @@ export default function SignInForm ({setSignUp}) {
         
         if (firebaseUser) {
             const user = await handleGetUserById(firebaseUser.accessToken, firebaseUser.uid)
-            
+
             if (!user) {
-                const response = await handleCreateUser(firebaseUser.accessToken, RequestActionType.SIGNUP, firebaseUser.uid, firebaseUser.displayName, firebaseUser.email, null, "customer", "customer", true)
+                const response = await handleCreateUser(firebaseUser.accessToken, RequestActionType.SIGNUP, firebaseUser.uid, firebaseUser.displayName, firebaseUser.email, null, null, "cliente", "cliente", true)
 
                 if (response) await handleUserAndSession(firebaseUser, true)
 
