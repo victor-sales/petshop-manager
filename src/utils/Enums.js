@@ -27,3 +27,9 @@ export const UserActions = {
     EDIT: "EDIT",
     DELETE: "DELETE"
 }
+
+export const UserProfiles = {
+    ADMIN: "ADMINISTRADOR",
+    CLIENTE: "CLIENTE",
+    FUNCIONARIO: "FUNCIONARIO"
+}
