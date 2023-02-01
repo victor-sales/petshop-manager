@@ -1,20 +1,16 @@
-import { v4 as uuid } from 'uuid';
 import Container from "../components/Container";
 import Layout from "../components/Layout";
-import { Modal, Table } from "antd";
+import { Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowsRotate, faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
-import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
-import ConfirmRemoveText from "../components/ConfirmRemoveText";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import AddUserForm from "../components/Form/Forms/Users/AddUserForm";
 import EditUserForm from "../components/Form/Forms/Users/EditUserForm";
 import useUsersContext from "../hooks/useUsersContext"
 import useAuthContext from "../hooks/useAuthContext";
 import DivActionButtons from '../components/Table/DivActionButtons';
-import { RequestActionType, UserActions } from '../utils/Enums';
+import { UserActions } from '../utils/Enums';
 import AntdModal from '../components/AntdModal';
-import Input from '../components/Form/FormInputs/Input';
 import { capitalizeFirst } from '../utils/Helpers';
 
 export default function Usuarios(props) {
@@ -26,8 +22,6 @@ export default function Usuarios(props) {
     const [action, setAction] = useState("")
     const [users, setUsers] = useState([])
     const [modalTitle, setModalTitle] = useState("")
-
-    const [loading, setLoading] = useState(false)
 
     const [user, setUser] = useState({})
 

@@ -4,12 +4,15 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { AuthProvider } from '../contexts/AuthContext';
 import { UsersProvider } from '../contexts/UsersContext';
+import { AnimalsProvider } from '../contexts/AnimalsContext';
 
 function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
       <UsersProvider>
-        <Component {...pageProps} />
+        <AnimalsProvider>
+          <Component {...pageProps} />
+        </AnimalsProvider>
       </UsersProvider>
     </AuthProvider>
   )

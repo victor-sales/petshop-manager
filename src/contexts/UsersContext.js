@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react"
 import { v4 as uuid } from 'uuid';
 import { APIMethods, MessageTypes, RequestActionType } from "../utils/Enums";
+import RequestHandler from "../utils/RequestHandler";
 
 const UsersContext = createContext()
 
@@ -12,35 +13,13 @@ export function UsersProvider({children}) {
     const [loadingUsers, setLoadingUsers] = useState(false)
     const [loadingCreateUser, setLoadingCreateUser] = useState(false)
     const [loadingUpdateUser, setLoadingUpdateUser] = useState(false)
-
-    const handleRequest = async (accessToken, url, method, body, actionType) => {
-        
-        let options = {
-            headers: { 
-                "access-token": accessToken ?? false,
-                "action-type": actionType
-            },
-            method: method
-        }
-
-        if (body) {
-            options = {...options, body: JSON.stringify(body)}
-        } 
-
-        let response = await fetch(url, options)
-        
-        response = await response.json()
-
-        return response
-
-    }
  
     async function handleGetUserById (accessToken, userId) {
         const url = `/api/users/${userId}`
         const method = APIMethods.GET
 
         try {
-            let response = await handleRequest(accessToken, url, method)
+            let response = await RequestHandler(accessToken, url, method)
         
             if (response.response?.status === 200) {
                 return response.data
@@ -63,7 +42,7 @@ export function UsersProvider({children}) {
         const method = APIMethods.GET
 
         try {
-            let response = await handleRequest(accessToken, url, method)
+            let response = await RequestHandler(accessToken, url, method)
         
             if (response.response?.status === 200) {
                 setLoadingUsers(false)
@@ -96,7 +75,7 @@ export function UsersProvider({children}) {
         try {
             setLoadingCreateUser(true)
             
-            let response = await handleRequest(accessToken, url, method, body, actionType)
+            let response = await RequestHandler(accessToken, url, method, body, actionType)
 
             if (response.response?.status === 201) {
                 setLoadingCreateUser(false)
@@ -129,7 +108,7 @@ export function UsersProvider({children}) {
         try {
             setLoadingUpdateUser(true)
             
-            let response = await handleRequest(accessToken, url, method, body, RequestActionType.UPDATE_USER)
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.UPDATE_USER)
 
             if (response.response?.status === 200) {
                 setLoadingUpdateUser(false)

@@ -1,167 +1,118 @@
+import { v4 as uuid } from 'uuid';
+
 import Container from "../components/Container";
 import Layout from "../components/Layout";
 import { Modal, Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faPencil,
-    faPlusCircle,
-    faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
 import EditAnimalForm from "../components/Form/Forms/Animals/EditAnimalForm";
 import AddAnimalForm from "../components/Form/Forms/Animals/AddAnimalForm";
 import ConfirmRemoveText from "../components/ConfirmRemoveText";
+import useAnimalsContext from "../hooks/useAnimalsContext";
+import useAuthContext from "../hooks/useAuthContext";
+import { useEffect } from "react";
+import { capitalizeFirst } from "../utils/Helpers";
+import RequestHandler from "../utils/RequestHandler";
+import { APIMethods } from "../utils/Enums";
 
 export default function Animais(props) {
+
+    const { handleGetAnimals } = useAnimalsContext()
+    const { token } = useAuthContext()
+
+
+    const [animals, setAnimals] = useState([])
     const [visible, setVisible] = useState(false);
     const [action, setAction] = useState("")
-    
-    const dataSource = [
-        {
-            id: "1",
-            nome: "Bob",
-            tutor: "Mario Alberto",
-            especie: "Cachorro",
-            raca: "SRD",
-            descricao: "",
-        },
-        {
-            id: "2",
-            nome: "Mel",
-            tutor: "Mario Alberto",
-            especie: "Cachorro",
-            raca: "SRD",
-            descricao: "",
-        },
-        {
-            id: "3",
-            nome: "Chico",
-            tutor: "Carla Patrícia",
-            especie: "Cachorro",
-            raca: "Pug",
-            descricao: "",
-        },
-        {
-            id: "4",
-            nome: "Beatriz",
-            tutor: "Maria Paula",
-            especie: "Cachorro",
-            raca: "Pastor Alemão",
-            descricao: "",
-        },
-        {
-            id: "5",
-            nome: "Malu",
-            tutor: "Maria Paula",
-            especie: "Cachorro",
-            raca: "SRD",
-            descricao: "",
-        },
-        {
-            id: "6",
-            nome: "Peter",
-            tutor: "Victor Andrade",
-            especie: "Cachorro",
-            raca: "SRD",
-            descricao: "",
-        },
-        {
-            id: "7",
-            nome: "Hanna",
-            tutor: "Eduardo Souza",
-            especie: "Cachorro",
-            raca: "Fila",
-            descricao: "",
-        },
-        {
-            id: "8",
-            nome: "Akira",
-            tutor: "Eduardo Souza",
-            especie: "Cachorro",
-            raca: "Fila",
-            descricao: "",
-        },
-        {
-            id: "9",
-            nome: "Theo",
-            tutor: "Victor Andrade",
-            especie: "Gato",
-            raca: "SRD",
-            descricao: "",
-        },
-        {
-            id: "10",
-            nome: "Lola",
-            tutor: "Jordânia Peixoto",
-            especie: "Gato",
-            raca: "SRD",
-            descricao: "",
-        },
-    ];
+
+    async function listAnimals () {
+        const arr = await handleGetAnimals(token)
+
+        if (arr) setAnimals(arr)
+        else setAnimals([])
+    }
 
     const columns = [
         {
-            title: "ID",
-            dataIndex: "id",
-            key: "id",
-        },
-        {
             title: "Nome",
-            dataIndex: "nome",
-            key: "nome",
+            dataIndex: "animal_name",
+            key: "animal_name",
         },
         {
             title: "Tutor",
-            dataIndex: "tutor",
+            dataIndex: ["tutor", "name"],
             key: "tutor",
         },
         {
             title: "Raça",
-            dataIndex: "raca",
-            key: "raca",
+            dataIndex: ["breed", "name"],
+            key: "breed",
+            render: (breed) => capitalizeFirst(breed)
         },
         {
-            title: "Espécie",
-            dataIndex: "especie",
-            key: "especie",
+            title: "Espécies",
+            dataIndex: ["specie", "name"],
+            key: "specie",
+            render: (specie) => capitalizeFirst(specie)
         },
         {
             title: "Descrição",
-            dataIndex: "descricao",
-            key: "descricao",
+            dataIndex: "description",
+            key: "description",
         },
         {
             title: "Ações",
             key: "actions",
-            render: () => {
+            render: (record) => {
                 return (
                     <div className="flex flex-row gap-3">
-                        <button onClick={(e) => { setAction("EDIT"); setVisible(true) }}>
+                        <button onClick={(e) => onClickEdit(record)}>
                             <FontAwesomeIcon
                                 className="h-4 w-4 text-blue-600"
                                 icon={faPencil}
                             />
                         </button>
                         <button onClick={(e) => { setAction("REMOVE"); setVisible(true) }}>
-                            <FontAwesomeIcon
-                                className="h-4 w-4 text-red-600"
-                                icon={faTrash}
-                            />
-                        </button>
+                        <FontAwesomeIcon
+                            className="h-4 w-4 text-red-600"
+                            icon={faTrash}
+                        />
+                    </button>
                     </div>
                 );
             },
         },
     ];
 
+    const createAnimal = async () => {
+        const animal = {
+            id: "fb9cec8d-804a-49c7-a1fb-23a8b3a881e5",
+            // id: uuid(),
+            animal_name: "Bolota",
+            tutor: {_id: "1", name: "teste"},
+            breed: {_id: "1", name: "raça teste"},
+            specie: {_id: "1", name: "especie teste"}
+        }
+        const response = await RequestHandler(token, `/api/animals/${animal.id}`, APIMethods.DELETE, animal)
+
+        console.log(response)
+    }
+
+    useEffect(() => {
+        if (token) listAnimals()
+        //eslint-disable-next-line
+    }, [token])
+
     return (
         <Layout>
             <Container>
                 <div className="w-full flex flex-row-reverse">
-                    <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/>
+                    {/* <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/> */}
+                    <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => createAnimal()}/>
                 </div>
-                <Table size="small" dataSource={dataSource} columns={columns} />
+                <Table size="small" dataSource={animals} columns={columns} />
             </Container>
             <Modal
                 key={"new-animal"}

@@ -27,6 +27,38 @@ export function userIsInvalid (req) {
     return false
 }
 
+export function animalIsInvalid (req) {
+
+    let error = BadRequest()
+
+    if (!req?.body) {
+        error = {...error, details: "Body not found"}
+
+        return error
+    } 
+
+    const body = JSON.parse(req.body)
+    
+    if (!body.tutor) {
+        error = {...error, details: "Tutor is required"}
+        
+        return error
+    }
+
+    if (!body.breed) {
+        error = {...error, details: "Breed is required"}
+        
+        return error
+    }
+    if (!body.specie) {
+        error = {...error, details: "Specie is required"}
+        
+        return error
+    }
+
+    return false
+}
+
 export const capitalizeFirst = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
 export function checkUsernameValidity (value, setError) {
