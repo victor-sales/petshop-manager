@@ -1,18 +1,20 @@
 import dbConnect from '../../../../db/connect';
-import Animal from '../../../../models/Animal';
+import Breed from '../../../../models/Breed';
+import Specie from '../../../../models/Specie';
 import { UserProfiles } from '../../../utils/Enums';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
-import NormalizedAnimal from '../../../utils/NormalizedAnimal';
+import NormalizedBreed from '../../../utils/NormalizedBreed';
+import NormalizedSpecie from '../../../utils/NormalizedSpecie';
 import ValidateAccess from '../../../utils/ValidateAccess';
 import ValidateAuthToken from '../../../utils/ValidateAuthToken';
 
-async function getAnimals (res) {
+async function getBreeds (res) {
     let result = null;
 
     try {
-        result = await Animal.find().exec()
+        result = await Breed.find().exec()
 
-        if (result.length > 0) result = result.map(e => NormalizedAnimal(e))
+        if (result.length > 0) result = result.map(e => NormalizedBreed(e))
 
         return res.json({ response: { status: 200, message: "success"}, data: result })
 
@@ -49,7 +51,7 @@ export default async function handler (req, res) {
     hasPermission = ValidateAccess(profile.profile, getPermissions)
 
     if (hasPermission) {
-        await getAnimals(res)
+        await getBreeds(res)
         
     } else {
         error = NotAuthorized()

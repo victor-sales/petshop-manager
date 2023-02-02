@@ -1,18 +1,18 @@
 import dbConnect from '../../../../db/connect';
-import Animal from '../../../../models/Animal';
+import Specie from '../../../../models/Specie';
 import { UserProfiles } from '../../../utils/Enums';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
-import NormalizedAnimal from '../../../utils/NormalizedAnimal';
+import NormalizedSpecie from '../../../utils/NormalizedSpecie';
 import ValidateAccess from '../../../utils/ValidateAccess';
 import ValidateAuthToken from '../../../utils/ValidateAuthToken';
 
-async function getAnimals (res) {
+async function getSpecies (res) {
     let result = null;
 
     try {
-        result = await Animal.find().exec()
+        result = await Specie.find().exec()
 
-        if (result.length > 0) result = result.map(e => NormalizedAnimal(e))
+        if (result.length > 0) result = result.map(e => NormalizedSpecie(e))
 
         return res.json({ response: { status: 200, message: "success"}, data: result })
 
@@ -49,7 +49,7 @@ export default async function handler (req, res) {
     hasPermission = ValidateAccess(profile.profile, getPermissions)
 
     if (hasPermission) {
-        await getAnimals(res)
+        await getSpecies(res)
         
     } else {
         error = NotAuthorized()

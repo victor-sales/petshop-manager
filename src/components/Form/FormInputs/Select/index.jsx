@@ -1,6 +1,6 @@
 import Label from "../Label"
 
-export default function Select ({id, value, onChange, labelText, required, children}) {
+export default function Select ({id, value, onChange, labelText, required, children, disabled}) {
 
     return (
         <>
@@ -11,6 +11,7 @@ export default function Select ({id, value, onChange, labelText, required, child
                 id={id}
                 value={value}
                 onChange={onChange}
+                disabled={disabled}
             >
                 {children}
             </select>

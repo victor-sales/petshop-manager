@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import Container from "../components/Container";
 import Layout from "../components/Layout";
 import { Modal, Table } from "antd";
@@ -13,69 +14,76 @@ import ConfirmRemoveText from "../components/ConfirmRemoveText";
 import { useState } from "react";
 import AddBreedForm from "../components/Form/Forms/Breeds/AddBreedForm";
 import EditBreedForm from "../components/Form/Forms/Breeds/EditBreedForm";
+import { useEffect } from "react";
+import useAuthContext from "../hooks/useAuthContext";
+import useBreedsContext from "../hooks/useBreedsContext";
 
 export default function Racas(props) {
-    const { Warning } = Modal;
+
+    const { token } = useAuthContext()
+    // const { handleGetBreeds,  breeds } = useBreedsContext()
+
     const [visible, setVisible] = useState(false);
     const [action, setAction] = useState("")
 
 
+
     const dataSource = [
         {
-            id: "1",
-            nome: "SRD",
-            especie: "Gato",
+            id: uuid(),
+            breed_name: "SRD",
+            specie: {id: "9515acf2-2774-4760-adf3-012ca8abf2e5", name: "Gato"},
             descricao: "Várias características possíveis",
         },
         {
-            id: "2",
-            nome: "SRD",
-            especie: "Cachorro",
+            id: uuid(),
+            breed_name: "SRD",
+            specie: {id: "e4bdb4ab-2ac6-40b9-a259-9a69f614def9", name: "Cachorro"},
             descricao: "Várias características possíveis",
         },
         {
-            id: "3",
-            nome: "Pug",
-            especie: "Cachorro",
+            id: uuid(),
+            breed_name: "Pug",
+            specie: {id: "e4bdb4ab-2ac6-40b9-a259-9a69f614def9", name: "Cachorro"},
             descricao: "Porte pequeno, pelo curto, focinho achatado",
         },
         {
-            id: "4",
-            nome: "Pastor Alemão",
-            especie: "Cachorro",
+            id: uuid(),
+            breed_name: "Pastor Alemão",
+            specie: {id: "e4bdb4ab-2ac6-40b9-a259-9a69f614def9", name: "Cachorro"},
             descricao:
                 "Porte grande, pleo médio em cores marrom e preto majoritariamente, com orelhas pontudas",
         },
         {
-            id: "5",
-            nome: "Fila",
-            especie: "Cachorro",
+            id: uuid(),
+            breed_name: "Fila",
+            specie: {id: "e4bdb4ab-2ac6-40b9-a259-9a69f614def9", name: "Cachorro"},
             descricao:
                 "Porte grande, pelo curto, pele do rosto e orelhas caídas",
         },
         {
-            id: "6",
-            nome: "Sphynx",
-            especie: "Gato",
+            id: uuid(),
+            breed_name: "Sphynx",
+            specie: {id: "9515acf2-2774-4760-adf3-012ca8abf2e5", name: "Gato"},
             descricao: "Gato pelado",
         },
         {
-            id: "7",
-            nome: "Persa",
-            especie: "Gato",
+            id: uuid(),
+            breed_name: "Persa",
+            specie: {id: "9515acf2-2774-4760-adf3-012ca8abf2e5", name: "Gato"},
             descricao: "Pelagem longa, cara mais achatada, olhos mais juntos",
         },
         {
-            id: "8",
-            nome: "Siames",
-            especie: "Gato",
+            id: uuid(),
+            breed_name: "Siames",
+            specie: {id: "9515acf2-2774-4760-adf3-012ca8abf2e5", name: "Gato"},
             descricao:
                 "Pelagem curta, normalmente em cores pretas e cinzas. Cor preta predominante nas patas e cara",
         },
         {
-            id: "9",
-            nome: "Ashera",
-            especie: "Gato",
+            id: uuid(),
+            breed_name: "Ashera",
+            specie: {id: "9515acf2-2774-4760-adf3-012ca8abf2e5", name: "Gato"},
             descricao:
                 "Porte grande, pelagem curta, muito similar a um felino selvagem",
         },
@@ -89,13 +97,13 @@ export default function Racas(props) {
         },
         {
             title: "Nome",
-            dataIndex: "nome",
-            key: "nome",
+            dataIndex: "breed_name",
+            key: "breed_name",
         },
         {
             title: "Especie",
-            dataIndex: "especie",
-            key: "especie",
+            dataIndex: "specie",
+            key: "specie",
         },
         {
             title: "Descrição",
@@ -125,6 +133,11 @@ export default function Racas(props) {
             },
         },
     ];
+
+    useEffect(() => {
+        // handleGetBreeds(token)
+        //eslint-disable-next-line
+    }, [token])
 
     return (
         <Layout>

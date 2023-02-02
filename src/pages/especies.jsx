@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import Container from "../components/Container";
 import Layout from "../components/Layout";
 import { Modal, Table } from "antd";
@@ -8,24 +9,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddSpecieForm from "../components/Form/Forms/Species/AddSpecieForm";
 import EditSpecieForm from "../components/Form/Forms/Species/EditSpecieForm";
 import ConfirmRemoveText from "../components/ConfirmRemoveText";
+import { useEffect } from "react";
+import useAuthContext from "../hooks/useAuthContext";
+import useSpeciesContext from "../hooks/useSpeciesContext";
 
 
 export default function Especies(props) {
+    const { token } = useAuthContext()
+    const { handleGetSpecies, species } = useSpeciesContext()
+
     const [visible, setVisible] = useState(false);    
     const [action, setAction] = useState("")
-
-    const dataSource = [
-        {
-            id: "1",
-            nome: "Cachorro",
-            descricao: "Cachorro",
-        },
-        {
-            id: "2",
-            nome: "Gato",
-            descricao: "Gato",
-        },
-    ];
 
     const columns = [
         {
@@ -35,13 +29,13 @@ export default function Especies(props) {
         },
         {
             title: "Nome",
-            dataIndex: "nome",
-            key: "nome",
+            dataIndex: "specie_name",
+            key: "specie_name",
         },
         {
             title: "Descrição",
-            dataIndex: "descricao",
-            key: "descricao",
+            dataIndex: "description",
+            key: "description",
         },
         {
             title: "Ações",
@@ -67,13 +61,18 @@ export default function Especies(props) {
         },
     ];
 
+    useEffect(() => {
+        handleGetSpecies(token)
+        //eslint-disable-next-line
+    }, [token])
+
     return (
         <Layout>
             <Container>
                 <div className="w-full flex flex-row-reverse">
                     <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/>
                 </div>
-                <Table size="small" dataSource={dataSource} columns={columns} />
+                <Table size="small" dataSource={species} columns={columns} />
             </Container>
             <Modal
                 key={"new-specie"}

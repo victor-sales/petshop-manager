@@ -1,5 +1,4 @@
 import { v4 as uuid } from 'uuid';
-
 import Container from "../components/Container";
 import Layout from "../components/Layout";
 import { Modal, Table } from "antd";
@@ -15,17 +14,20 @@ import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
 import { capitalizeFirst } from "../utils/Helpers";
 import RequestHandler from "../utils/RequestHandler";
-import { APIMethods } from "../utils/Enums";
+import { APIMethods, UserActions } from "../utils/Enums";
+import AntdModal from '../components/AntdModal';
+import DivActionButtons from '../components/Table/DivActionButtons';
 
 export default function Animais(props) {
 
-    const { handleGetAnimals } = useAnimalsContext()
     const { token } = useAuthContext()
-
+    const { handleGetAnimals, loadingCreateAnimal, loadingAnimals, loadingUpdateAnimal, loadingDeleteAnimal, animalMessage, setAnimalMessage, animalMessageType, setAnimalMessageType } = useAnimalsContext()
 
     const [animals, setAnimals] = useState([])
+    const [animal, setAnimal] = useState({})
     const [visible, setVisible] = useState(false);
     const [action, setAction] = useState("")
+    const [modalTitle, setModalTitle] = useState("")
 
     async function listAnimals () {
         const arr = await handleGetAnimals(token)
@@ -33,6 +35,17 @@ export default function Animais(props) {
         if (arr) setAnimals(arr)
         else setAnimals([])
     }
+
+    const onClickNew = () => {
+        setAction(UserActions.ADD)
+        setVisible(true)
+    }
+
+    const onClickEdit = (animal) => {
+        setAnimal(animal)
+        setAction(UserActions.EDIT)
+        setVisible(true)
+    }   
 
     const columns = [
         {
@@ -101,29 +114,64 @@ export default function Animais(props) {
     }
 
     useEffect(() => {
+        switch (action) {
+            case UserActions.ADD:
+                setModalTitle("Adicionar animal")
+                break;
+            case UserActions.EDIT:
+                setModalTitle("Editar animal")
+                break;
+            case UserActions.DELETE:
+                setModalTitle("Remover animal")
+                break;
+            default:
+                break;
+        }
+    }, [action])
+
+    useEffect(() => {
         if (token) listAnimals()
         //eslint-disable-next-line
     }, [token])
-
+    
     return (
-        <Layout>
-            <Container>
-                <div className="w-full flex flex-row-reverse">
-                    {/* <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/> */}
-                    <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => createAnimal()}/>
-                </div>
-                <Table size="small" dataSource={animals} columns={columns} />
-            </Container>
-            <Modal
-                key={"new-animal"}
-                onOk={() => setVisible(false)}
-                okText="Confirmar"
-                cancelText="Fechar"
-                title="Modal"
-                open={visible}
-            >
-                {action === "ADD" ? <AddAnimalForm /> : action === "EDIT" ? <EditAnimalForm /> : <ConfirmRemoveText />}
-            </Modal>
-        </Layout>
-    );
+        <>
+            <Layout>
+                <Container>
+                    <div className="flex flex-col w-full">
+                        <DivActionButtons onClickNew={() => onClickNew()} onClickUpdate={listAnimals}/>
+                        <div className="w-full border border-gray-300">
+                            <Table
+                                size="small" 
+                                dataSource={animals}
+                                loading={loadingAnimals}
+                                columns={columns} 
+                                scroll={{x: true}}
+                                pagination={{}}/>
+                        </div>
+                    </div>
+                </Container>
+            </Layout>
+
+            <AntdModal 
+                visible={visible} 
+                setVisible={setVisible} 
+                id={"animal-modal"} 
+                title={modalTitle} 
+                loading={ action === UserActions.ADD ? loadingCreateAnimal : action === UserActions.EDIT ? loadingUpdateAnimal : loadingDeleteAnimal} 
+                message={animalMessage}
+                setMessage={setAnimalMessage}
+                messageType={animalMessageType}
+                setMessageType={setAnimalMessageType}>
+                { 
+                    action === UserActions.ADD ? 
+                        <AddAnimalForm animals={animals} setAnimals={setAnimals} /> : 
+                    action === UserActions.EDIT ? 
+                        <EditAnimalForm animals={animals} setAnimals={setAnimals} animal={animal} setAnimal={setAnimal}/> : 
+                        <ConfirmRemoveText />
+                }
+            </AntdModal>
+            </>
+
+        );
 }

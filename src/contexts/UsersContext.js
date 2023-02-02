@@ -8,6 +8,7 @@ const UsersContext = createContext()
 
 export function UsersProvider({children}) {
 
+    const [users, setUsers] = useState([])
     const [userMessage, setUserMessage] = useState("")
     const [userMessageType, setUserMessageType] = useState("")
     const [loadingUsers, setLoadingUsers] = useState(false)
@@ -46,9 +47,11 @@ export function UsersProvider({children}) {
         
             if (response.response?.status === 200) {
                 setLoadingUsers(false)
+                setUsers(response.data)
                 return response.data
             } else {
                 setLoadingUsers(false)
+                setUsers([])
                 throw new Error(JSON.stringify(response))
             }
                        
@@ -139,6 +142,7 @@ export function UsersProvider({children}) {
                 handleGetUsers,
                 handleCreateUser,
                 handleUpdateUser,
+                users,
                 userMessage, setUserMessage,
                 userMessageType, setUserMessageType,
                 loadingUsers,

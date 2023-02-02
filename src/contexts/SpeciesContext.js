@@ -4,39 +4,42 @@ import { APIMethods, MessageTypes, RequestActionType } from "../utils/Enums";
 import RequestHandler from "../utils/RequestHandler";
 import RequestRendler from "../utils/RequestHandler";
 
-const AnimalsContext = createContext()
+const SpeciesContext = createContext()
 
-export function AnimalsProvider({children}) {
+export function SpeciesProvider({children}) {
 
-    const [animalMessage, setAnimalMessage] = useState("")
-    const [animalMessageType, setAnimalMessageType] = useState("")
-    const [loadingAnimals, setLoadingAnimals] = useState(false)
-    const [loadingCreateAnimal, setLoadingCreateAnimal] = useState(false)
-    const [loadingUpdateUser, setLoadingUpdateUser] = useState(false)
+    const [species, setSpecies] = useState([])
+    const [speciesMessage, setSpeciesMessage] = useState("")
+    const [speciesMessageType, setSpeciesMessageType] = useState("")
+    const [loadingSpecies, setLoadingSpecies] = useState(false)
+    // const [loadingCreateAnimal, setLoadingCreateAnimal] = useState(false)
+    // const [loadingUpdateUser, setLoadingUpdateUser] = useState(false)
 
  
-    async function handleGetAnimals (accessToken) {
-        setLoadingAnimals(true)
+    async function handleGetSpecies (accessToken) {
 
-        const url = `/api/animals`
+        setLoadingSpecies(true)
+
+        const url = `/api/species`
         const method = APIMethods.GET
 
         try {
             let response = await RequestHandler(accessToken, url, method)
 
             if (response.response?.status === 200) {
-                setLoadingAnimals(false)
+                setLoadingSpecies(false)
+                setSpecies(response.data)
                 return response.data
             } else {
-                setLoadingAnimals(false)
+                setLoadingSpecies(false)
                 throw new Error(JSON.stringify(response))
             }
                        
         } catch (error) {
-            setLoadingAnimals(false)
+            setLoadingSpecies(false)
             let e = JSON.parse(error.message)
-            setUserMessageType(MessageTypes.ERROR)
-            setUserMessage(e.message)
+            setSpeciesMessageType(MessageTypes.ERROR)
+            setSpeciesMessage(e.message)
             return false
         }
 
@@ -65,36 +68,36 @@ export function AnimalsProvider({children}) {
 
     
 
-    const handleCreateAnimal = async (accessToken, animal) => {
+    // const handleCreateAnimal = async (accessToken, animal) => {
                 
-        const url = `/api/animals/${animal.id}`
-        const method = APIMethods.POST
-        const body = animal
+    //     const url = `/api/users/${animal.id}`
+    //     const method = APIMethods.POST
+    //     const body = animal
 
-        try {
-            setLoadingCreateAnimal(true)
+    //     try {
+    //         setLoadingCreateAnimal(true)
             
-            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
+    //         let response = await RequestRendler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
 
-            if (response.response?.status === 201) {
-                setLoadingCreateAnimal(false)
-                setAnimalMessageType(MessageTypes.SUCCESS)
-                setUserMessage(`Animal criado com sucesso.`)
+    //         if (response.response?.status === 201) {
+    //             setLoadingCreateAnimal(false)
+    //             setAnimalMessageType(MessageTypes.SUCCESS)
+    //             setUserMessage(`Animal criado com sucesso.`)
 
-                return response
+    //             return response
 
-            } else {
-                setLoadingCreateAnimal(false)
-                throw new Error(JSON.stringify(response))
-            }
+    //         } else {
+    //             setLoadingCreateAnimal(false)
+    //             throw new Error(JSON.stringify(response))
+    //         }
 
-        } catch (error) {
-            let e = JSON.parse(error.message)
-            setAnimalMessageType(MessageTypes.ERROR)
-            setAnimalMessage(e.message + ": " + e.details ?? "")
-            return false
-        }
-    }
+    //     } catch (error) {
+    //         let e = JSON.parse(error.message)
+    //         setAnimalMessageType(MessageTypes.ERROR)
+    //         setAnimalMessage(e.message + ": " + e.details ?? "")
+    //         return false
+    //     }
+    // }
 
     // async function handleUpdateUser (accessToken, user) {        
     //     const url = `/api/users/${user.id}`
@@ -127,23 +130,24 @@ export function AnimalsProvider({children}) {
     // }
 
     return ( 
-        <AnimalsContext.Provider
+        <SpeciesContext.Provider
             value={{
-                handleGetAnimals,
+                handleGetSpecies,
                 // handleGetUserById,
-                handleCreateAnimal,
+                // handleCreateAnimal,
                 // handleUpdateUser,
-                animalMessage, setAnimalMessage,
-                animalMessageType, setAnimalMessageType,
-                loadingAnimals,
-                loadingCreateAnimal,
+                species,
+                speciesMessage, setSpeciesMessage,
+                speciesMessageType, setSpeciesMessageType,
+                loadingSpecies,
+                // loadingCreateAnimal,
                 // loadingUpdateUser
             }}
         >
             { children }
-        </AnimalsContext.Provider>
+        </SpeciesContext.Provider>
         
     )
 }
 
-export default AnimalsContext;
+export default SpeciesContext;

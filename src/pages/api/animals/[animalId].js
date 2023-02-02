@@ -170,7 +170,7 @@ export default async function handler (req, res) {
 
                 // Cria novo usuário
                 const reqAnimal = JSON.parse(req.body)
-                
+
                 animal = new Animal({
                     _id: reqAnimal.id, 
                     animal_name: reqAnimal.animal_name, 
