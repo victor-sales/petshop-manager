@@ -26,6 +26,10 @@ export const RequestActionType = {
     UPDATE_ANIMAL: "UPDATE_ANIMAL",
     GET_ANIMAL: "GET_ANIMAL",
     DELETE_ANIMAL: "DELETE_ANIMAL",
+    CREATE_SPECIE: "CREATE_ANIMAL",
+    UPDATE_SPECIE: "UPDATE_ANIMAL",
+    GET_SPECIE: "GET_ANIMAL",
+    DELETE_SPECIE: "DELETE_ANIMAL",
 }
 
 export const UserActions = {

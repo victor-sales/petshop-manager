@@ -1,5 +1,4 @@
 import { createContext, useState } from "react"
-import { v4 as uuid } from 'uuid';
 import { APIMethods, MessageTypes, RequestActionType } from "../utils/Enums";
 import RequestHandler from "../utils/RequestHandler";
 import RequestRendler from "../utils/RequestHandler";
@@ -12,9 +11,9 @@ export function SpeciesProvider({children}) {
     const [speciesMessage, setSpeciesMessage] = useState("")
     const [speciesMessageType, setSpeciesMessageType] = useState("")
     const [loadingSpecies, setLoadingSpecies] = useState(false)
-    // const [loadingCreateAnimal, setLoadingCreateAnimal] = useState(false)
-    // const [loadingUpdateUser, setLoadingUpdateUser] = useState(false)
-
+    const [loadingCreateSpecie, setLoadingCreateSpecie] = useState(false)
+    const [loadingUpdateSpecie, setLoadingUpdateSpecie] = useState(false)
+    const [loadingDeleteSpecie, setLoadingDeleteSpecie] = useState(false)
  
     async function handleGetSpecies (accessToken) {
 
@@ -32,11 +31,11 @@ export function SpeciesProvider({children}) {
                 return response.data
             } else {
                 setLoadingSpecies(false)
+                setSpecies([])
                 throw new Error(JSON.stringify(response))
             }
                        
         } catch (error) {
-            setLoadingSpecies(false)
             let e = JSON.parse(error.message)
             setSpeciesMessageType(MessageTypes.ERROR)
             setSpeciesMessage(e.message)
@@ -45,103 +44,127 @@ export function SpeciesProvider({children}) {
 
     }
 
-    // async function handleGetUserById (accessToken, userId) {
-    //     const url = `/api/users/${userId}`
-    //     const method = APIMethods.GET
-
-    //     try {
-    //         let response = await RequestRendler(accessToken, url, method)
-        
-    //         if (response.response?.status === 200) {
-    //             return response.data
-    //         } else {
-    //             throw new Error(JSON.stringify(response))
-    //         }
-                       
-    //     } catch (error) {
-    //         let e = JSON.parse(error.message)
-    //         setUserMessageType(MessageTypes.ERROR)
-    //         setUserMessage(e.message)
-    //         return false
-    //     }
-    // }
-
-    
-
-    // const handleCreateAnimal = async (accessToken, animal) => {
+    const handleCreateSpecie = async (accessToken, specie) => {
                 
-    //     const url = `/api/users/${animal.id}`
-    //     const method = APIMethods.POST
-    //     const body = animal
+        const url = `/api/species/${specie.id}`
+        const method = APIMethods.POST
+        const body = specie
 
-    //     try {
-    //         setLoadingCreateAnimal(true)
+        try {
+            setLoadingCreateSpecie(true)
             
-    //         let response = await RequestRendler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
+            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.CREATE_SPECIE)
 
-    //         if (response.response?.status === 201) {
-    //             setLoadingCreateAnimal(false)
-    //             setAnimalMessageType(MessageTypes.SUCCESS)
-    //             setUserMessage(`Animal criado com sucesso.`)
+            if (response.response?.status === 201) {
+                setLoadingCreateSpecie(false)
+                setSpeciesMessageType(MessageTypes.SUCCESS)
+                setSpeciesMessage(`Espécie criada com sucesso.`)
+                setSpecies([...species, response.data])
+                return response
 
-    //             return response
+            } else {
+                setLoadingCreateSpecie(false)
+                throw new Error(JSON.stringify(response))
+            }
 
-    //         } else {
-    //             setLoadingCreateAnimal(false)
-    //             throw new Error(JSON.stringify(response))
-    //         }
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setSpeciesMessageType(MessageTypes.ERROR)
+            setSpeciesMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
 
-    //     } catch (error) {
-    //         let e = JSON.parse(error.message)
-    //         setAnimalMessageType(MessageTypes.ERROR)
-    //         setAnimalMessage(e.message + ": " + e.details ?? "")
-    //         return false
-    //     }
-    // }
+    const handleUpdateSpecie = async (accessToken, specie) => {
+                
+        const url = `/api/species/${specie.id}`
+        const method = APIMethods.PUT
+        const body = specie
 
-    // async function handleUpdateUser (accessToken, user) {        
-    //     const url = `/api/users/${user.id}`
-    //     const method = APIMethods.PUT
-    //     const body = user
-
-    //     try {
-    //         setLoadingUpdateUser(true)
+        try {
+            setLoadingUpdateSpecie(true)
             
-    //         let response = await RequestRendler(accessToken, url, method, body, RequestActionType.UPDATE_USER)
+            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.UPDATE_SPECIE)
 
-    //         if (response.response?.status === 200) {
-    //             setLoadingUpdateUser(false)
-    //             setUserMessageType(MessageTypes.SUCCESS)
-    //             setUserMessage(`Dados alterados com sucesso`)
+            if (response.response?.status === 200) {
+                setLoadingUpdateSpecie(false)
+                setSpeciesMessageType(MessageTypes.SUCCESS)
+                setSpeciesMessage(`Dados alterados com sucesso.`)
+                findOnArrayAndUpdate(specie.id, response.data)
+                return response
 
-    //             return response
+            } else {
+                setLoadingUpdateSpecie(false)
+                throw new Error(JSON.stringify(response))
+            }
 
-    //         } else {
-    //             setLoadingUpdateUser(false)
-    //             throw new Error(JSON.stringify(response))
-    //         }
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setSpeciesMessageType(MessageTypes.ERROR)
+            setSpeciesMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
 
-    //     } catch (error) {
-    //         let e = JSON.parse(error.message)
-    //         setUserMessageType(MessageTypes.ERROR)
-    //         setUserMessage(e.message + ": " + e.details ?? "")
-    //         return false
-    //     }
-    // }
+    async function handleDeleteSpecie (accessToken, specie) {        
+        const url = `/api/species/${specie.id}`
+        const method = APIMethods.DELETE
+        
+        try {
+            setLoadingDeleteSpecie(true)
+            
+            let response = await RequestRendler(accessToken, url, method, null, RequestActionType.DELETE_ANIMAL)
+
+            if (response.response?.status === 200) {
+
+                setLoadingDeleteSpecie(false)
+                setSpeciesMessageType(MessageTypes.SUCCESS)
+                setSpeciesMessage(`${specie.specie_name} foi removida com sucesso.`)
+                findOnArrayAndUpdate(specie.id, response.data)
+
+                return response
+
+            } else {
+                setLoadingDeleteSpecie(false)
+                throw new Error(JSON.stringify(response))
+            }
+
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setSpeciesMessageType(MessageTypes.ERROR)
+            setSpeciesMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
+
+    function findOnArrayAndUpdate (id, data) {
+        if (!Object.values(data).length) {
+            setSpecies(species.filter(e => e.id !== id))
+        } else {
+            const arr = species
+            const idx = arr.map(e => e.id).indexOf(id)
+            
+            arr[idx] = data
+            
+            setSpecies(arr)
+        }
+        
+    }
 
     return ( 
         <SpeciesContext.Provider
             value={{
                 handleGetSpecies,
-                // handleGetUserById,
-                // handleCreateAnimal,
-                // handleUpdateUser,
+                handleCreateSpecie,
+                handleUpdateSpecie,
+                handleDeleteSpecie,
                 species,
                 speciesMessage, setSpeciesMessage,
                 speciesMessageType, setSpeciesMessageType,
                 loadingSpecies,
-                // loadingCreateAnimal,
-                // loadingUpdateUser
+                loadingCreateSpecie,
+                loadingUpdateSpecie,
+                loadingDeleteSpecie
             }}
         >
             { children }

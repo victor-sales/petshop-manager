@@ -138,7 +138,7 @@ export function AnimalsProvider({children}) {
     }
 
     function findOnArrayAndUpdate (id, data) {
-        if (!data.length) {
+        if (!Object.values(data).length) {
             setAnimals(animals.filter(e => e.id !== id))
         } else {
             const arr = animals

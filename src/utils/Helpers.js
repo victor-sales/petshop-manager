@@ -39,6 +39,12 @@ export function animalIsInvalid (req) {
 
     const body = JSON.parse(req.body)
     
+    if (!body.animal_name) {
+        error = {...error, details: "Tutor is required"}
+        
+        return error
+    }
+
     if (!body.tutor) {
         error = {...error, details: "Tutor is required"}
         
@@ -52,6 +58,27 @@ export function animalIsInvalid (req) {
     }
     if (!body.specie) {
         error = {...error, details: "Specie is required"}
+        
+        return error
+    }
+
+    return false
+}
+
+export function specieIsInvalid (req) {
+
+    let error = BadRequest()
+
+    if (!req?.body) {
+        error = {...error, details: "Body not found"}
+
+        return error
+    } 
+
+    const body = JSON.parse(req.body)
+    
+    if (!body.specie_name) {
+        error = {...error, details: "Specie name is required"}
         
         return error
     }
@@ -125,6 +152,15 @@ export function checkSpecieValidity (value, setError) {
 export function checkBreedValidity (value, setError) {
     if (!value) {
         setError("Raça não pode ser vazia.")
+        return false
+    }
+
+    return true
+}
+
+export function checkSpecieNameValidity (value, setError) {
+    if (!value) {
+        setError("Nome não pode ser vazio.")
         return false
     }
 
