@@ -114,11 +114,11 @@ export default function Usuarios(props) {
             <Layout>
                 <Container>
                     <div className="flex flex-col w-full">
-                        <DivActionButtons onClickNew={() => onClickNew()} onClickUpdate={listUsers}/>
+                        <DivActionButtons onClickNew={onClickNew} onClickUpdate={listUsers}/>
                         <div className="w-full border border-gray-300">
                             <Table
                                 size="small" 
-                                dataSource={users}
+                                dataSource={users.sort((a, b) => a.user_name.localeCompare(b.user_name))}
                                 loading={loadingUsers}
                                 columns={columns} 
                                 scroll={{x: true}}

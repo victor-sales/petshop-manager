@@ -17,23 +17,20 @@ import RequestHandler from "../utils/RequestHandler";
 import { APIMethods, UserActions } from "../utils/Enums";
 import AntdModal from '../components/AntdModal';
 import DivActionButtons from '../components/Table/DivActionButtons';
+import RemoveAnimalForm from '../components/Form/Forms/Animals/RemoveAnimalForm';
 
 export default function Animais(props) {
 
     const { token } = useAuthContext()
-    const { handleGetAnimals, loadingCreateAnimal, loadingAnimals, loadingUpdateAnimal, loadingDeleteAnimal, animalMessage, setAnimalMessage, animalMessageType, setAnimalMessageType } = useAnimalsContext()
+    const { handleGetAnimals, animals, loadingCreateAnimal, loadingAnimals, loadingUpdateAnimal, loadingDeleteAnimal, animalMessage, setAnimalMessage, animalMessageType, setAnimalMessageType } = useAnimalsContext()
 
-    const [animals, setAnimals] = useState([])
     const [animal, setAnimal] = useState({})
     const [visible, setVisible] = useState(false);
     const [action, setAction] = useState("")
     const [modalTitle, setModalTitle] = useState("")
 
     async function listAnimals () {
-        const arr = await handleGetAnimals(token)
-
-        if (arr) setAnimals(arr)
-        else setAnimals([])
+        await handleGetAnimals(token)
     }
 
     const onClickNew = () => {
@@ -46,6 +43,12 @@ export default function Animais(props) {
         setAction(UserActions.EDIT)
         setVisible(true)
     }   
+
+    const onClickDelete = (animal) => {
+        setAnimal(animal)
+        setAction(UserActions.DELETE); 
+        setVisible(true)
+    }
 
     const columns = [
         {
@@ -87,7 +90,7 @@ export default function Animais(props) {
                                 icon={faPencil}
                             />
                         </button>
-                        <button onClick={(e) => { setAction("REMOVE"); setVisible(true) }}>
+                        <button onClick={(e) => onClickDelete(record)}>
                         <FontAwesomeIcon
                             className="h-4 w-4 text-red-600"
                             icon={faTrash}
@@ -98,20 +101,6 @@ export default function Animais(props) {
             },
         },
     ];
-
-    const createAnimal = async () => {
-        const animal = {
-            id: "fb9cec8d-804a-49c7-a1fb-23a8b3a881e5",
-            // id: uuid(),
-            animal_name: "Bolota",
-            tutor: {_id: "1", name: "teste"},
-            breed: {_id: "1", name: "raça teste"},
-            specie: {_id: "1", name: "especie teste"}
-        }
-        const response = await RequestHandler(token, `/api/animals/${animal.id}`, APIMethods.DELETE, animal)
-
-        console.log(response)
-    }
 
     useEffect(() => {
         switch (action) {
@@ -139,11 +128,11 @@ export default function Animais(props) {
             <Layout>
                 <Container>
                     <div className="flex flex-col w-full">
-                        <DivActionButtons onClickNew={() => onClickNew()} onClickUpdate={listAnimals}/>
+                        <DivActionButtons onClickNew={onClickNew} onClickUpdate={listAnimals}/>
                         <div className="w-full border border-gray-300">
                             <Table
                                 size="small" 
-                                dataSource={animals}
+                                dataSource={animals.sort((a, b) => a.tutor.name.localeCompare(b.tutor.name))}
                                 loading={loadingAnimals}
                                 columns={columns} 
                                 scroll={{x: true}}
@@ -159,16 +148,17 @@ export default function Animais(props) {
                 id={"animal-modal"} 
                 title={modalTitle} 
                 loading={ action === UserActions.ADD ? loadingCreateAnimal : action === UserActions.EDIT ? loadingUpdateAnimal : loadingDeleteAnimal} 
+                centered={action === UserActions.DELETE}
                 message={animalMessage}
                 setMessage={setAnimalMessage}
                 messageType={animalMessageType}
                 setMessageType={setAnimalMessageType}>
                 { 
                     action === UserActions.ADD ? 
-                        <AddAnimalForm animals={animals} setAnimals={setAnimals} /> : 
+                        <AddAnimalForm /> : 
                     action === UserActions.EDIT ? 
-                        <EditAnimalForm animals={animals} setAnimals={setAnimals} animal={animal} setAnimal={setAnimal}/> : 
-                        <ConfirmRemoveText />
+                        <EditAnimalForm animal={animal} setAnimal={setAnimal}/> : 
+                        <RemoveAnimalForm animal={animal} />
                 }
             </AntdModal>
             </>

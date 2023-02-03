@@ -8,13 +8,14 @@ const AnimalsContext = createContext()
 
 export function AnimalsProvider({children}) {
 
+    const [animals, setAnimals] = useState([])
     const [animalMessage, setAnimalMessage] = useState("")
     const [animalMessageType, setAnimalMessageType] = useState("")
     const [loadingAnimals, setLoadingAnimals] = useState(false)
     const [loadingCreateAnimal, setLoadingCreateAnimal] = useState(false)
-    const [loadingUpdateUser, setLoadingUpdateUser] = useState(false)
+    const [loadingUpdateAnimal, setLoadingUpdateAnimal] = useState(false)
+    const [loadingDeleteAnimal, setLoadingDeleteAnimal] = useState(false)
 
- 
     async function handleGetAnimals (accessToken) {
         setLoadingAnimals(true)
 
@@ -26,44 +27,23 @@ export function AnimalsProvider({children}) {
 
             if (response.response?.status === 200) {
                 setLoadingAnimals(false)
+                setAnimals(response.data)
                 return response.data
             } else {
                 setLoadingAnimals(false)
+                setAnimals([])
                 throw new Error(JSON.stringify(response))
             }
                        
         } catch (error) {
             setLoadingAnimals(false)
             let e = JSON.parse(error.message)
-            setUserMessageType(MessageTypes.ERROR)
-            setUserMessage(e.message)
+            setAnimalMessageType(MessageTypes.ERROR)
+            setAnimalMessage(e.message)
             return false
         }
 
     }
-
-    // async function handleGetUserById (accessToken, userId) {
-    //     const url = `/api/users/${userId}`
-    //     const method = APIMethods.GET
-
-    //     try {
-    //         let response = await RequestRendler(accessToken, url, method)
-        
-    //         if (response.response?.status === 200) {
-    //             return response.data
-    //         } else {
-    //             throw new Error(JSON.stringify(response))
-    //         }
-                       
-    //     } catch (error) {
-    //         let e = JSON.parse(error.message)
-    //         setUserMessageType(MessageTypes.ERROR)
-    //         setUserMessage(e.message)
-    //         return false
-    //     }
-    // }
-
-    
 
     const handleCreateAnimal = async (accessToken, animal) => {
                 
@@ -79,8 +59,8 @@ export function AnimalsProvider({children}) {
             if (response.response?.status === 201) {
                 setLoadingCreateAnimal(false)
                 setAnimalMessageType(MessageTypes.SUCCESS)
-                setUserMessage(`Animal criado com sucesso.`)
-
+                setAnimalMessage(`Animal criado com sucesso.`)
+                setAnimals([...animals, response.data])
                 return response
 
             } else {
@@ -96,48 +76,95 @@ export function AnimalsProvider({children}) {
         }
     }
 
-    // async function handleUpdateUser (accessToken, user) {        
-    //     const url = `/api/users/${user.id}`
-    //     const method = APIMethods.PUT
-    //     const body = user
+    async function handleUpdateAnimal (accessToken, animal) {        
+        const url = `/api/animals/${animal.id}`
+        const method = APIMethods.PUT
+        const body = animal
 
-    //     try {
-    //         setLoadingUpdateUser(true)
+        try {
+            setLoadingUpdateAnimal(true)
             
-    //         let response = await RequestRendler(accessToken, url, method, body, RequestActionType.UPDATE_USER)
+            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.UPDATE_ANIMAL)
 
-    //         if (response.response?.status === 200) {
-    //             setLoadingUpdateUser(false)
-    //             setUserMessageType(MessageTypes.SUCCESS)
-    //             setUserMessage(`Dados alterados com sucesso`)
+            if (response.response?.status === 200) {
+                setLoadingUpdateAnimal(false)
+                setAnimalMessageType(MessageTypes.SUCCESS)
+                setAnimalMessage(`Dados alterados com sucesso.`)
+                findOnArrayAndUpdate(animal.id, response.data)
+                return response
 
-    //             return response
+            } else {
+                setLoadingUpdateAnimal(false)
+                throw new Error(JSON.stringify(response))
+            }
 
-    //         } else {
-    //             setLoadingUpdateUser(false)
-    //             throw new Error(JSON.stringify(response))
-    //         }
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setAnimalMessageType(MessageTypes.ERROR)
+            setAnimalMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
 
-    //     } catch (error) {
-    //         let e = JSON.parse(error.message)
-    //         setUserMessageType(MessageTypes.ERROR)
-    //         setUserMessage(e.message + ": " + e.details ?? "")
-    //         return false
-    //     }
-    // }
+    async function handleDeleteAnimal (accessToken, animal) {        
+        const url = `/api/animals/${animal.id}`
+        const method = APIMethods.DELETE
+        
+        try {
+            setLoadingDeleteAnimal(true)
+            
+            let response = await RequestRendler(accessToken, url, method, null, RequestActionType.DELETE_ANIMAL)
+
+            if (response.response?.status === 200) {
+
+                setLoadingDeleteAnimal(false)
+                setAnimalMessageType(MessageTypes.SUCCESS)
+                setAnimalMessage(`${animal.animal_name} foi removido com sucesso.`)
+                findOnArrayAndUpdate(animal.id, response.data)
+
+                return response
+
+            } else {
+                setLoadingDeleteAnimal(false)
+                throw new Error(JSON.stringify(response))
+            }
+
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setAnimalMessageType(MessageTypes.ERROR)
+            setAnimalMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
+
+    function findOnArrayAndUpdate (id, data) {
+        if (!data.length) {
+            setAnimals(animals.filter(e => e.id !== id))
+        } else {
+            const arr = animals
+            const idx = arr.map(e => e.id).indexOf(id)
+            
+            arr[idx] = data
+            
+            setAnimals(arr)
+        }
+        
+    }
 
     return ( 
         <AnimalsContext.Provider
             value={{
                 handleGetAnimals,
-                // handleGetUserById,
                 handleCreateAnimal,
-                // handleUpdateUser,
+                handleUpdateAnimal,
+                handleDeleteAnimal,
+                animals,
                 animalMessage, setAnimalMessage,
                 animalMessageType, setAnimalMessageType,
                 loadingAnimals,
                 loadingCreateAnimal,
-                // loadingUpdateUser
+                loadingUpdateAnimal,
+                loadingDeleteAnimal
             }}
         >
             { children }

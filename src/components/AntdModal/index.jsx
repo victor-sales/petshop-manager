@@ -1,7 +1,7 @@
 import { Modal } from "antd";
 import CustomFooter from "./CustomFooter";
 
-export default function AntdModal({id, title, visible, setVisible, loading, render, message, setMessage, messageType, setMessageType, ...props}) {
+export default function AntdModal({id, title, visible, setVisible, loading, render, message, setMessage, messageType, setMessageType, centered, ...props}) {
     return (
         <Modal
             key={id}
@@ -10,9 +10,11 @@ export default function AntdModal({id, title, visible, setVisible, loading, rend
             cancelText="Fechar"
             title={title}
             open={visible}
+            centered={centered}
             destroyOnClose={true}
             confirmLoading={loading}
             style={{top: 30}}
+            maskClosable={false}
             footer={[
                 <CustomFooter 
                     key={"custom-footer"} 

@@ -68,7 +68,7 @@ export function checkUsernameValidity (value, setError) {
         }
 
         return true
-    }
+}
 
 export function checkEmailValidity (value, setError) {
     if (!value) {
@@ -90,6 +90,41 @@ export function checkProfileValidity (value, setError) {
 export function checkRoleValidity (value, setError) {
     if (!value) {
         setError("Função não pode ser vazia.")
+        return false
+    }
+
+    return true
+}
+
+export function checkAnimalNameValidity (value, setError) {
+        if (!value) {
+            setError("Nome não pode ser vazio.")
+            return false
+        }
+
+        return true
+}
+
+export function checkTutorValidity (value, setError) {
+    if (!value) {
+        setError("Tutor não pode ser vazio")
+        return false
+    }
+    return true
+}
+
+export function checkSpecieValidity (value, setError) {
+    if (!value) {
+        setError("Espécie não pode ser vazia.")
+        return false
+    }
+
+    return true
+}
+
+export function checkBreedValidity (value, setError) {
+    if (!value) {
+        setError("Raça não pode ser vazia.")
         return false
     }
 

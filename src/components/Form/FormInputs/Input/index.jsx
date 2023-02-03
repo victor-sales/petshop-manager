@@ -1,9 +1,10 @@
 import Label from "../Label"
+import SpanError from "../SpanError"
 
 export default function Input ({id, type, value, onChange, labelText, required, onBlur, onFocus, error, readOnly, disabled }) {
         
     return (
-        <div className="flex flex-col w-full mb-2">
+        <div className="flex flex-col w-full mb-1">
             <Label htmlFor={id} text={labelText}/>
             <input
                 required={required}
@@ -17,7 +18,7 @@ export default function Input ({id, type, value, onChange, labelText, required, 
                 readOnly={readOnly}
                 disabled={disabled}
             />
-            {error ? <span className="pt-0.5 text-xs text-red-500 font-semibold">{error}</span> : <></>}
+            <SpanError error={error} />
         </div>
     )
 }

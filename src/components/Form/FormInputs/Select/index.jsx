@@ -1,6 +1,6 @@
 import Label from "../Label"
 
-export default function Select ({id, value, onChange, labelText, required, children, disabled}) {
+export default function Select ({id, value, onChange, labelText, required, children, disabled, error}) {
 
     return (
         <>
@@ -15,6 +15,7 @@ export default function Select ({id, value, onChange, labelText, required, child
             >
                 {children}
             </select>
+            <span className="pt-0.5 text-xs text-red-500 font-semibold">{error}</span>
         </>
     )
 }

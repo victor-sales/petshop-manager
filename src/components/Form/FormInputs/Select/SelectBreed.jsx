@@ -4,7 +4,7 @@ import Select from ".";
 import useAuthContext from "../../../../hooks/useAuthContext";
 import useBreedsContext from "../../../../hooks/useBreedsContext";
 
-export default function SelectBreed ({value, onChange, specieId, ...props}) {
+export default function SelectBreed ({value, onChange, specieId, error, ...props}) {
 
     const { token } = useAuthContext()
     const { handleGetBreeds, breeds } = useBreedsContext()
@@ -34,9 +34,10 @@ export default function SelectBreed ({value, onChange, specieId, ...props}) {
             id='select-breed'
             value={value}
             onChange={onChange}
-            labelText="Raça"
+            labelText="Raça*"
             disabled={disabled}
             required
+            error={error}
         >
             <option value={""} disabled>...</option>
             {list?.map((e, key) => (

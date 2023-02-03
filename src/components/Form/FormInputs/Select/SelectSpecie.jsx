@@ -3,7 +3,7 @@ import Select from ".";
 import useAuthContext from "../../../../hooks/useAuthContext";
 import useSpeciesContext from "../../../../hooks/useSpeciesContext";
 
-export default function SelectSpecie ({value, onChange, ...props}) {
+export default function SelectSpecie ({value, onChange, error, ...props}) {
 
     const { token } = useAuthContext()
     const { handleGetSpecies, species } = useSpeciesContext()
@@ -18,8 +18,9 @@ export default function SelectSpecie ({value, onChange, ...props}) {
             id='select-specie'
             value={value}
             onChange={onChange}
-            labelText="Espécie"
+            labelText="Espécie*"
             required
+            error={error}
         >
             <option value={""} disabled>...</option>
             {species?.map((e, key) => (

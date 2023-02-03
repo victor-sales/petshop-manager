@@ -16,7 +16,7 @@ async function animalIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Animal.find({animal_name: body.animal_name, 'tutor.id': body.tutor.id}).exec()
+    const userExists = await Animal.find({animal_name: body.animal_name, 'tutor._id': body.tutor._id}).exec()
 
     if (userExists.length > 0) {
         let error = Conflict()
@@ -46,9 +46,8 @@ async function createAnimal (res, animal) {
 async function updateAnimal (res, animal) {
     try {
         const newAnimal = await Animal.findByIdAndUpdate(animal._id, animal, { returnDocument: "after" }).select('-__v')
-        
-        return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(newAnimal) })
-        
+
+        return res.json({ response: { status: 200, message: "success"}, data: NormalizedAnimal(newAnimal) })
 
     } catch (e) {
         let error = Internal()
@@ -61,7 +60,7 @@ async function updateAnimal (res, animal) {
 
 async function deleteAnimal (res, animalId) {
     try {
-       
+
         await Animal.findByIdAndDelete(animalId)
 
         return res.json({ response: { status: 200, message: "success"}, data: [] })
@@ -220,7 +219,8 @@ export default async function handler (req, res) {
                             
             break;
         case "DELETE":
-            hasPermission = ValidateAccess(profile.profile, putPermissions)
+            hasPermission = ValidateAccess(profile.profile, deletePermissions)
+
             if (hasPermission) { 
                 await deleteAnimal(res, animalId)
             } else {

@@ -3,26 +3,39 @@ import { v4 as uuid } from 'uuid';
 import useAnimalsContext from "../../../../hooks/useAnimalsContext"
 import useAuthContext from "../../../../hooks/useAuthContext"
 import useUsersContext from "../../../../hooks/useUsersContext"
+import { checkAnimalNameValidity, checkBreedValidity, checkSpecieValidity, checkTutorValidity } from "../../../../utils/Helpers";
 import NormalizedAnimal from "../../../../utils/NormalizedAnimal"
 import Input from "../../FormInputs/Input"
 import SelectBreed from "../../FormInputs/Select/SelectBreed"
 import SelectSpecie from "../../FormInputs/Select/SelectSpecie"
 import SelectUser from "../../FormInputs/Select/SelectUser"
 
-export default function AddAnimalForm ({animals, setAnimals}) {
+export default function AddAnimalForm ({}) {
 
-    // const [animalName, setAnimalName] = useState("")
-    // const [tutor, setTutor] = useState("")
-    // const [breed, setBreed] = useState("")
-    // const [specie, setSpecie] = useState("")
-    // const [desc, setDesc] = useState("")
     const { token } = useAuthContext()
     const { handleCreateAnimal } = useAnimalsContext()
 
     const [animal, setAnimal] = useState({ id: uuid(), animal_name: "",  tutor: { _id: "", name: "" },  breed: { _id: "", name: "" },  specie: { _id: "", name: "" },  description: "" })
+    
+    const [animalNameError, setAnimalNameError] = useState("")
+    const [tutorError, setTutorError] = useState("")
+    const [breedError, setBreedError] = useState("")
+    const [specieError, setSpecieError] = useState("")
 
     async function createAnimal () {
-        await handleCreateAnimal(token, animal)
+        
+        const nameIsValid = checkAnimalNameValidity(animal.animal_name, setAnimalNameError)
+        const tutorIsValid = checkTutorValidity(animal.tutor._id, setTutorError)
+        const specieIsValid = checkSpecieValidity(animal.specie._id, setSpecieError)
+        const breedIsValid = checkBreedValidity(animal.breed._id, setBreedError)
+
+        const areValid = [, nameIsValid, tutorIsValid, specieIsValid, breedIsValid].every(e => e)
+
+        if (areValid) {
+            await handleCreateAnimal(token, animal)
+        } else {
+            return false
+        } 
     }
 
     function onChangeTutor (e) {
@@ -32,7 +45,7 @@ export default function AddAnimalForm ({animals, setAnimals}) {
 
         setAnimal({
             ...animal, 
-            tutor: { id: user_id, name: user_name }
+            tutor: { _id: user_id, name: user_name }
         })
     }
 
@@ -43,7 +56,7 @@ export default function AddAnimalForm ({animals, setAnimals}) {
 
         setAnimal({
             ...animal, 
-            specie: { id: specie_id, name: specie_name }
+            specie: { _id: specie_id, name: specie_name }
         })
     }
 
@@ -54,7 +67,7 @@ export default function AddAnimalForm ({animals, setAnimals}) {
 
         setAnimal({
             ...animal, 
-            breed: { id: breed_id, name: breed_name }
+            breed: { _id: breed_id, name: breed_name }
         })
     }
 
@@ -73,34 +86,36 @@ export default function AddAnimalForm ({animals, setAnimals}) {
         <form>
             <div className="flex flex-col gap-1">
                 <Input  
-                    labelText="Nome do animal"
+                    labelText="Nome do animal*"
                     id="animal-name"
                     required={true}
                     value={animal.animal_name}
                     onChange={(e) => setAnimal({...animal, animal_name: e.target.value})}
-                    error=""
+                    error={animalNameError}
                     />
                  
                 <SelectUser 
-                    value={animal.tutor.id}
+                    value={animal.tutor._id}
                     onChange={onChangeTutor}
+                    error={tutorError}
                 />
                 <SelectSpecie 
-                     value={animal.specie.id}
-                     onChange={onChangeSpecie}
-                    />
+                    value={animal.specie._id}
+                    onChange={onChangeSpecie}
+                    error={specieError}
+                />
                 <SelectBreed
-                    value={animal.breed.id}
+                    value={animal.breed._id}
                     onChange={onChangeBreed}
-                    specieId={animal.specie.id}
+                    specieId={animal.specie._id}
+                    error={breedError}
                 />
                 <Input 
                     labelText="Descrição"
                     id="animal-desc"
                     required={true}
                     value={animal.description}
-                    onChange={(e) => setAnimal({...animal, description: e.target.value})}
-                    error=""
+                    onChange={(e) => setAnimal({...animal, description: e.target.value})}  
                 />
             </div>
         </form>
