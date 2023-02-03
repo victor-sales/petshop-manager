@@ -1,5 +1,4 @@
 import { createContext, useState } from "react"
-import { v4 as uuid } from 'uuid';
 import { APIMethods, MessageTypes, RequestActionType } from "../utils/Enums";
 import RequestHandler from "../utils/RequestHandler";
 import RequestRendler from "../utils/RequestHandler";
@@ -12,9 +11,9 @@ export function BreedsProvider({children}) {
     const [breedsMessage, setBreedsMessage] = useState("")
     const [breedsMessageType, setBreedsMessageType] = useState("")
     const [loadingBreeds, setLoadingBreeds] = useState(false)
-    // const [loadingCreateAnimal, setLoadingCreateAnimal] = useState(false)
-    // const [loadingUpdateUser, setLoadingUpdateUser] = useState(false)
-
+    const [loadingCreateBreed, setLoadingCreateBreed] = useState(false)
+    const [loadingUpdateBreed, setLoadingUpdateBreed] = useState(false)
+    const [loadingDeleteBreed, setLoadingDeleteBreed] = useState(false)
  
     async function handleGetBreeds (accessToken) {
 
@@ -32,11 +31,11 @@ export function BreedsProvider({children}) {
                 return response.data
             } else {
                 setLoadingBreeds(false)
+                setBreeds([])
                 throw new Error(JSON.stringify(response))
             }
                        
         } catch (error) {
-            setLoadingBreeds(false)
             let e = JSON.parse(error.message)
             setBreedsMessageType(MessageTypes.ERROR)
             setBreedsMessage(e.message)
@@ -45,103 +44,127 @@ export function BreedsProvider({children}) {
 
     }
 
-    // async function handleGetUserById (accessToken, userId) {
-    //     const url = `/api/users/${userId}`
-    //     const method = APIMethods.GET
-
-    //     try {
-    //         let response = await RequestRendler(accessToken, url, method)
-        
-    //         if (response.response?.status === 200) {
-    //             return response.data
-    //         } else {
-    //             throw new Error(JSON.stringify(response))
-    //         }
-                       
-    //     } catch (error) {
-    //         let e = JSON.parse(error.message)
-    //         setUserMessageType(MessageTypes.ERROR)
-    //         setUserMessage(e.message)
-    //         return false
-    //     }
-    // }
-
-    
-
-    // const handleCreateAnimal = async (accessToken, animal) => {
+    const handleCreateBreed = async (accessToken, breed) => {
                 
-    //     const url = `/api/users/${animal.id}`
-    //     const method = APIMethods.POST
-    //     const body = animal
+        const url = `/api/breeds/${breed.id}`
+        const method = APIMethods.POST
+        const body = breed
 
-    //     try {
-    //         setLoadingCreateAnimal(true)
+        try {
+            setLoadingCreateBreed(true)
             
-    //         let response = await RequestRendler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
+            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.CREATE_BREED)
 
-    //         if (response.response?.status === 201) {
-    //             setLoadingCreateAnimal(false)
-    //             setAnimalMessageType(MessageTypes.SUCCESS)
-    //             setUserMessage(`Animal criado com sucesso.`)
+            if (response.response?.status === 201) {
+                setLoadingCreateBreed(false)
+                setBreedsMessageType(MessageTypes.SUCCESS)
+                setBreedsMessage(`Espécie criada com sucesso.`)
+                setBreeds([...breeds, response.data])
+                return response
 
-    //             return response
+            } else {
+                setLoadingCreateBreed(false)
+                throw new Error(JSON.stringify(response))
+            }
 
-    //         } else {
-    //             setLoadingCreateAnimal(false)
-    //             throw new Error(JSON.stringify(response))
-    //         }
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setBreedsMessageType(MessageTypes.ERROR)
+            setBreedsMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
 
-    //     } catch (error) {
-    //         let e = JSON.parse(error.message)
-    //         setAnimalMessageType(MessageTypes.ERROR)
-    //         setAnimalMessage(e.message + ": " + e.details ?? "")
-    //         return false
-    //     }
-    // }
+    const handleUpdateBreed = async (accessToken, breed) => {
+                
+        const url = `/api/breeds/${breed.id}`
+        const method = APIMethods.PUT
+        const body = breed
 
-    // async function handleUpdateUser (accessToken, user) {        
-    //     const url = `/api/users/${user.id}`
-    //     const method = APIMethods.PUT
-    //     const body = user
-
-    //     try {
-    //         setLoadingUpdateUser(true)
+        try {
+            setLoadingUpdateBreed(true)
             
-    //         let response = await RequestRendler(accessToken, url, method, body, RequestActionType.UPDATE_USER)
+            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.UPDATE_BREED)
 
-    //         if (response.response?.status === 200) {
-    //             setLoadingUpdateUser(false)
-    //             setUserMessageType(MessageTypes.SUCCESS)
-    //             setUserMessage(`Dados alterados com sucesso`)
+            if (response.response?.status === 200) {
+                setLoadingUpdateBreed(false)
+                setBreedsMessageType(MessageTypes.SUCCESS)
+                setBreedsMessage(`Dados alterados com sucesso.`)
+                findOnArrayAndUpdate(breed.id, response.data)
+                return response
 
-    //             return response
+            } else {
+                setLoadingUpdateBreed(false)
+                throw new Error(JSON.stringify(response))
+            }
 
-    //         } else {
-    //             setLoadingUpdateUser(false)
-    //             throw new Error(JSON.stringify(response))
-    //         }
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setBreedsMessageType(MessageTypes.ERROR)
+            setBreedsMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
 
-    //     } catch (error) {
-    //         let e = JSON.parse(error.message)
-    //         setUserMessageType(MessageTypes.ERROR)
-    //         setUserMessage(e.message + ": " + e.details ?? "")
-    //         return false
-    //     }
-    // }
+    async function handleDeleteBreed (accessToken, breed) {        
+        const url = `/api/breeds/${breed.id}`
+        const method = APIMethods.DELETE
+        
+        try {
+            setLoadingDeleteBreed(true)
+            
+            let response = await RequestRendler(accessToken, url, method, null, RequestActionType.DELETE_BREED)
+
+            if (response.response?.status === 200) {
+
+                setLoadingDeleteBreed(false)
+                setBreedsMessageType(MessageTypes.SUCCESS)
+                setBreedsMessage(`${breed.breed_name} foi removida com sucesso.`)
+                findOnArrayAndUpdate(breed.id, response.data)
+
+                return response
+
+            } else {
+                setLoadingDeleteBreed(false)
+                throw new Error(JSON.stringify(response))
+            }
+
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setBreedsMessageType(MessageTypes.ERROR)
+            setBreedsMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
+
+    function findOnArrayAndUpdate (id, data) {
+        if (!Object.values(data).length) {
+            setBreeds(breeds.filter(e => e.id !== id))
+        } else {
+            const arr = breeds
+            const idx = arr.map(e => e.id).indexOf(id)
+            
+            arr[idx] = data
+            
+            setBreeds(arr)
+        }
+        
+    }
 
     return ( 
         <BreedsContext.Provider
             value={{
                 handleGetBreeds,
-                // handleGetUserById,
-                // handleCreateAnimal,
-                // handleUpdateUser,
+                handleCreateBreed,
+                handleUpdateBreed,
+                handleDeleteBreed,
                 breeds,
                 breedsMessage, setBreedsMessage,
                 breedsMessageType, setBreedsMessageType,
                 loadingBreeds,
-                // loadingCreateAnimal,
-                // loadingUpdateUser
+                loadingCreateBreed,
+                loadingUpdateBreed,
+                loadingDeleteBreed
             }}
         >
             { children }

@@ -30,6 +30,10 @@ export const RequestActionType = {
     UPDATE_SPECIE: "UPDATE_ANIMAL",
     GET_SPECIE: "GET_ANIMAL",
     DELETE_SPECIE: "DELETE_ANIMAL",
+    CREATE_BREED: "CREATE_BREED",
+    UPDATE_BREED: "UPDATE_BREED",
+    GET_BREED: "GET_BREED",
+    DELETE_BREED: "DELETE_BREED",
 }
 
 export const UserActions = {

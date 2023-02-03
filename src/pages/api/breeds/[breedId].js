@@ -1,26 +1,25 @@
 import dbConnect from '../../../../db/connect';
-import Breed from '../../../../models/Animal';
+import Breed from '../../../../models/Breed';
 import Conflict from '../../../utils/ErrorsObj/Conflict';
 import NotFound from '../../../utils/ErrorsObj/NotFound';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
-import NormalizedUser from '../../../utils/NormalizedUser';
-import NormalizedAnimal from '../../../utils/NormalizedAnimal';
-import { animalIsInvalid, userIsInvalid } from '../../../utils/Helpers';
+import NormalizedBreed from '../../../utils/NormalizedBreed';
+import { breedIsInvalid } from '../../../utils/Helpers';
 import BadRequest from '../../../utils/ErrorsObj/BadRequest';
 import Internal from '../../../utils/ErrorsObj/Internal';
 import ValidateAuthToken from '../../../utils/ValidateAuthToken';
 import { UserProfiles } from '../../../utils/Enums';
 import ValidateAccess from '../../../utils/ValidateAccess';
 
-async function animalIsDuplicated (req) {
+async function breedIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Animal.find({animal_name: body.animal_name, 'tutor._id': body.tutor._id}).exec()
+    const userExists = await Breed.find({breed_name: body.breed_name, 'specie._id': body.specie._id}).exec()
 
     if (userExists.length > 0) {
         let error = Conflict()
-        error = {...error, details: `Animal ${body.animal_name} of Tutor ${body.tutor.name} already exists`}
+        error = {...error, details: `Breed ${body.breed_name} of Specie ${body.specie.name} already exists`}
         
         return error
     }
@@ -28,9 +27,9 @@ async function animalIsDuplicated (req) {
     return false
 }
 
-async function createBreed (res, animal) {
+async function createBreed (res, breed) {
     try {
-        const result = await Breed.create(animal)
+        const result = await Breed.create(breed)
 
         return res.json({ response: { status: 201, message: "success"}, data: NormalizedBreed(result) })
 
@@ -43,9 +42,9 @@ async function createBreed (res, animal) {
 
 }
 
-async function updateBreed (res, animal) {
+async function updateBreed (res, breed) {
     try {
-        const newBreed = await Breed.findByIdAndUpdate(animal._id, animal, { returnDocument: "after" }).select('-__v')
+        const newBreed = await Breed.findByIdAndUpdate(breed._id, breed, { returnDocument: "after" }).select('-__v')
 
         return res.json({ response: { status: 200, message: "success"}, data: NormalizedBreed(newBreed) })
 
@@ -58,10 +57,10 @@ async function updateBreed (res, animal) {
 
 }
 
-async function deleteBreed (res, animalId) {
+async function deleteBreed (res, breedId) {
     try {
 
-        await Breed.findByIdAndDelete(animalId)
+        await Breed.findByIdAndDelete(breedId)
 
         return res.json({ response: { status: 200, message: "success"}, data: [] })
 
@@ -74,14 +73,14 @@ async function deleteBreed (res, animalId) {
 
 }
 
-async function getBreed (res, animal_id) {
+async function getBreed (res, breed_id) {
 
     try {
-        const result = await Breed.findById(animal_id).exec()
+        const result = await Breed.findById(breed_id).exec()
 
         if (!result) {
             error = NotFound()
-            error = {...error, detail: `Breed with ID: ${animal_id} not found`}
+            error = {...error, detail: `Breed with ID: ${breed_id} not found`}
             
             return res.json(error)
         }
@@ -103,7 +102,7 @@ export default async function handler (req, res) {
 
     const headers = req.headers
     const method = req.method
-    const animalId = req.query.animalId
+    const breedId = req.query.breedId
 
     const getPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO]
     const postPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO]
@@ -112,7 +111,7 @@ export default async function handler (req, res) {
 
     let invalid = null;
     let duplicated = null;
-    let animal = null;
+    let breed = null;
     let error = null;
     let profile = null;
     let hasPermission = false
@@ -136,14 +135,14 @@ export default async function handler (req, res) {
 
             if (hasPermission) {
                 
-                if (!animalId) {
+                if (!breedId) {
                     error = BadRequest()
                     error = {...error, detail: `Breed ID is mandatory`}
                     
                     return res.json(error)
                 }
                                     
-                await getBreed(res, animalId)
+                await getBreed(res, breedId)
             
             } else {
                 error = NotAuthorized()
@@ -158,28 +157,26 @@ export default async function handler (req, res) {
 
             if (hasPermission) {
                 // Valida campos obrigatórios
-                invalid = animalIsInvalid(req)
+                invalid = breedIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
                 // Valida duplicidade de usuários
-                duplicated = await animalIsDuplicated(req)
+                duplicated = await breedIsDuplicated(req)
 
                 if (duplicated) return res.json(duplicated)
 
                 // Cria novo usuário
                 const reqBreed = JSON.parse(req.body)
 
-                animal = new Breed({
+                breed = new Breed({
                     _id: reqBreed.id, 
-                    animal_name: reqBreed.animal_name, 
-                    tutor: reqBreed.tutor, 
-                    breed: reqBreed.breed, 
+                    breed_name: reqBreed.breed_name, 
                     specie: reqBreed.specie, 
                     description: reqBreed.description ?? ""
                 })
 
-                await createBreed(res, animal)
+                await createBreed(res, breed)
 
             } else {
                 error = NotAuthorized()
@@ -194,23 +191,21 @@ export default async function handler (req, res) {
             if (hasPermission) {
 
                 // Valida campos obrigatórios
-                invalid = animalIsInvalid(req)
+                invalid = breedIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
                 //Edita usuário
                 const reqBreed = JSON.parse(req.body)
                 
-                animal = new Breed({
+                breed = new Breed({
                     _id: reqBreed.id, 
-                    animal_name: reqBreed.animal_name, 
-                    tutor: reqBreed.tutor, 
-                    breed: reqBreed.breed, 
+                    breed_name: reqBreed.breed_name, 
                     specie: reqBreed.specie, 
                     description: reqBreed.description ?? ""
                 })
 
-                await updateBreed(res, animal)
+                await updateBreed(res, breed)
             } else {
                 error = NotAuthorized()
             
@@ -222,7 +217,7 @@ export default async function handler (req, res) {
             hasPermission = ValidateAccess(profile.profile, deletePermissions)
 
             if (hasPermission) { 
-                await deleteBreed(res, animalId)
+                await deleteBreed(res, breedId)
             } else {
                 error = NotAuthorized()
             

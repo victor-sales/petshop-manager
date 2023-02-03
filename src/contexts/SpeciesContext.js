@@ -113,7 +113,7 @@ export function SpeciesProvider({children}) {
         try {
             setLoadingDeleteSpecie(true)
             
-            let response = await RequestRendler(accessToken, url, method, null, RequestActionType.DELETE_ANIMAL)
+            let response = await RequestRendler(accessToken, url, method, null, RequestActionType.DELETE_BREED)
 
             if (response.response?.status === 200) {
 
