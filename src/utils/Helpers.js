@@ -65,6 +65,57 @@ export function animalIsInvalid (req) {
     return false
 }
 
+export function serviceIsInvalid (req) {
+
+    let error = BadRequest()
+
+    if (!req?.body) {
+        error = {...error, details: "Body not found"}
+
+        return error
+    } 
+
+    const body = JSON.parse(req.body)
+    
+    if (!body.service_name) {
+        error = {...error, details: "Service name is required"}
+        
+        return error
+    }
+
+    if (!body.tutor) {
+        error = {...error, details: "Tutor is required"}
+        
+        return error
+    }
+
+    if (!body.date) {
+        error = {...error, details: "Date is required"}
+        
+        return error
+    }
+
+    if (!body.breed) {
+        error = {...error, details: "Breed is required"}
+        
+        return error
+    }
+
+    if (!body.specie) {
+        error = {...error, details: "Specie is required"}
+        
+        return error
+    }
+
+    if (!body.simptoms) {
+        error = {...error, details: "Simptoms are required"}
+        
+        return error
+    }
+
+    return false
+}
+
 export function specieIsInvalid (req) {
 
     let error = BadRequest()
@@ -197,6 +248,32 @@ export function checkSpecieNameValidity (value, setError) {
 export function checkBreedNameValidity (value, setError) {
     if (!value) {
         setError("Nome não pode ser vazio.")
+        return false
+    }
+
+    return true
+}
+
+export function checkServiceNameValidity (value, setError) {
+    if (!value) {
+        setError("Serviço não pode ser vazio.")
+        return false
+    }
+
+    return true
+}
+
+export function checkSimptomsValidity (value, setError) {
+    if (!value) {
+        setError("Sintomas não pode ser vazio.")
+        return false
+    }
+
+    return true
+}
+export function checkDateValidity (value, setError) {
+    if (!value) {
+        setError("Data não pode ser vazia.")
         return false
     }
 

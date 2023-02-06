@@ -34,6 +34,10 @@ export const RequestActionType = {
     UPDATE_BREED: "UPDATE_BREED",
     GET_BREED: "GET_BREED",
     DELETE_BREED: "DELETE_BREED",
+    CREATE_SERVICE: "CREATE_SERVICE",
+    UPDATE_SERVICE: "UPDATE_SERVICE",
+    GET_SERVICE: "GET_SERVICE",
+    DELETE_SERVICE: "DELETE_SERVICE",
 }
 
 export const UserActions = {
@@ -46,4 +50,9 @@ export const UserProfiles = {
     ADMIN: "ADMINISTRADOR",
     CLIENTE: "CLIENTE",
     FUNCIONARIO: "FUNCIONARIO"
+}
+
+export const Services = {
+    CONSULTA: "consulta",
+    BANHO_E_TOSA: "banho e tosa"
 }

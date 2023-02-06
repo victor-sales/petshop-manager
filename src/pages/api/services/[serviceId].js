@@ -1,25 +1,25 @@
 import dbConnect from '../../../../db/connect';
-import Specie from '../../../../models/Specie';
+import Service from '../../../../models/Service';
 import Conflict from '../../../utils/ErrorsObj/Conflict';
 import NotFound from '../../../utils/ErrorsObj/NotFound';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
-import NormalizedSpecie from '../../../utils/NormalizedSpecie';
-import { specieIsInvalid } from '../../../utils/Helpers';
+import NormalizedService from '../../../utils/NormalizedService';
+import { serviceIsInvalid, userIsInvalid } from '../../../utils/Helpers';
 import BadRequest from '../../../utils/ErrorsObj/BadRequest';
 import Internal from '../../../utils/ErrorsObj/Internal';
 import ValidateAuthToken from '../../../utils/ValidateAuthToken';
 import { UserProfiles } from '../../../utils/Enums';
 import ValidateAccess from '../../../utils/ValidateAccess';
 
-async function specieIsDuplicated (req) {
+async function serviceIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Specie.find({specie_name: body.specie_name}).exec()
+    const userExists = await Service.find({service_name: body.service_name, 'tutor._id': body.tutor._id}).exec()
 
     if (userExists.length > 0) {
         let error = Conflict()
-        error = {...error, details: `Specie ${body.specie_name} already exists`}
+        error = {...error, details: `Service ${body.service_name} of Tutor ${body.tutor.name} already exists`}
         
         return error
     }
@@ -27,11 +27,11 @@ async function specieIsDuplicated (req) {
     return false
 }
 
-async function createSpecie (res, specie) {
+async function createService (res, service) {
     try {
-        const result = await Specie.create(specie)
+        const result = await Service.create(service)
 
-        return res.json({ response: { status: 201, message: "success"}, data: NormalizedSpecie(result) })
+        return res.json({ response: { status: 201, message: "success"}, data: NormalizedService(result) })
 
     } catch (e) {
         let error = Internal()
@@ -42,11 +42,11 @@ async function createSpecie (res, specie) {
 
 }
 
-async function updateSpecie (res, specie) {
+async function updateService (res, service) {
     try {
-        const newSpecie = await Specie.findByIdAndUpdate(specie._id, specie, { returnDocument: "after" }).select('-__v')
+        const newService = await Service.findByIdAndUpdate(service._id, service, { returnDocument: "after" }).select('-__v')
 
-        return res.json({ response: { status: 200, message: "success"}, data: NormalizedSpecie(newSpecie) })
+        return res.json({ response: { status: 200, message: "success"}, data: NormalizedService(newService) })
 
     } catch (e) {
         let error = Internal()
@@ -57,10 +57,10 @@ async function updateSpecie (res, specie) {
 
 }
 
-async function deleteSpecie (res, specieId) {
+async function deleteService (res, serviceId) {
     try {
 
-        await Specie.findByIdAndDelete(specieId)
+        await Service.findByIdAndDelete(serviceId)
 
         return res.json({ response: { status: 200, message: "success"}, data: [] })
 
@@ -73,19 +73,19 @@ async function deleteSpecie (res, specieId) {
 
 }
 
-async function getSpecie (res, specieId) {
+async function getService (res, service_id) {
 
     try {
-        const result = await Specie.findById(specieId).exec()
+        const result = await Service.findById(service_id).exec()
 
         if (!result) {
             error = NotFound()
-            error = {...error, detail: `Specie with ID: ${specieId} not found`}
+            error = {...error, detail: `Service with ID: ${service_id} not found`}
             
             return res.json(error)
         }
 
-        return res.json({ response: {status: 200, message: "success"}, data: NormalizedSpecie(result) })
+        return res.json({ response: {status: 200, message: "success"}, data: NormalizedService(result) })
 
     } catch (e) {
         let error = Internal()
@@ -102,7 +102,7 @@ export default async function handler (req, res) {
 
     const headers = req.headers
     const method = req.method
-    const specieId = req.query.specieId
+    const serviceId = req.query.serviceId
 
     const getPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO]
     const postPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO]
@@ -111,7 +111,7 @@ export default async function handler (req, res) {
 
     let invalid = null;
     let duplicated = null;
-    let specie = null;
+    let service = null;
     let error = null;
     let profile = null;
     let hasPermission = false
@@ -135,14 +135,14 @@ export default async function handler (req, res) {
 
             if (hasPermission) {
                 
-                if (!specieId) {
+                if (!serviceId) {
                     error = BadRequest()
-                    error = {...error, detail: `Specie ID is mandatory`}
+                    error = {...error, detail: `Service ID is mandatory`}
                     
                     return res.json(error)
                 }
                                     
-                await getSpecie(res, specieId)
+                await getService(res, serviceId)
             
             } else {
                 error = NotAuthorized()
@@ -157,25 +157,32 @@ export default async function handler (req, res) {
 
             if (hasPermission) {
                 // Valida campos obrigatórios
-                invalid = specieIsInvalid(req)
+                invalid = serviceIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
                 // Valida duplicidade de usuários
-                duplicated = await specieIsDuplicated(req)
+                // duplicated = await serviceIsDuplicated(req)
 
                 if (duplicated) return res.json(duplicated)
 
-                // Cria novo usuário
-                const reqSpecie = JSON.parse(req.body)
+                // Cria novo serviço
+                const reqService = JSON.parse(req.body)
+                console.log(reqService)
 
-                specie = new Specie({
-                    _id: reqSpecie.id, 
-                    specie_name: reqSpecie.specie_name, 
-                    description: reqSpecie.description ?? ""
+                service = new Service({
+                    _id: reqService.id,
+                    service_name: reqService.service_name,
+                    date: reqService.date,
+                    tutor: reqService.tutor,
+                    breed: reqService.breed,
+                    specie: reqService.specie,
+                    description: reqService.description ?? "",
+                    simptoms: reqService.simptoms ?? "",
+                    is_confirmed: reqService.is_confirmed
                 })
-
-                await createSpecie(res, specie)
+                console.log(service)
+                await createService(res, service)
 
             } else {
                 error = NotAuthorized()
@@ -190,20 +197,26 @@ export default async function handler (req, res) {
             if (hasPermission) {
 
                 // Valida campos obrigatórios
-                invalid = specieIsInvalid(req)
+                invalid = serviceIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
                 //Edita usuário
-                const reqSpecie = JSON.parse(req.body)
-
-                specie = new Specie({
-                    _id: reqSpecie.id, 
-                    specie_name: reqSpecie.specie_name, 
-                    description: reqSpecie.description ?? ""
+                const reqService = JSON.parse(req.body)
+                
+                service = new Service({
+                    _id: reqService._id,
+                    service_name: reqService.service_name,
+                    date: reqService.date,
+                    tutor: reqService.tutor,
+                    breed: reqService.breed,
+                    specie: reqService.specie,
+                    description: reqService.description ?? "",
+                    simptoms: reqService.simptoms ?? "",
+                    is_confirmed: reqService.is_confirmed
                 })
 
-                await updateSpecie(res, specie)
+                await updateService(res, service)
             } else {
                 error = NotAuthorized()
             
@@ -215,7 +228,7 @@ export default async function handler (req, res) {
             hasPermission = ValidateAccess(profile.profile, deletePermissions)
 
             if (hasPermission) { 
-                await deleteSpecie(res, specieId)
+                await deleteService(res, serviceId)
             } else {
                 error = NotAuthorized()
             

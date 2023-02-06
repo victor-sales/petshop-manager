@@ -7,18 +7,21 @@ import { UsersProvider } from '../contexts/UsersContext';
 import { AnimalsProvider } from '../contexts/AnimalsContext';
 import { SpeciesProvider } from '../contexts/SpeciesContext';
 import { BreedsProvider } from '../contexts/BreedsContext';
+import { ServicesProvider } from '../contexts/ServicesContext';
 
 function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
       <UsersProvider>
-        <AnimalsProvider>
-          <BreedsProvider>
-            <SpeciesProvider>
-            <Component {...pageProps} />
-            </SpeciesProvider>
-          </BreedsProvider>
-        </AnimalsProvider>
+        <ServicesProvider>
+          <AnimalsProvider>
+            <BreedsProvider>
+              <SpeciesProvider>
+              <Component {...pageProps} />
+              </SpeciesProvider>
+            </BreedsProvider>
+          </AnimalsProvider>
+        </ServicesProvider>
       </UsersProvider>
     </AuthProvider>
   )
