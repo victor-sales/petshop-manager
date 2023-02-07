@@ -15,11 +15,11 @@ async function serviceIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Service.find({service_name: body.service_name, 'tutor._id': body.tutor._id}).exec()
+    const userExists = await Service.find({service_name: body.service_name, 'tutor._id': body.tutor._id, date: body.date}).exec()
 
     if (userExists.length > 0) {
         let error = Conflict()
-        error = {...error, details: `Service ${body.service_name} of Tutor ${body.tutor.name} already exists`}
+        error = {...error, details: `Service ${body.service_name} for Tutor ${body.tutor.name} on this date already exists`}
         
         return error
     }
@@ -161,14 +161,13 @@ export default async function handler (req, res) {
 
                 if (invalid) return res.json(invalid)
 
-                // Valida duplicidade de usuários
-                // duplicated = await serviceIsDuplicated(req)
+                // Valida duplicidade de serviço
+                duplicated = await serviceIsDuplicated(req)
 
                 if (duplicated) return res.json(duplicated)
 
                 // Cria novo serviço
                 const reqService = JSON.parse(req.body)
-                console.log(reqService)
 
                 service = new Service({
                     _id: reqService.id,
@@ -181,7 +180,7 @@ export default async function handler (req, res) {
                     simptoms: reqService.simptoms ?? "",
                     is_confirmed: reqService.is_confirmed
                 })
-                console.log(service)
+
                 await createService(res, service)
 
             } else {
@@ -203,9 +202,9 @@ export default async function handler (req, res) {
 
                 //Edita usuário
                 const reqService = JSON.parse(req.body)
-                
+
                 service = new Service({
-                    _id: reqService._id,
+                    _id: reqService.id,
                     service_name: reqService.service_name,
                     date: reqService.date,
                     tutor: reqService.tutor,

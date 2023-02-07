@@ -12,10 +12,11 @@ import SelectUser from "../../FormInputs/Select/SelectUser"
 
 export default function AddAnimalForm ({}) {
 
+    const animalObject = {id: uuid(), animal_name: "",  tutor: { _id: "", name: "" },  breed: { _id: "", name: "" },  specie: { _id: "", name: "" },  description: ""}
+
     const { token } = useAuthContext()
     const { handleCreateAnimal } = useAnimalsContext()
-
-    const [animal, setAnimal] = useState({ id: uuid(), animal_name: "",  tutor: { _id: "", name: "" },  breed: { _id: "", name: "" },  specie: { _id: "", name: "" },  description: "" })
+    const [animal, setAnimal] = useState(animalObject)
     
     const [animalNameError, setAnimalNameError] = useState("")
     const [tutorError, setTutorError] = useState("")
@@ -33,6 +34,7 @@ export default function AddAnimalForm ({}) {
 
         if (areValid) {
             await handleCreateAnimal(token, animal)
+            setAnimal(animalObject)
         } else {
             return false
         } 

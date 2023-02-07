@@ -14,6 +14,7 @@ import DivActionButtons from '../components/Table/DivActionButtons';
 import AddServiceForm from "../components/Form/Forms/Services/AddServiceForm";
 import EditServiceForm from "../components/Form/Forms/Services/EditServiceForm";
 import RemoveServiceForm from "../components/Form/Forms/Services/RemoveServiceForm";
+import { format } from "date-fns";
 
 export default function Servicos(props) {
 
@@ -51,6 +52,7 @@ export default function Servicos(props) {
             title: "Serviço",
             dataIndex: "service_name",
             key: "service_name",
+            render: (name) => capitalizeFirst(name)
         },
         {
             title: "Tutor",
@@ -61,6 +63,7 @@ export default function Servicos(props) {
             title: "Data/Hora",
             dataIndex: "date",
             key: "date",
+            render: (date) => format(new Date(date), 'dd/MM/yyyy HH:mm')
         },
         {
             title: "Raça",
@@ -83,6 +86,12 @@ export default function Servicos(props) {
             title: "Sintomas",
             dataIndex: "simptoms",
             key: "simptoms",
+        },
+        {
+            title: "Confirmado",
+            dataIndex: "is_confirmed",
+            key: "is_confirmed",
+            render: (confirmed) => confirmed ? "SIM" : "NÃO" 
         },
         {
             title: "Ações",

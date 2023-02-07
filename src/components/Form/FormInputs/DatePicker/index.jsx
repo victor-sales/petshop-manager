@@ -22,6 +22,7 @@ export default function DatePicker (props) {
         for (let i = 0; i < 24; i++) {
             if (i < 8 || i > 17) {
                 dates.push(new Date().setHours(i, 0, 0, 0))
+                dates.push(new Date().setHours(i, 30, 0, 0))
             }
         }
 
@@ -43,7 +44,6 @@ export default function DatePicker (props) {
                 selected={date}
                 showTimeSelect
                 timeCaption="Hora"
-                timeIntervals={60}
                 timeFormat="p"
                 dateFormat={"Pp"}
                 filterDate={isWeekday}

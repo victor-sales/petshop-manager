@@ -1,7 +1,5 @@
-export default function Label (props) {
+export default function Label ({htmlFor, text}) {
     
-    const { htmlFor, text } = props
-
     return (
         <label
             className="text-gray-700 font-semibold text-sm"

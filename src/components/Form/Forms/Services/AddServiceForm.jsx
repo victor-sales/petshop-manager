@@ -12,21 +12,13 @@ import useAuthContext from "../../../../hooks/useAuthContext";
 import { checkBreedValidity, checkDateValidity, checkServiceNameValidity, checkSimptomsValidity, checkSpecieValidity, checkTutorValidity } from "../../../../utils/Helpers";
 
 export default function AddServiceForm(params) {
+    
+    const serviceObject = { id: uuid(), service_name: "", tutor: { _id: "", name: "" }, date: "", specie: { _id: "", name: "" }, breed: { _id: "", name: "" }, description: "",  simptoms: "", is_confirmed: false }
 
     const { token } = useAuthContext()
     const { handleCreateService } = useServicesContext()
 
-    const [service, setService] = useState({
-        id: uuid(),
-        service_name: "",
-        tutor: { _id: "", name: "" },
-        date: "",
-        specie: { _id: "", name: "" },
-        breed: { _id: "", name: "" },
-        description: "", 
-        simptoms: "",
-        isConfirmed: false,
-     })
+    const [service, setService] = useState(serviceObject)
 
     const [date, setDate] = useState("");
 
@@ -50,6 +42,7 @@ export default function AddServiceForm(params) {
 
         if (areValid) {
             await handleCreateService(token, service)
+            setService(serviceObject)
         } else {
             return false
         } 

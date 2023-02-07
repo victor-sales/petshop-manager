@@ -7,10 +7,12 @@ import Input from "../../FormInputs/Input"
 
 export default function AddSpecieForm ({}) {
 
+    const specieObject = { id: uuid(), specie_name: "", description: "" }
+
     const { token } = useAuthContext()
     const { handleCreateSpecie } = useSpeciesContext()
 
-    const [specie, setSpecie] = useState({ id: uuid(), specie_name: "", description: "" })
+    const [specie, setSpecie] = useState(specieObject)
     
     const [specieNameError, setSpecieNameError] = useState("")
 
@@ -22,6 +24,7 @@ export default function AddSpecieForm ({}) {
 
         if (areValid) {
             await handleCreateSpecie(token, specie)
+            setSpecie(specieObject)
         } else {
             return false
         } 

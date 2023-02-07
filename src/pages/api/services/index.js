@@ -11,7 +11,6 @@ async function getServices (res) {
 
     try {
         result = await Service.find().exec()
-
         if (result.length > 0) result = result.map(e => NormalizedService(e))
 
         return res.json({ response: { status: 200, message: "success"}, data: result })

@@ -8,10 +8,12 @@ import SelectSpecie from "../../FormInputs/Select/SelectSpecie";
 
 export default function AddBreedForm ({}) {
 
+    const breedObject = { id: uuid(), breed_name: "", specie: {_id: "", name: ""}, description: "" }
+
     const { token } = useAuthContext()
     const { handleCreateBreed } = useBreedsContext()
 
-    const [breed, setBreed] = useState({ id: uuid(), breed_name: "", specie: {_id: "", name: ""}, description: "" })
+    const [breed, setBreed] = useState(breedObject)
     
     const [breedNameError, setBreedNameError] = useState("")
     const [specieError, setSpecieError] = useState("")
@@ -25,12 +27,12 @@ export default function AddBreedForm ({}) {
 
         if (areValid) {
             await handleCreateBreed(token, breed)
+            setBreed(breedObject)
         } else {
             return false
         } 
     }
 
-    
     function onChangeSpecie (e) {
         
         const specie_id = e.target.value
