@@ -2,7 +2,6 @@ import { createContext, useState } from "react"
 import { v4 as uuid } from 'uuid';
 import { APIMethods, MessageTypes, RequestActionType } from "../utils/Enums";
 import RequestHandler from "../utils/RequestHandler";
-import RequestRendler from "../utils/RequestHandler";
 
 const AnimalsContext = createContext()
 
@@ -54,7 +53,7 @@ export function AnimalsProvider({children}) {
         try {
             setLoadingCreateAnimal(true)
             
-            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
 
             if (response.response?.status === 201) {
                 setLoadingCreateAnimal(false)
@@ -84,7 +83,7 @@ export function AnimalsProvider({children}) {
         try {
             setLoadingUpdateAnimal(true)
             
-            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.UPDATE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.UPDATE_ANIMAL)
 
             if (response.response?.status === 200) {
                 setLoadingUpdateAnimal(false)
@@ -113,7 +112,7 @@ export function AnimalsProvider({children}) {
         try {
             setLoadingDeleteAnimal(true)
             
-            let response = await RequestRendler(accessToken, url, method, null, RequestActionType.DELETE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, null, RequestActionType.DELETE_ANIMAL)
 
             if (response.response?.status === 200) {
 

@@ -116,6 +116,51 @@ export function serviceIsInvalid (req) {
     return false
 }
 
+export function productIsInvalid (req) {
+
+    let error = BadRequest()
+
+    if (!req?.body) {
+        error = {...error, details: "Body not found"}
+
+        return error
+    } 
+
+    const body = JSON.parse(req.body)
+    
+    if (!body.product_name) {
+        error = {...error, details: "Product name is required"}
+        
+        return error
+    }
+
+    if (!body.brand) {
+        error = {...error, details: "Brand is required"}
+        
+        return error
+    }
+
+    if (!body.type) {
+        error = {...error, details: "Type is required"}
+        
+        return error
+    }
+
+    if (!body.price) {
+        error = {...error, details: "Price is required"}
+        
+        return error
+    }
+
+    if (!body.amount) {
+        error = {...error, details: "Amount is required"}
+        
+        return error
+    }
+
+    return false
+}
+
 export function specieIsInvalid (req) {
 
     let error = BadRequest()
@@ -238,7 +283,7 @@ export function checkBreedValidity (value, setError) {
 
 export function checkSpecieNameValidity (value, setError) {
     if (!value) {
-        setError("Nome não pode ser vazio.")
+        setError("Espécie não pode ser vazia.")
         return false
     }
 
@@ -247,7 +292,7 @@ export function checkSpecieNameValidity (value, setError) {
 
 export function checkBreedNameValidity (value, setError) {
     if (!value) {
-        setError("Nome não pode ser vazio.")
+        setError("Raça não pode ser vazia.")
         return false
     }
 
@@ -274,6 +319,51 @@ export function checkSimptomsValidity (value, setError) {
 export function checkDateValidity (value, setError) {
     if (!value) {
         setError("Data não pode ser vazia.")
+        return false
+    }
+
+    return true
+}
+
+export function checkProductNameValidity(value, setError) {
+    if (!value) {
+        setError("Nome do produto não pode ser vazio.")
+        return false
+    }
+
+    return true
+}
+
+export function checkBrandValidity(value, setError) {
+    if (!value) {
+        setError("Marca não pode ser vazia.")
+        return false
+    }
+
+    return true
+}
+
+export function checkTypeValidity(value, setError) {
+    if (!value) {
+        setError("Tipo não pode ser vazio.")
+        return false
+    }
+
+    return true
+}
+
+export function checkPriceValidity(value, setError) {
+    if (!value) {
+        setError("Preço não pode ser zerado.")
+        return false
+    }
+
+    return true
+}
+
+export function checkAmountValidity(value, setError) {
+    if (!value) {
+        setError("Quantidade não pode ser zerado.")
         return false
     }
 
