@@ -48,15 +48,9 @@ export default function EditProductForm ({product, setProduct}) {
     }, [token, product])
 
     useEffect(() => {
-        
-        setProduct({...product, price: price?.value ?? price})
+        setProduct({...product, price: price})
         //eslint-disable-next-line
     }, [price])
-
-    useEffect(() => {
-        console.log(product)
-        //eslint-disable-next-line
-    }, [product])
 
     return (
         <form>

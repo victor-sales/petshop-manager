@@ -8,12 +8,12 @@ import InputMoney from "../../FormInputs/Input/InputMoney";
 
 export default function AddProductForm ({}) {
 
-    const productObject = {id: uuid(), product_name: "",  brand: "", type: "", price: 0, amount: 0}
+    const productObject = {id: uuid(), product_name: "",  brand: "", type: "", price: "0", amount: 0}
 
     const { token } = useAuthContext()
     const { handleCreateProduct } = useProductsContext()
     
-    const [price, setPrice] = useState(0)
+    const [price, setPrice] = useState("0")
     const [product, setProduct] = useState(productObject)
     
     const [productNameError, setProductNameError] = useState("")
@@ -35,6 +35,7 @@ export default function AddProductForm ({}) {
         if (areValid) {
             await handleCreateProduct(token, product)
             setProduct(productObject)
+            setPrice("0")
         } else {
             return false
         } 
@@ -52,7 +53,7 @@ export default function AddProductForm ({}) {
     }, [token, product])
 
     useEffect(() => {
-        setProduct({...product, price: price?.floatValue ?? price})
+        setProduct({...product, price: price})
         //eslint-disable-next-line
     }, [price])
 

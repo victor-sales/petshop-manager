@@ -221,11 +221,12 @@ export default async function handler (req, res) {
             hasPermission = ValidateAccess(profile.profile, deletePermissions)
 
             if (hasPermission) { 
-                const reqProduct = JSON.parse(req.body)
 
+                const reqProduct = JSON.parse(req.body)
                 if (reqProduct.amount > 0) {
                     let error = Internal()
-                    error.message = "You can't delete a product with morde than 0 items" 
+
+                    error = {...error, details: "You can't delete a product with more than 0 items" }
 
                     return res.json(error)
                 }

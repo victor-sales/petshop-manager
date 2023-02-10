@@ -57,7 +57,7 @@ export function ProductsProvider({children}) {
             if (response.response?.status === 201) {
                 setLoadingCreateProduct(false)
                 setProductMessageType(MessageTypes.SUCCESS)
-                setProductMessage(`Product criado com sucesso.`)
+                setProductMessage(`Produto criado com sucesso.`)
                 setProducts([...products, response.data])
                 return response
 
@@ -107,11 +107,12 @@ export function ProductsProvider({children}) {
     async function handleDeleteProduct (accessToken, product) {        
         const url = `/api/products/${product.id}`
         const method = APIMethods.DELETE
+        const body = product
         
         try {
             setLoadingDeleteProduct(true)
             
-            let response = await RequestHandler(accessToken, url, method, null, RequestActionType.DELETE_PRODUCT)
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.DELETE_PRODUCT)
 
             if (response.response?.status === 200) {
 
