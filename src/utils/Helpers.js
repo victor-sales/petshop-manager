@@ -116,6 +116,52 @@ export function serviceIsInvalid (req) {
     return false
 }
 
+export function sellIsInvalid (req) {
+
+    let error = BadRequest()
+
+    if (!req?.body) {
+        error = {...error, details: "Body not found"}
+
+        return error
+    } 
+
+    const body = JSON.parse(req.body)
+    
+    if (!body.date) {
+        error = {...error, details: "Date is required"}
+        
+        return error
+    }
+
+    if (!body.cashier) {
+        error = {...error, details: "Cashier is required"}
+        
+        return error
+    }
+
+
+    if (!body.buyer) {
+        error = {...error, details: "Buyer is required"}
+        
+        return error
+    }
+
+    if (!body.product) {
+        error = {...error, details: "Product is required"}
+        
+        return error
+    }
+
+    if (!body.amount) {
+        error = {...error, details: "Amount is required"}
+        
+        return error
+    }
+
+    return false
+}
+
 export function productIsInvalid (req) {
 
     let error = BadRequest()
@@ -361,7 +407,32 @@ export function checkPriceValidity(value, setError) {
     return true
 }
 
+export function checkSellAmountValidity(products, sell, setError) {
+    if (!sell.amount) {
+        setError("Quantidade não pode ser zerado.")
+        return false
+    }
+
+    const productBeingSelled = products.filter(e => e.id === sell.product._id)[0]
+
+    if (sell.amount > productBeingSelled.amount) {
+        setError(`Você possui ${productBeingSelled.amount} desse produto em estoque. Não é possível cadastrar a venda com uma quantidade acima.`)
+        return false
+    }
+
+    return true
+}
+
 export function checkAmountValidity(value, setError) {
+    if (!value) {
+        setError("Quantidade não pode ser zerado.")
+        return false
+    }
+
+    return true
+}
+
+export function checkCashierValidity(value, setError) {
     if (!value) {
         setError("Quantidade não pode ser zerado.")
         return false

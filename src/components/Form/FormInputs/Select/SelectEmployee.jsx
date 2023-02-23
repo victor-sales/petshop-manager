@@ -4,7 +4,7 @@ import useAuthContext from "../../../../hooks/useAuthContext";
 import useUsersContext from "../../../../hooks/useUsersContext";
 import { UserProfiles } from "../../../../utils/Enums";
 
-export default function SelectUser ({value, onChange, error, ...props}) {
+export default function SelectEmployee ({value, onChange, error, ...props}) {
 
     const { token } = useAuthContext()
     const { handleGetUsers, users } = useUsersContext()
@@ -19,12 +19,12 @@ export default function SelectUser ({value, onChange, error, ...props}) {
             id='select-user'
             value={value}
             onChange={onChange}
-            labelText="Usuário/Tutor*"
+            labelText="Funcionário*"
             required
             error={error}
         >
             <option value={""} disabled>...</option>
-            {users?.filter(e => e.profile.toUpperCase() === UserProfiles.CLIENTE).map((e, key) => (
+            {users?.filter(e => e.profile.toUpperCase() !== UserProfiles.CLIENTE).map((e, key) => (
                 <option key={key} value={e.id}>{e.user_name}</option>
             ))}
         </Select>

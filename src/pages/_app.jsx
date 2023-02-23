@@ -9,6 +9,7 @@ import { SpeciesProvider } from '../contexts/SpeciesContext';
 import { BreedsProvider } from '../contexts/BreedsContext';
 import { ServicesProvider } from '../contexts/ServicesContext';
 import { ProductsProvider } from '../contexts/ProductsContext';
+import { SellsProvider } from '../contexts/SellsContext';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -16,13 +17,15 @@ function MyApp({ Component, pageProps }) {
       <UsersProvider>
         <ServicesProvider>
           <ProductsProvider>
-            <AnimalsProvider>
-              <BreedsProvider>
-                <SpeciesProvider>
-                <Component {...pageProps} />
-                </SpeciesProvider>
-              </BreedsProvider>
-            </AnimalsProvider>
+            <SellsProvider>
+              <AnimalsProvider>
+                <BreedsProvider>
+                  <SpeciesProvider>
+                  <Component {...pageProps} />
+                  </SpeciesProvider>
+                </BreedsProvider>
+              </AnimalsProvider>
+            </SellsProvider>
           </ProductsProvider>
         </ServicesProvider>
       </UsersProvider>

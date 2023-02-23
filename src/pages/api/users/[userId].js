@@ -120,12 +120,6 @@ export async function getUser (res, user_id) {
 }
 
 export default async function handler (req, res) {
-
-    // GET user** -> administrador, funcionario
-    // POST user -> administrador, funcionario
-    // PUT user -> administrador, funcionario
-
-    // ** Se user_profile == cliente, ele poderá acessar apenas o próprio perfil
     
     await dbConnect()
 

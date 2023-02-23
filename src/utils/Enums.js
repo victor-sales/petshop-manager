@@ -42,6 +42,10 @@ export const RequestActionType = {
     UPDATE_PRODUCT: "UPDATE_PRODUCT",
     GET_PRODUCT: "GET_PRODUCT",
     DELETE_PRODUCT: "DELETE_PRODUCT",
+    CREATE_SELL: "CREATE_SELL",
+    UPDATE_SELL: "UPDATE_SELL",
+    GET_SELL: "GET_SELL",
+    DELETE_SELL: "DELETE_SELL",
 }
 
 export const UserActions = {

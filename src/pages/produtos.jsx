@@ -132,7 +132,7 @@ export default function Produtos(props) {
                         <div className="w-full border border-gray-300">
                             <Table
                                 size="small" 
-                                dataSource={products.sort((a, b) => a.tutor.name.localeCompare(b.tutor.name))}
+                                dataSource={products.sort((a, b) => a.product_name.localeCompare(b.product_name))}
                                 loading={loadingProducts}
                                 columns={columns} 
                                 scroll={{x: true}}

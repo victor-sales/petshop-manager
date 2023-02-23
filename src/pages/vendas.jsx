@@ -1,132 +1,178 @@
-import Container from "../components/Container"
-import Layout from "../components/Layout"
-import { Modal, Table } from "antd"
+import { v4 as uuid } from 'uuid';
+import Container from "../components/Container";
+import Layout from "../components/Layout";
+import { Modal, Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
-import AddSellForm from "../components/Form/Forms/Sells/AddSellForm";
 import EditSellForm from "../components/Form/Forms/Sells/EditSellForm";
+import AddSellForm from "../components/Form/Forms/Sells/AddSellForm";
 import ConfirmRemoveText from "../components/ConfirmRemoveText";
+import useSellsContext from "../hooks/useSellsContext";
+import useAuthContext from "../hooks/useAuthContext";
+import { useEffect } from "react";
+import { capitalizeFirst } from "../utils/Helpers";
+import RequestHandler from "../utils/RequestHandler";
+import { APIMethods, UserActions } from "../utils/Enums";
+import AntdModal from '../components/AntdModal';
+import DivActionButtons from '../components/Table/DivActionButtons';
+import RemoveSellForm from '../components/Form/Forms/Sells/RemoveSellForm';
+import { format } from 'date-fns';
 
+export default function Vendas(props) {
 
-export default function Vendas (props) {
-    
-  const [visible, setVisible] = useState(false);
+    const { token } = useAuthContext()
+    const { handleGetSells, sells, loadingCreateSell, loadingSells, loadingUpdateSell, loadingDeleteSell, sellMessage, setSellMessage, sellMessageType, setSellMessageType } = useSellsContext()
+
+    const [sell, setSell] = useState({})
+    const [visible, setVisible] = useState(false);
     const [action, setAction] = useState("")
+    const [modalTitle, setModalTitle] = useState("")
 
-    const dataSource = [
-        {
-          id: '1',
-          datetime: '12/10 15:00',
-          cashier: "Paulo Ricardo",
-          buyer_name: "Maria Paula",
-          buyer_email: "maria.paula@email.com",
-          item: "Petisco Miau",
-          amount: "1",
-          observations: "",
-        },
-        {
-          id: '2',
-          datetime: '12/10 15:00',
-          cashier: "Paulo Ricardo",
-          buyer_name: "Maria Paula",
-          buyer_email: "maria.paula@email.com",
-          item: "Petisco Au Au",
-          amount: "3",
-          observations: "",
-        },
-        {
-          id: '3',
-          datetime: '19/10 16:00',
-          cashier: "Paulo Ricardo",
-          buyer_name: "Maria Paula",
-          buyer_email: "maria.paula@email.com",
-          item: "Arranhador",
-          amount: "1",
-          observations: "",
-        },
-        
-      ];
+    async function listSells () {
+        await handleGetSells(token)
+    }
 
-      const columns = [
-        {
-          title: 'ID',
-          dataIndex: 'id',
-          key: 'id',
-        },
-        {
-          title: 'Data/Hora',
-          dataIndex: 'datetime',
-          key: 'datetime',
-        },
-        {
-          title: 'vendedor',
-          dataIndex: 'cashier',
-          key: 'cashier',
-        },
-        {
-          title: 'comprador',
-          dataIndex: 'buyer_email',
-          key: 'buyer_email',
-        },
-        {
-          title: 'Produto',
-          dataIndex: 'item',
-          key: 'item',
-        },
-        {
-          title: 'Quantidade',
-          dataIndex: 'amount',
-          key: 'amount',
-        },
-        {
-          title: 'Observações',
-          dataIndex: 'observations',
-          key: 'observations',
-        },
-        {
-          title: "Ações",
-          key: "actions",
-          render: () => {
-              return (
-                  <div className="flex flex-row gap-3">
-                      <button onClick={(e) => { setAction("EDIT"); setVisible(true) }}>
-                          <FontAwesomeIcon
-                              className="h-4 w-4 text-blue-600"
-                              icon={faPencil}
-                          />
-                      </button>
-                      <button onClick={(e) => { setAction("REMOVE"); setVisible(true) }}>
-                          <FontAwesomeIcon
-                              className="h-4 w-4 text-red-600"
-                              icon={faTrash}
-                          />
-                      </button>
-                  </div>
-              );
-          },
-      },
-  ];
+    const onClickNew = () => {
+        setAction(UserActions.ADD)
+        setVisible(true)
+    }
 
-  return (
-      <Layout>
-          <Container>
-              <div className="w-full flex flex-row-reverse">
-                  <IconButton iconName={faPlusCircle} title="Novo" onClick={(e) => { setAction("ADD"); setVisible(true) }}/>
-              </div>
-              <Table size="small" dataSource={dataSource} columns={columns} />
-          </Container>
-          <Modal
-              key={"new-specie"}
-              onOk={() => setVisible(false)}
-              okText="Confirmar"
-              cancelText="Fechar"
-              title="Modal"
-              open={visible}
-          >
-              {action === "ADD" ? <AddSellForm /> : action === "EDIT" ? <EditSellForm /> : <ConfirmRemoveText />}
-          </Modal>
-      </Layout>
-  );
-}   
+    const onClickEdit = (sell) => {
+        setSell(sell)
+        setAction(UserActions.EDIT)
+        setVisible(true)
+    }   
+
+    const onClickDelete = (sell) => {
+        setSell(sell)
+        setAction(UserActions.DELETE); 
+        setVisible(true)
+    }
+
+    const columns = [
+        {
+            title: "Date",
+            dataIndex: "date",
+            key: "date",
+            render: (date) => format(new Date(date), "dd/MM/yyyy HH:mm")
+        },
+        {
+            title: "Vendedor",
+            dataIndex: ["cashier", "name"],
+            key: "cashier",
+        },
+        {
+            title: "Comprador",
+            dataIndex: ["buyer", "name"],
+            key: "buyer",
+        },
+        {
+            title: "Produto",
+            dataIndex: ["product", "name"],
+            key: "product",
+        },
+        {
+            title: "Quantidade",
+            dataIndex: "amount",
+            key: "amount",
+        },
+        {
+            title: "Valor da venda",
+            dataIndex: "sell_value",
+            key: "sell_value",
+            render: (sell_value) => `R$ ${sell_value}`
+        },
+        {
+            title: "Observações",
+            dataIndex: "observations",
+            key: "observations",
+        },
+        {
+            title: "Ações",
+            key: "actions",
+            render: (record) => {
+                return (
+                    <div className="flex flex-row gap-3">
+                        <button onClick={(e) => onClickEdit(record)}>
+                            <FontAwesomeIcon
+                                className="h-4 w-4 text-blue-600"
+                                icon={faPencil}
+                            />
+                        </button>
+                        <button onClick={(e) => onClickDelete(record)}>
+                        <FontAwesomeIcon
+                            className="h-4 w-4 text-red-600"
+                            icon={faTrash}
+                        />
+                    </button>
+                    </div>
+                );
+            },
+        },
+    ];
+
+    useEffect(() => {
+        switch (action) {
+            case UserActions.ADD:
+                setModalTitle("Adicionar venda")
+                break;
+            case UserActions.EDIT:
+                setModalTitle("Editar venda")
+                break;
+            case UserActions.DELETE:
+                setModalTitle("Remover venda")
+                break;
+            default:
+                break;
+        }
+    }, [action])
+
+    useEffect(() => {
+        if (token) listSells()
+        //eslint-disable-next-line
+    }, [token])
+    
+    return (
+        <>
+            <Layout>
+                <Container>
+                    <div className="flex flex-col w-full">
+                        <DivActionButtons onClickNew={onClickNew} onClickUpdate={listSells}/>
+                        <div className="w-full border border-gray-300">
+                            <Table
+                                size="small" 
+                                dataSource={sells}
+                                loading={loadingSells}
+                                columns={columns} 
+                                scroll={{x: true}}
+                                pagination={{}}/>
+                        </div>
+                    </div>
+                </Container>
+            </Layout>
+
+            <AntdModal 
+                visible={visible} 
+                setVisible={setVisible} 
+                id={"sell-modal"} 
+                title={modalTitle} 
+                loading={ action === UserActions.ADD ? loadingCreateSell : action === UserActions.EDIT ? loadingUpdateSell : loadingDeleteSell} 
+                centered={action === UserActions.DELETE}
+                message={sellMessage}
+                setMessage={setSellMessage}
+                messageType={sellMessageType}
+                setMessageType={setSellMessageType}>
+                { 
+                    action === UserActions.ADD ? 
+                        <AddSellForm /> : 
+                    action === UserActions.EDIT ? 
+                        <EditSellForm sell={sell} setSell={setSell}/> : 
+                        <RemoveSellForm sell={sell} />
+                }
+            </AntdModal>
+            </>
+
+        );
+}
