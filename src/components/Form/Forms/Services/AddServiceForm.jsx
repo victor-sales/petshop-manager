@@ -10,13 +10,21 @@ import { useEffect } from "react";
 import useServicesContext from "../../../../hooks/useServicesContext";
 import useAuthContext from "../../../../hooks/useAuthContext";
 import { checkBreedValidity, checkDateValidity, checkServiceNameValidity, checkSimptomsValidity, checkSpecieValidity, checkTutorValidity } from "../../../../utils/Helpers";
+import useUserScheduleContext from "../../../../hooks/useUserScheduleContext";
+import { useRouter } from "next/router";
+import { Services } from "../../../../utils/Enums";
+import useUserAccountContext from "../../../../hooks/useUserAccountContext";
 
 export default function AddServiceForm(params) {
     
-    const serviceObject = { id: uuid(), service_name: "", tutor: { _id: "", name: "" }, date: "", specie: { _id: "", name: "" }, breed: { _id: "", name: "" }, description: "",  simptoms: "", is_confirmed: false }
-
+    const serviceObject = { id: uuid(), service_name: "", tutor: { _id: userAccount?.id, name: userAccount?.name }, date: "", specie: { _id: "", name: "" }, breed: { _id: "", name: "" }, description: "",  simptoms: "", is_confirmed: false }
+    const router = useRouter()
     const { token } = useAuthContext()
+    const { userAccount } = useUserAccountContext()
     const { handleCreateService } = useServicesContext()
+    const { handleCreateUserSchedule } = useUserScheduleContext()
+
+    const [isUserSchedule, setIsUserSchedule] = useState(true)
 
     const [service, setService] = useState(serviceObject)
 
@@ -35,14 +43,21 @@ export default function AddServiceForm(params) {
         const tutorIsValid = checkTutorValidity(service.tutor._id, setTutorError)
         const specieIsValid = checkSpecieValidity(service.specie._id, setSpecieError)
         const breedIsValid = checkBreedValidity(service.breed._id, setBreedError)
-        const simptomsAreValid = checkSimptomsValidity(service.simptoms, setSimptomsError)
+        const simptomsAreValid = service.service_name === Services.CONSULTA ? checkSimptomsValidity(service.simptoms, setSimptomsError) : true
         const dateIsValid = checkDateValidity(service.date, setDateError)
 
         const areValid = [nameIsValid, tutorIsValid, specieIsValid, breedIsValid, simptomsAreValid, dateIsValid].every(e => e)
 
         if (areValid) {
-            await handleCreateService(token, service)
+
+            if (isUserSchedule) {
+                await handleCreateUserSchedule(token, service)
+            } else {
+                await handleCreateService(token, service)
+            }
+
             setService(serviceObject)
+
         } else {
             return false
         } 
@@ -87,6 +102,15 @@ export default function AddServiceForm(params) {
     }, [date])
 
     useEffect(() => {
+        setIsUserSchedule(router.pathname === "/agendamento")
+    }, [router.pathname])
+
+    useEffect(() => {
+        if (userAccount && isUserSchedule) setService({...service, tutor: {_id: userAccount.id, name: userAccount.user_name}})
+        //eslint-disable-next-line
+    }, [userAccount, isUserSchedule])
+
+    useEffect(() => {
         const button = document.getElementById("confirm-button")
         if (button) button.addEventListener("click", createService)
 
@@ -108,13 +132,16 @@ export default function AddServiceForm(params) {
                             error={serviceNameError}                
                         />
                     </div>
-                    <div>
-                        <SelectUser 
-                            value={service.tutor._id}
-                            onChange={onChangeTutor}
-                            error={tutorError}
-                        />
-                    </div>
+                    {isUserSchedule ? 
+                        <></> :
+                        <div>
+                            <SelectUser 
+                                value={service.tutor._id}
+                                onChange={onChangeTutor}
+                                error={tutorError}
+                            />
+                        </div>
+                    }
                 </div>
                 <DatePicker id={"data-schedule"} date={date} setDate={setDate} error={dateError} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">

@@ -9,8 +9,13 @@ export default function SelectUser ({value, onChange, error, ...props}) {
     const { token } = useAuthContext()
     const { handleGetUsers, users } = useUsersContext()
     
+    
     useEffect(() => {
-        if (!users.length) handleGetUsers(token)
+        async function list () {
+            if (!users.length) await handleGetUsers(token) 
+        }
+        
+        if (token) list()
         //eslint-disable-next-line
     }, [token])
     

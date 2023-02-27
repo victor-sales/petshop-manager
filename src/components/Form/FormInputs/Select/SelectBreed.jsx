@@ -13,7 +13,12 @@ export default function SelectBreed ({value, onChange, specieId, error, ...props
     const [list, setList] = useState([])
     
     useEffect(() => {
-        handleGetBreeds(token)
+        async function list () {
+            await handleGetBreeds(token)
+        }
+        
+        if (token) list()
+
         //eslint-disable-next-line
     }, [token])
     

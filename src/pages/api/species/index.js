@@ -29,7 +29,7 @@ export default async function handler (req, res) {
     await dbConnect()
 
     const headers = req.headers;
-    const getPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO]
+    const getPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO, UserProfiles.CLIENTE]
     
     let error = null;
     let profile = null;

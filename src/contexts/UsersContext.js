@@ -1,5 +1,4 @@
-import { useRouter } from "next/router";
-import { createContext, useEffect, useState } from "react"
+import { createContext, useState } from "react"
 import { v4 as uuid } from 'uuid';
 import { APIMethods, MessageTypes, RequestActionType } from "../utils/Enums";
 import RequestHandler from "../utils/RequestHandler";
@@ -132,8 +131,6 @@ export function UsersProvider({children}) {
             return false
         }
     }
-
-
 
     return ( 
         <UsersContext.Provider

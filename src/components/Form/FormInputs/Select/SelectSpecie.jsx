@@ -9,7 +9,12 @@ export default function SelectSpecie ({value, onChange, error, ...props}) {
     const { handleGetSpecies, species } = useSpeciesContext()
     
     useEffect(() => {
-        handleGetSpecies(token)
+        async function list () {
+            await handleGetSpecies(token)
+        }
+        
+        if (token) list()
+
         //eslint-disable-next-line
     }, [token])
     

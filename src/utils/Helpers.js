@@ -366,6 +366,13 @@ export function checkDateValidity (value, setError) {
     if (!value) {
         setError("Data não pode ser vazia.")
         return false
+    } 
+
+    const hour = value.getHours()
+    
+    if(hour < 8 || hour > 18) {
+        setError("Selecione uma hora válida.")
+        return false
     }
 
     return true
