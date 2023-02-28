@@ -18,6 +18,7 @@ export function AuthProvider({children}) {
 
     const [emailSent, setEmailSent] = useState(false)
     const [loadingEmailSent, setLoadingEmailSent] = useState(false)
+    const [loadingChangePassword, setLoadingChangePassword] = useState(false)
 
     function FirebaseErrorHandler (error) {
 
@@ -181,7 +182,7 @@ export function AuthProvider({children}) {
         const credential = EmailAuthProvider.credential(auth.currentUser.email, oldPassword)
 
         try {
-            await reauthenticateWithCredential(user, credential)
+            await reauthenticateWithCredential(auth?.currentUser, credential)
             return true
         } catch (error) {
             FirebaseErrorHandler(error)
@@ -189,30 +190,32 @@ export function AuthProvider({children}) {
     }
 
     async function handleUpdateUserPassword (oldPassword, newPassword) {
+        setLoadingChangePassword(true)
         const auth = getAuth()
 
         const user = auth.currentUser;
         
         const providers = user.providerData
 
-        console.log(Object.values(AuthProviders))
-        console.log(Object.values(AuthProviders).map(provider => providers.some(e => e.providerId === provider)))
-        if (Object.values(AuthProviders).map(provider => providers.some(e => e.providerId === provider))) {
-            console.log("Teste")
-
+        if (providers.some(e => e.providerId !== AuthProviders.PASSWORD)) {
             setAuthMessageType(MessageTypes.ERROR)
             setAuthMessage("Você utiliza autenticação com provedor, não é possível alterar sua senha.")
+            setLoadingChangePassword(false)
             return false
         } 
-        // if (await reauthenticateUser(oldPassword)) {
-        //     try {
-        //         await updatePassword(user, newPassword)
-        //         setAuthMessageType(MessageTypes.SUCCESS)
-        //         setAuthMessage(`Senha alterada com sucesso.`)
-        //     } catch (error) {
-        //         FirebaseErrorHandler(error)
-        //     }   
-        // }
+
+        if (await reauthenticateUser(oldPassword)) {
+            try {
+                await updatePassword(user, newPassword)
+                setAuthMessageType(MessageTypes.SUCCESS)
+                setAuthMessage(`Senha alterada com sucesso.`)
+                setLoadingChangePassword(false)
+            } catch (error) {
+                setLoadingChangePassword(false)
+                FirebaseErrorHandler(error)
+            }   
+        }
+
 
     }
 
@@ -256,6 +259,7 @@ export function AuthProvider({children}) {
                 authMessageType, setAuthMessageType,
                 emailSent, setEmailSent,
                 loadingEmailSent,
+                loadingChangePassword,
                 token
             }}
         >

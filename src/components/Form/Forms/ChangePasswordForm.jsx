@@ -2,10 +2,11 @@ import Input from "../FormInputs/Input";
 import BannerMessage from "../../BannerMessage/BannerMessage";
 import { useState } from "react";
 import useAuthContext from "../../../hooks/useAuthContext";
+import { ArrowPathIcon } from "@heroicons/react/24/solid"
 
-export default function ChangePasswordForm({visible}) {
+export default function ChangePasswordForm(props) {
 
-    const { handleUpdateUserPassword, authMessage, setAuthMessage, authMessageType, setAuthMessageType } = useAuthContext()
+    const { handleUpdateUserPassword, authMessage, setAuthMessage, authMessageType, setAuthMessageType, loadingChangePassword } = useAuthContext()
 
     const [oldPassword, setOldPassword] = useState("")
     const [newPassord, setNewPassword] = useState("")
@@ -45,41 +46,40 @@ export default function ChangePasswordForm({visible}) {
     }
 
     return (
-        <>
-            { visible ?
-                <div className="absolute z-10 bg-white p-2 border border-gray-300 rounded-md top-5 right-10 w-60">
-                    <Input
-                        labelText={"Senha atual"} 
-                        id="senha-atual"
-                        type={"text"}
-                        value={oldPassword}
-                        onChange={(e) => setOldPassword(e.target.value)}
-                        error={oldPasswordError}
-                    />
-                    <Input
-                        labelText={"Nova senha"}
-                        id="nova-senha"
-                        type={"text"}
-                        value={newPassord}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        error={newPasswordError}/>
-                    <Input
-                        labelText={"Confirmar senha"}
-                        id="confirmar-senha"
-                        type={"text"}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        error={confirmPasswordError}/>
-                    <button 
-                        onClick={handleChangePassword} 
-                        type="button"
-                        className="bg-blue-500 hover:bg-blue-600 pb-1 text-white font-semibold border border-gray-300 rounded-md shadow-md h-6 w-full my-2">
-                            Alterar
-                    </button>
-                    <BannerMessage message={authMessage} setMessage={setAuthMessage} type={authMessageType} setType={setAuthMessageType}/>
-                </div> :
-                <></>
-            }
-        </>
+        <form>
+            <Input
+                labelText={"Senha atual"} 
+                id="senha-atual"
+                type={"text"}
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                error={oldPasswordError}
+            />
+            <Input
+                labelText={"Nova senha"}
+                id="nova-senha"
+                type={"text"}
+                value={newPassord}
+                onChange={(e) => setNewPassword(e.target.value)}
+                error={newPasswordError}/>
+            <Input
+                labelText={"Confirmar senha"}
+                id="confirmar-senha"
+                type={"text"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={confirmPasswordError}/>
+            <button 
+                onClick={handleChangePassword} 
+                disabled={loadingChangePassword}
+                type="button"
+                className="bg-blue-500 hover:bg-blue-600 py-1 text-white font-semibold border border-gray-300 rounded-md shadow-md h-6 w-full my-2 flex items-center justify-center">
+                    {loadingChangePassword ? 
+                        <ArrowPathIcon className="h-4 w-4 animate-spin"/> : 
+                        'Alterar'
+                    }
+            </button>
+            <BannerMessage message={authMessage} setMessage={setAuthMessage} type={authMessageType} setType={setAuthMessageType}/>
+        </form>
     )
 };

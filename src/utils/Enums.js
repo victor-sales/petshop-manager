@@ -13,7 +13,8 @@ export const MessageTypes = {
 
 export const AuthProviders = {
     FACEBOOK: "facebook.com",
-    GOOGLE: "google.com"
+    GOOGLE: "google.com",
+    PASSWORD: "password"
 }
 
 export const RequestActionType = {

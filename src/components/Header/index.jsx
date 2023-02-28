@@ -17,7 +17,8 @@ export default function Header(params) {
 
     const [navbar, setNavbar] = useState(false);
     const [changePassword, setChangePassword] = useState(false)
-    const [modalVisible, setModalVisible] = useState(false)
+    const [modalExitVisible, setModalExitVisible] = useState(false)
+    const [modalChangePwdVisible, setModalChangePwdVisible] = useState(false)
 
     function handleOnClickShowChangePwd () {
         setAuthMessage("")
@@ -63,24 +64,24 @@ export default function Header(params) {
                         <ul className="items-center justify-center space-y-6 md:flex md:space-x-6 md:space-y-0 m-0">
                             {router.asPath === "/agendamento" ? <></> :
                                 <>
-                                    <HeaderLink url="/" title="Dashboard" />
-                                    <HeaderLink url="/servicos" title="Serviços" />
-                                    <HeaderLink url="/usuarios" title="Usuários" />
-                                    <HeaderLink url="/animais" title="Animais" />
-                                    <HeaderLink url="/especies" title="Espécies" />
-                                    <HeaderLink url="/racas" title="Raças" />
-                                    <HeaderLink url="/produtos" title="Produtos" />
-                                    <HeaderLink url="/vendas" title="Vendas" />
+                                    <HeaderLink key="dashboard" url="/" title="Dashboard" />
+                                    <HeaderLink key="servicos" url="/servicos" title="Serviços" />
+                                    <HeaderLink key="usuarios" url="/usuarios" title="Usuários" />
+                                    <HeaderLink key="animais" url="/animais" title="Animais" />
+                                    <HeaderLink key="especies" url="/especies" title="Espécies" />
+                                    <HeaderLink key="racas" url="/racas" title="Raças" />
+                                    <HeaderLink key="produtos" url="/produtos" title="Produtos" />
+                                    <HeaderLink key="vendas" url="/vendas" title="Vendas" />
                                 </>
                             }
                         </ul>
                         <div className="mt-4 space-y-2 md:hidden flex flex-col items-center gap-3">
                             <button
-                                onClick={() => setModalVisible(true)}
+                                onClick={() => setModalExitVisible(true)}
                                 className="inline-block w-full p-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">
                                 Sair
                             </button>
-                            <button className="inline-block w-full p-2 text-sm text-gray-900 border border-gray-900 rounded-md">Alterar Senha</button>
+                            <button onClick={() => setModalChangePwdVisible(true)} className="inline-block w-full p-2 text-sm text-gray-900 border border-gray-900 rounded-md">Alterar Senha</button>
                         </div>
                         
                     </div>
@@ -95,10 +96,15 @@ export default function Header(params) {
                             Alterar Senha
                     </button>   
                     <div className="relative mr-2 border-r border-gray-900">
-                        <ChangePasswordForm visible={changePassword}/>
+                        {changePassword ? 
+                            <div className="absolute z-10 bg-white p-2 border border-gray-300 rounded-md top-5 right-10 w-60">
+                                <ChangePasswordForm /> 
+                            </div> : 
+                            <></> 
+                        }
                     </div>
                     <button
-                        onClick={() => setModalVisible(true)}                        
+                        onClick={() => setModalExitVisible(true)}                        
                         className="px-4 py-1 text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">
                         Sair
                     </button>
@@ -106,13 +112,23 @@ export default function Header(params) {
             </div>
         </nav>
         <Modal
+            key={"change-pwd"}
+            onCancel={() => setModalChangePwdVisible(false)}
+            okText="Confirmar"
+            cancelText="Fechar"
+            title="Alterar senha"
+            footer={false}
+            open={modalChangePwdVisible}>
+                <ChangePasswordForm visible={true} />
+        </Modal>
+        <Modal
             key={"log-out"}
             onOk={() => handleSignOut()}
-            onCancel={() => setModalVisible(false)}
+            onCancel={() => setModalExitVisible(false)}
             okText="Confirmar"
             cancelText="Fechar"
             title="Sair"
-            open={modalVisible}>
+            open={modalExitVisible}>
                 <ConfirmSignOutText />
         </Modal>
         </>
