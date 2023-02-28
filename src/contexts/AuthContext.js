@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth"
 import firebase from "../utils/FirebaseConfig"
 import { FirebaseError } from "firebase/app"
 import { AuthProviders, MessageTypes } from "../utils/Enums"
@@ -176,6 +176,46 @@ export function AuthProvider({children}) {
 
     }
 
+    async function reauthenticateUser (oldPassword) {
+        const auth = getAuth()
+        const credential = EmailAuthProvider.credential(auth.currentUser.email, oldPassword)
+
+        try {
+            await reauthenticateWithCredential(user, credential)
+            return true
+        } catch (error) {
+            FirebaseErrorHandler(error)
+        }
+    }
+
+    async function handleUpdateUserPassword (oldPassword, newPassword) {
+        const auth = getAuth()
+
+        const user = auth.currentUser;
+        
+        const providers = user.providerData
+
+        console.log(Object.values(AuthProviders))
+        console.log(Object.values(AuthProviders).map(provider => providers.some(e => e.providerId === provider)))
+        if (Object.values(AuthProviders).map(provider => providers.some(e => e.providerId === provider))) {
+            console.log("Teste")
+
+            setAuthMessageType(MessageTypes.ERROR)
+            setAuthMessage("Você utiliza autenticação com provedor, não é possível alterar sua senha.")
+            return false
+        } 
+        // if (await reauthenticateUser(oldPassword)) {
+        //     try {
+        //         await updatePassword(user, newPassword)
+        //         setAuthMessageType(MessageTypes.SUCCESS)
+        //         setAuthMessage(`Senha alterada com sucesso.`)
+        //     } catch (error) {
+        //         FirebaseErrorHandler(error)
+        //     }   
+        // }
+
+    }
+
     async function checkIfUserIsLoggedIn() {
         
         try {
@@ -211,6 +251,7 @@ export function AuthProvider({children}) {
                 handleUserAndSession,
                 handleSignOut,
                 handleResetPassword,
+                handleUpdateUserPassword,
                 authMessage, setAuthMessage,
                 authMessageType, setAuthMessageType,
                 emailSent, setEmailSent,
