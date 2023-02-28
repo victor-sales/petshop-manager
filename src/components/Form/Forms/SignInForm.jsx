@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faFacebook, faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import LoginButton from "../FormInputs/Buttons/LoginButton";
 import SocialMediaLoginButton from "../FormInputs/Buttons/SocialMediaLoginButton";
 import Input from "../FormInputs/Input";
@@ -11,6 +11,7 @@ import useAuthContext from "../../../hooks/useAuthContext"
 import { AuthProviders, RequestActionType } from "../../../utils/Enums";
 import useUsersContext from "../../../hooks/useUsersContext";
 import BannerMessage from "../../BannerMessage/BannerMessage";
+import Link from "next/link";
 
 export default function SignInForm ({setSignUp}) {
 
@@ -28,16 +29,20 @@ export default function SignInForm ({setSignUp}) {
     async function connectUserWithProvider (authProvider) {
  
         const firebaseUser = await handleConnectUserWithProvider(authProvider)
-        
+        console.log(firebaseUser)
+
         if (firebaseUser) {
             const user = await handleGetUserById(firebaseUser.accessToken, firebaseUser.uid)
-
+            console.log(firebaseUser)
+            console.log(user)
             if (!user) {
                 const response = await handleCreateUser(firebaseUser.accessToken, RequestActionType.SIGNUP, firebaseUser.uid, firebaseUser.displayName, firebaseUser.email, null, null, "cliente", "cliente", true)
 
                 if (response) await handleUserAndSession(firebaseUser, true)
 
             } else {
+                console.log(firebaseUser)
+
                 await handleUserAndSession(firebaseUser, true)
                 Router.push("/")
             }
@@ -114,10 +119,13 @@ export default function SignInForm ({setSignUp}) {
                     socialMediaIcon={<FontAwesomeIcon icon={faGoogle} />} 
                     onClick={() => connectUserWithProvider(AuthProviders.GOOGLE)}/>
                 {/* <SocialMediaLoginButton 
-                    socialMediaName={"Facebook"} 
-                    socialMediaIcon={<FontAwesomeIcon icon={faFacebook} />} 
-                    onClick={() => createUserWithProvider(AuthProviders.FACEBOOK)}/> */}
-                <span onClick={() => setVisible(true)} className="text-sm text-center underline">Esqueci minha senha</span>
+                    socialMediaName={"Github"} 
+                    socialMediaIcon={<FontAwesomeIcon icon={faGithub} />} 
+                    onClick={() => connectUserWithProvider(AuthProviders.FACEBOOK)}/> */}
+                <span onClick={() => setVisible(true)} className="text-sm text-center underline cursor-pointer">Esqueci minha senha</span>
+                <Link href="/privacy-policy">
+                    <a className="text-sm text-center text-black underline">Política de Privacidade</a>
+                </Link>
             </section>
 
             <Modal

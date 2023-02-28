@@ -14,6 +14,7 @@ export const MessageTypes = {
 export const AuthProviders = {
     FACEBOOK: "facebook.com",
     GOOGLE: "google.com",
+    GITHUB: "github.com",
     PASSWORD: "password"
 }
 

@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, GithubAuthProvider } from "firebase/auth"
 import firebase from "../utils/FirebaseConfig"
 import { FirebaseError } from "firebase/app"
 import { AuthProviders, MessageTypes } from "../utils/Enums"
@@ -94,12 +94,13 @@ export function AuthProvider({children}) {
         
         if (authProvider === AuthProviders.GOOGLE) {
             provider = new GoogleAuthProvider()
-        } else if (authProvider === AuthProviders.FACEBOOK) {
-            provider = new FacebookAuthProvider()
+        } else if (authProvider === AuthProviders.GITHUB) {
+            provider = new GithubAuthProvider()
         }
 
         provider.setCustomParameters({
-            prompt: "select_account"
+            prompt: "select_account",
+            allow_signup: "false"
         })
 
         provider.addScope('email');
@@ -108,10 +109,11 @@ export function AuthProvider({children}) {
 
         try {
             const credentials = await signInWithPopup(auth, provider)
-
+            console.log(credentials)
             if (credentials) return credentials.user
             
         } catch (error) {
+            console.log(error)
             FirebaseErrorHandler(error)
             return false
             
