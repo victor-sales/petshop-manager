@@ -31,11 +31,13 @@ export default function SignInForm ({setSignUp}) {
         const firebaseUser = await handleConnectUserWithProvider(authProvider)
 
         if (firebaseUser) {
-            const user = await handleGetUserById(firebaseUser.accessToken, firebaseUser.uid)
-           
+            console.log(firebaseUser)
+            const user = await handleGetUserById(firebaseUser.accessToken, firebaseUser.uid, RequestActionType.SIGNUP)
+            console.log(user)
+
             if (!user) {
                 const response = await handleCreateUser(firebaseUser.accessToken, RequestActionType.SIGNUP, firebaseUser.uid, firebaseUser.displayName, firebaseUser.email, null, null, "cliente", "cliente", true)
-
+                console.log(response)
                 if (response) await handleUserAndSession(firebaseUser, true)
 
             } else {
@@ -114,10 +116,10 @@ export default function SignInForm ({setSignUp}) {
                     socialMediaName={"Google"} 
                     socialMediaIcon={<FontAwesomeIcon icon={faGoogle} />} 
                     onClick={() => connectUserWithProvider(AuthProviders.GOOGLE)}/>
-                {/* <SocialMediaLoginButton 
-                    socialMediaName={"Github"} 
-                    socialMediaIcon={<FontAwesomeIcon icon={faGithub} />} 
-                    onClick={() => connectUserWithProvider(AuthProviders.FACEBOOK)}/> */}
+                <SocialMediaLoginButton 
+                    socialMediaName={"Facebook"} 
+                    socialMediaIcon={<FontAwesomeIcon icon={faFacebook} />} 
+                    onClick={() => connectUserWithProvider(AuthProviders.FACEBOOK)}/>
                 <span onClick={() => setVisible(true)} className="text-sm text-center underline cursor-pointer">Esqueci minha senha</span>
                 <Link href="/privacy-policy">
                     <a className="text-sm text-center text-black underline">Política de Privacidade</a>

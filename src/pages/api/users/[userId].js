@@ -184,10 +184,10 @@ export default async function handler (req, res) {
    
     switch (method) {
         case "GET":
-        
-            if (profile.profile.toLowerCase() === UserProfiles.CLIENTE.toLowerCase()) {
+            console.log(profile)
+            if (profile?.profile?.toLowerCase() === UserProfiles.CLIENTE.toLowerCase() || headers["action-type"] === "SIGNUP") {
 
-                await getUser(res, profile.id)
+                await getUser(res, profile?.id)
 
             } else {
                 
@@ -220,7 +220,7 @@ export default async function handler (req, res) {
             if (hasPermission) {
                 // Valida campos obrigatórios
                 invalid = userIsInvalid(req)
-
+                console.log(invalid)
                 if (invalid) return res.json(invalid)
 
                 // Valida duplicidade de usuários
@@ -230,6 +230,7 @@ export default async function handler (req, res) {
 
                 // Cria novo usuário
                 const reqUser = JSON.parse(req.body)
+                console.log(reqUser)
 
                 // Valida se a conta esta sendo criada via provedor
                 if (!reqUser.isProvider) {
@@ -253,7 +254,7 @@ export default async function handler (req, res) {
                     }
                 } else {
                     const firebaseResponse = await updateUserOnFirebase(reqUser)
-
+                    console.log(firebaseResponse)
                     if (firebaseResponse.response?.status === 200) {
                         user = new User({
                             _id: reqUser.id, 

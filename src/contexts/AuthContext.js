@@ -94,13 +94,12 @@ export function AuthProvider({children}) {
         
         if (authProvider === AuthProviders.GOOGLE) {
             provider = new GoogleAuthProvider()
-        } else if (authProvider === AuthProviders.GITHUB) {
-            provider = new GithubAuthProvider()
+        } else if (authProvider === AuthProviders.FACEBOOK) {
+            provider = new FacebookAuthProvider()
         }
 
         provider.setCustomParameters({
             prompt: "select_account",
-            allow_signup: "false"
         })
 
         provider.addScope('email');
@@ -109,9 +108,11 @@ export function AuthProvider({children}) {
 
         try {
             const credentials = await signInWithPopup(auth, provider)
+            console.log(credentials)
             if (credentials) return credentials.user
             
         } catch (error) {
+            console.log(error)
             FirebaseErrorHandler(error)
             return false
             

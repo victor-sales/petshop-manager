@@ -15,12 +15,12 @@ export function UsersProvider({children}) {
     const [loadingUpdateUser, setLoadingUpdateUser] = useState(false)
     const [loadingDeleteUser, setLoadingDeleteUser] = useState(false)
  
-    async function handleGetUserById (accessToken, userId) {
+    async function handleGetUserById (accessToken, userId, requestType) {
         const url = `/api/users/${userId}`
         const method = APIMethods.GET
 
         try {
-            let response = await RequestHandler(accessToken, url, method)
+            let response = await RequestHandler(accessToken, url, method, null, requestType)
         
             if (response.response?.status === 200) {
                 return response.data
