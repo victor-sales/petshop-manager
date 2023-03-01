@@ -80,12 +80,20 @@ export default function Header(params) {
                             }
                         </ul>
                         <div className="mt-4 space-y-2 md:hidden flex flex-col items-center gap-3">
+                            <button onClick={() => setModalChangePwdVisible(true)} className="inline-block w-full p-2 text-sm text-gray-900 border border-gray-900 rounded-md">Alterar Senha</button>
                             <button
                                 onClick={() => setModalExitVisible(true)}
                                 className="inline-block w-full p-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">
                                 Sair
                             </button>
-                            <button onClick={() => setModalChangePwdVisible(true)} className="inline-block w-full p-2 text-sm text-gray-900 border border-gray-900 rounded-md">Alterar Senha</button>
+                            {router.asPath === "/agendamento" ?
+                                <button
+                                    onClick={() => setModalRemoveMyAccount(true)}                        
+                                    className="inline-block w-full p-2 text-red-600 border border-red-600 bg-white rounded-md shadow hover:bg-red-600 hover:text-white">
+                                    Remover minha conta
+                                </button> :
+                                <></>
+                            }
                         </div>
                         
                     </div>
@@ -112,11 +120,14 @@ export default function Header(params) {
                         className="px-4 py-1 text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">
                         Sair
                     </button>
-                    <button
-                        onClick={() => setModalRemoveMyAccount(true)}                        
-                        className="px-4 py-1 text-red-600 border border-red-600 bg-white rounded-md shadow hover:bg-red-600 hover:text-white">
-                        Remover minha conta
-                    </button>
+                    {router.asPath === "/agendamento" ?
+                        <button
+                            onClick={() => setModalRemoveMyAccount(true)}                        
+                            className="px-4 py-1 text-red-600 border border-red-600 bg-white rounded-md shadow hover:bg-red-600 hover:text-white">
+                            Remover minha conta
+                        </button> : 
+                        <></>
+                    }
                 </div>
             </div>
         </nav>
