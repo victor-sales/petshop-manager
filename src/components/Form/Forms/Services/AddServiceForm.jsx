@@ -111,11 +111,11 @@ export default function AddServiceForm(params) {
     }, [userAccount, isUserSchedule])
 
     useEffect(() => {
-        const button = document.getElementById("confirm-button")
+        const button = document.getElementById("confirm-schedule")
         if (button) button.addEventListener("click", createService)
 
         return () => {
-            const button = document.getElementById("confirm-button")
+            const button = document.getElementById("confirm-schedule")
             if (button) button.removeEventListener("click", createService)
         }
         //eslint-disable-next-line

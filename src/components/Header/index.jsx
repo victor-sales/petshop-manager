@@ -1,31 +1,35 @@
-import { faArrowDown, faCaretDown, faDog } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faDog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Modal } from "antd";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { useState } from "react";
 import useAuthContext from "../../hooks/useAuthContext";
+import useUsersContext from "../../hooks/useUsersContext";
+import AntdModal from "../AntdModal";
 import ConfirmSignOutText from "../ConfirmSignOutText";
 import ChangePasswordForm from "../Form/Forms/ChangePasswordForm";
+import RemoveMyAccountForm from "../Form/Forms/RemoveMyAccountForm";
 import HeaderLink from "./HeaderLink";
 
 export default function Header(params) {
 
-    const { handleSignOut, handleUpdateUserPassword, setAuthMessage, setAuthMessageType } = useAuthContext()
+    const { handleSignOut, setAuthMessage, setAuthMessageType } = useAuthContext()
+    const { userMessage, setUserMessage, userMessageType, setUserMessageType, loadingDeleteUser } = useUsersContext()
+    
     const router = useRouter();
 
     const [navbar, setNavbar] = useState(false);
     const [changePassword, setChangePassword] = useState(false)
     const [modalExitVisible, setModalExitVisible] = useState(false)
     const [modalChangePwdVisible, setModalChangePwdVisible] = useState(false)
+    const [modalRemoveMyAccount, setModalRemoveMyAccount] = useState(false)
 
     function handleOnClickShowChangePwd () {
         setAuthMessage("")
         setAuthMessageType("")
         setChangePassword(!changePassword)
 
-    } 
+    }
    
     return (
         <>
@@ -108,9 +112,28 @@ export default function Header(params) {
                         className="px-4 py-1 text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">
                         Sair
                     </button>
+                    <button
+                        onClick={() => setModalRemoveMyAccount(true)}                        
+                        className="px-4 py-1 text-red-600 border border-red-600 bg-white rounded-md shadow hover:bg-red-600 hover:text-white">
+                        Remover minha conta
+                    </button>
                 </div>
             </div>
         </nav>
+
+        <AntdModal 
+                visible={modalRemoveMyAccount} 
+                setVisible={setModalRemoveMyAccount} 
+                id={"confirm-remove"} 
+                title={"Deletar minha conta"} 
+                loading={loadingDeleteUser} 
+                message={userMessage}
+                setMessage={setUserMessage}
+                messageType={userMessageType}
+                setMessageType={setUserMessageType}>
+                <RemoveMyAccountForm />
+            </AntdModal>
+       
         <Modal
             key={"change-pwd"}
             onCancel={() => setModalChangePwdVisible(false)}

@@ -34,9 +34,7 @@ export function UserAccountProvider({children}) {
             }
                        
         } catch (error) {
-            console.log(error)
-            console.log(error.message)
-            console.log(JSON.parse(error.message))
+            (error)
             setLoadingUserAccount(false)
             let e = JSON.parse(error.message)
             setUserAccountMessageType(MessageTypes.ERROR)
@@ -49,7 +47,6 @@ export function UserAccountProvider({children}) {
 
     useEffect(() => {
         const loadMyAccount = async () => {
-            console.log(token)
             await handleGetMyAccount(token)
         }
 

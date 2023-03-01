@@ -7,6 +7,7 @@ function getExpirationTime (token_exp) {
 }
 
 export default async function ValidateAuthToken(token) {
+
     try {
         const decodedToken = await admin.auth().verifyIdToken(token)
         const expirationTime = getExpirationTime(decodedToken.exp)

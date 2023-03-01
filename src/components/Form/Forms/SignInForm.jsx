@@ -16,8 +16,8 @@ import Link from "next/link";
 export default function SignInForm ({setSignUp}) {
 
     const Router = useRouter()
-    const { handleConnectUserWithProvider, handleSignInWithEmailPassword, handleUserAndSession, handleResetPassword, emailSent, setEmailSent, loadingEmailSent } = useAuthContext()
-    const { handleCreateUser, handleGetUserById, userMessageType, setUserMessageType, userMessage, setUserMessage } = useUsersContext()
+    const { handleConnectUserWithProvider, handleSignInWithEmailPassword, handleUserAndSession, handleResetPassword, loadingEmailSent, authMessage, setAuthMessage, authMessageType, setAuthMessageType } = useAuthContext()
+    const { handleCreateUser, handleGetUserById } = useUsersContext()
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -29,20 +29,16 @@ export default function SignInForm ({setSignUp}) {
     async function connectUserWithProvider (authProvider) {
  
         const firebaseUser = await handleConnectUserWithProvider(authProvider)
-        console.log(firebaseUser)
 
         if (firebaseUser) {
             const user = await handleGetUserById(firebaseUser.accessToken, firebaseUser.uid)
-            console.log(firebaseUser)
-            console.log(user)
+           
             if (!user) {
                 const response = await handleCreateUser(firebaseUser.accessToken, RequestActionType.SIGNUP, firebaseUser.uid, firebaseUser.displayName, firebaseUser.email, null, null, "cliente", "cliente", true)
 
                 if (response) await handleUserAndSession(firebaseUser, true)
 
             } else {
-                console.log(firebaseUser)
-
                 await handleUserAndSession(firebaseUser, true)
                 Router.push("/")
             }
@@ -83,8 +79,8 @@ export default function SignInForm ({setSignUp}) {
     }
 
     useEffect(() => {
-        setUserMessage("")
-        setUserMessageType("")
+        setAuthMessage("")
+        setAuthMessageType("")
         //eslint-disable-next-line
     }, [setSignUp])
 
@@ -108,7 +104,7 @@ export default function SignInForm ({setSignUp}) {
                 onChange={(e) => setPassword(e.target.value)}
                 error={passwordError}
             />
-            <BannerMessage type={userMessageType} setType={setUserMessageType} message={userMessage} setMessage={setUserMessage}/>
+            <BannerMessage type={authMessageType} setType={setAuthMessageType} message={authMessage} setMessage={setAuthMessage}/>
             <section className="flex flex-col gap-2 mt-2">
                 <LoginButton 
                     onClick={handleConnectWithEmailPassword}

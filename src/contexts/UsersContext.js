@@ -13,6 +13,7 @@ export function UsersProvider({children}) {
     const [loadingUsers, setLoadingUsers] = useState(false)
     const [loadingCreateUser, setLoadingCreateUser] = useState(false)
     const [loadingUpdateUser, setLoadingUpdateUser] = useState(false)
+    const [loadingDeleteUser, setLoadingDeleteUser] = useState(false)
  
     async function handleGetUserById (accessToken, userId) {
         const url = `/api/users/${userId}`
@@ -131,6 +132,35 @@ export function UsersProvider({children}) {
             return false
         }
     }
+    
+    async function handleDeleteUser (accessToken, user) {        
+        const url = `/api/users/${user.id}`
+        const method = APIMethods.DELETE
+        const body = user
+
+        try {
+            setLoadingDeleteUser(true)
+            
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.DELETE_USER)
+
+            if (response.response?.status === 200) {
+                setLoadingDeleteUser(false)
+                setUserMessageType(MessageTypes.SUCCESS)
+                setUserMessage(`Remoção de conta com sucesso`)
+                return response
+
+            } else {
+                setLoadingDeleteUser(false)
+                throw new Error(JSON.stringify(response))
+            }
+
+        } catch (error) {
+            let e = JSON.parse(error.message)
+            setUserMessageType(MessageTypes.ERROR)
+            setUserMessage(e.message + ": " + e.details ?? "")
+            return false
+        }
+    }
 
     return ( 
         <UsersContext.Provider
@@ -139,12 +169,14 @@ export function UsersProvider({children}) {
                 handleGetUsers,
                 handleCreateUser,
                 handleUpdateUser,
+                handleDeleteUser,
                 users,
                 userMessage, setUserMessage,
                 userMessageType, setUserMessageType,
                 loadingUsers,
                 loadingCreateUser,
-                loadingUpdateUser
+                loadingUpdateUser,
+                loadingDeleteUser
             }}
         >
             { children }

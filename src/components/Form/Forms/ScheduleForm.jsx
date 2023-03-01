@@ -12,7 +12,7 @@ export default function ScheduleForm () {
             <AddServiceForm />
             <section className="flex flex-col items-center">
                 <button 
-                id="confirm-button"
+                id="confirm-schedule"
                 className="bg-blue-500 hover:bg-blue-600 py-1 text-white font-semibold border border-gray-300 rounded-md shadow-md h-10 w-full md:w-48 mt-4">Agendar</button>
             </section>            
         </section>

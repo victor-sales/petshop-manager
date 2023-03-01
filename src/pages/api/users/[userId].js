@@ -58,6 +58,20 @@ async function updateUserOnFirebase (body) {
     }
 }
 
+async function deleteUserOnFirebase (id) {
+
+    try {        
+        await admin.auth().deleteUser(id)
+        
+        return { response: { status: 200, message: "success"}, data: []}
+    } catch (e) {
+        let error = Internal()
+        error = {...error, details: e.message}
+        
+        return error
+    }
+}
+
 export async function createUser (res, user) {
     try {
         const result = await User.create(user)
@@ -87,6 +101,21 @@ export async function updateUser (res, user) {
         return res.json({ response: { status: 200, message: "success"}, data: NormalizedUser(newUser) })
         
 
+    } catch (e) {
+        let error = Internal()
+        error = {...error, details: e.message}
+        
+        return res.json(error)
+    }
+
+}
+
+export async function deleteUser (res, id) {
+    try {
+        await User.findByIdAndDelete(id)
+           
+        return res.json({ response: { status: 200, message: "success"}, data: [] })
+        
     } catch (e) {
         let error = Internal()
         error = {...error, details: e.message}
@@ -130,6 +159,7 @@ export default async function handler (req, res) {
     const getPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO]
     const postPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO]
     const putPermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO]
+    const deletePermissions = [UserProfiles.ADMIN, UserProfiles.FUNCIONARIO, UserProfiles.CLIENTE]
 
     let invalid = null;
     let duplicated = null;
@@ -185,7 +215,7 @@ export default async function handler (req, res) {
             break;
         case "POST":
 
-            hasPermission = ValidateAccess(profile.profile, postPermissions)
+            hasPermission = headers["action-type"] === "SIGNUP" ? true : ValidateAccess(profile.profile, postPermissions)
 
             if (hasPermission) {
                 // Valida campos obrigatórios
@@ -277,9 +307,12 @@ export default async function handler (req, res) {
                             
             break;
         case "DELETE":
-            result = await User.findByIdAndDelete(userId)
-            return res.json({ response: { status: 200, message: "success" }, data: []})
-
+            const firebaseResponse = await deleteUserOnFirebase(profile.id)
+            
+            if (firebaseResponse.response?.status === 200) {
+                await deleteUser(res, profile.id)
+            }
+            
             break;
         default:
             error = MethodNotFound(method)

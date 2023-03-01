@@ -1,10 +1,19 @@
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import SignInForm from "../components/Form/Forms/SignInForm";
 import SignUpForm from "../components/Form/Forms/SignUpForm";
 
 export default function Login (props) {
 
+    const router = useRouter()
     const [signUp, setSignUp] = useState(false)
+
+    useEffect(() => {
+        if (Cookies.get("logged-in")) router.push("/")
+
+        //eslint-disable-next-line
+    }, [])
 
     return (
         <div className="bg-gray-300 min-w-full min-h-screen flex items-center justify-center">

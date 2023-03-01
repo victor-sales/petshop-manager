@@ -109,11 +109,9 @@ export function AuthProvider({children}) {
 
         try {
             const credentials = await signInWithPopup(auth, provider)
-            console.log(credentials)
             if (credentials) return credentials.user
             
         } catch (error) {
-            console.log(error)
             FirebaseErrorHandler(error)
             return false
             
