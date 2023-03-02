@@ -79,7 +79,7 @@ export function UsersProvider({children}) {
             setLoadingCreateUser(true)
             
             let response = await RequestHandler(accessToken, url, method, body, actionType)
-
+            
             if (response.response?.status === 201) {
                 setLoadingCreateUser(false)
                 setUserMessageType(MessageTypes.SUCCESS)
