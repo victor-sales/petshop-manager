@@ -7,7 +7,6 @@ import NormalizedUser from '../../../utils/NormalizedUser';
 import { userIsInvalid } from '../../../utils/Helpers';
 import BadRequest from '../../../utils/ErrorsObj/BadRequest';
 import Internal from '../../../utils/ErrorsObj/Internal';
-import axios from "axios"
 import admin from '../../../utils/FirebaseAdmin/FirebaseAdmin';
 import ValidateAuthToken from '../../../utils/ValidateAuthToken';
 import { UserProfiles } from '../../../utils/Enums';
