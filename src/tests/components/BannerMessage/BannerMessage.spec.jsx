@@ -43,7 +43,6 @@ describe("Banner Message", () => {
     })
 
     it("should clear message", async () => {
-        jest.spyOn(console, "log")
         const setMessageMock = jest.fn()
         jest.spyOn(React, "useState").mockImplementationOnce(initState => [initState, setMessageMock])
 
@@ -53,9 +52,9 @@ describe("Banner Message", () => {
         render(<BannerMessage message={"teste"} setMessage={setMessageMock} type={""} setType={setTypeMock}/>)
 
         const button = await screen.findByText("x")
-        console.log(button)
+
         await userEvent.click(button)
-        console.log(setMessageMock)
+
         expect(setMessageMock).toHaveBeenCalledTimes(1)
         expect(setMessageMock).toHaveBeenCalledWith("")
         expect(setTypeMock).toHaveBeenCalledTimes(1)

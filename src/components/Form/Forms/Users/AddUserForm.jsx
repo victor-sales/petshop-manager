@@ -11,12 +11,13 @@ import { RequestActionType } from "../../../../utils/Enums";
 
 export default function AddUserForm({users, setUsers, ...props}) {
 
+    const userObject = {username: "", email: "", phoneNumber: "", profile: "", role: ""}
     const { handleCreateUser } = useUsersContext()
     const { token } = useAuthContext()
 
     const [phone, setPhone] = useState("")
 
-    const [user, setUser] = useState({ username: "", email: "", phoneNumber: "", profile: "", role: "" })
+    const [user, setUser] = useState(userObject)
 
     const [usernameError, setUsernameError] = useState("")
     const [emailError, setEmailError] = useState("")
@@ -42,7 +43,11 @@ export default function AddUserForm({users, setUsers, ...props}) {
     
             const user = await handleCreateUser(token, RequestActionType.CREATE_USER, uid, username, email, password, phoneNumber, profile, role, isProvider)
 
-            if (user) setUsers([...users, user.data])
+            if (user) {
+                setUsers([...users, user.data])
+                setUser(userObject)
+                setPhone("")
+            } 
 
         } else {
             return false

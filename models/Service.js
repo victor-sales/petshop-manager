@@ -8,6 +8,7 @@ const Service = new mongoose.Schema(
         service_name: String,
         date: Date,
         tutor: ObjSchema,
+        vet: ObjSchema,
         breed: ObjSchema,
         specie: ObjSchema,
         description: String,

@@ -1,3 +1,4 @@
+import { Services } from "./Enums"
 import BadRequest from "./ErrorsObj/BadRequest"
 
 export function userIsInvalid (req) {
@@ -107,7 +108,7 @@ export function serviceIsInvalid (req) {
         return error
     }
 
-    if (!body.simptoms) {
+    if (body.service_name === Services.CONSULTA && !body.simptoms) {
         error = {...error, details: "Simptoms are required"}
         
         return error
@@ -304,6 +305,14 @@ export function checkAnimalNameValidity (value, setError) {
 export function checkTutorValidity (value, setError) {
     if (!value) {
         setError("Tutor não pode ser vazio")
+        return false
+    }
+    return true
+}
+
+export function checkVetValidity (value, setError) {
+    if (!value) {
+        setError("Veterinário não pode ser vazio")
         return false
     }
     return true

@@ -12,7 +12,7 @@ import { ProductsProvider } from '../contexts/ProductsContext';
 import { SellsProvider } from '../contexts/SellsContext';
 import { UserScheduleProvider } from '../contexts/UserScheduleContext';
 import { UserAccountProvider } from '../contexts/UserAccountContext';
-import Header from '../components/Header';
+import { DashboardProvider } from '../contexts/DashboardContext';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -26,7 +26,9 @@ function MyApp({ Component, pageProps }) {
                   <SpeciesProvider>
                     <UserAccountProvider>
                       <UserScheduleProvider>
-                        <Component {...pageProps} />
+                        <DashboardProvider>
+                          <Component {...pageProps} />
+                        </DashboardProvider>
                       </UserScheduleProvider> 
                     </UserAccountProvider>
                   </SpeciesProvider>

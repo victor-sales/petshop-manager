@@ -46,6 +46,8 @@ export default function AddSellForm ({}) {
         if (areValid) {
             await handleCreateSell(token, sell)
             setSell(sellObject)
+            setDate(new Date)
+            setSellValue("")
         } else {
             return false
         } 

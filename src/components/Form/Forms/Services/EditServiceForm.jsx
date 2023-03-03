@@ -8,8 +8,10 @@ import SelectSpecie from "../../FormInputs/Select/SelectSpecie";
 import { useEffect } from "react";
 import useServicesContext from "../../../../hooks/useServicesContext";
 import useAuthContext from "../../../../hooks/useAuthContext";
-import { checkBreedValidity, checkDateValidity, checkServiceNameValidity, checkSimptomsValidity, checkSpecieValidity, checkTutorValidity } from "../../../../utils/Helpers";
+import { checkBreedValidity, checkDateValidity, checkServiceNameValidity, checkSimptomsValidity, checkSpecieValidity, checkTutorValidity, checkVetValidity } from "../../../../utils/Helpers";
 import CheckBox from "../../FormInputs/CheckBox";
+import SelectVet from "../../FormInputs/Select/SelectVet";
+import { Services } from "../../../../utils/Enums";
 
 export default function EditServiceForm({service, setService}) {
 
@@ -20,6 +22,7 @@ export default function EditServiceForm({service, setService}) {
 
     const [serviceNameError, setServiceNameError] = useState("")
     const [tutorError, setTutorError] = useState("")
+    const [vetError, setVetError] = useState("")
     const [dateError, setDateError] = useState("")
     const [specieError, setSpecieError] = useState("")
     const [breedError, setBreedError] = useState("")
@@ -31,10 +34,11 @@ export default function EditServiceForm({service, setService}) {
         const tutorIsValid = checkTutorValidity(service.tutor._id, setTutorError)
         const specieIsValid = checkSpecieValidity(service.specie._id, setSpecieError)
         const breedIsValid = checkBreedValidity(service.breed._id, setBreedError)
-        const simptomsAreValid = checkSimptomsValidity(service.simptoms, setSimptomsError)
+        const simptomsAreValid = service.service_name === Services.CONSULTA ? checkSimptomsValidity(service.simptoms, setSimptomsError) : true
         const dateIsValid = checkDateValidity(service.date, setDateError)
+        const vetIsValid = service.is_confirmed && service.service_name === Services.CONSULTA ? checkVetValidity(service.vet._id, setVetError) : true
 
-        const areValid = [nameIsValid, tutorIsValid, specieIsValid, breedIsValid, simptomsAreValid, dateIsValid].every(e => e)
+        const areValid = [nameIsValid, tutorIsValid, specieIsValid, breedIsValid, simptomsAreValid, dateIsValid, vetIsValid].every(e => e)
 
         if (areValid) {
             await handleUpdateService(token, service)
@@ -51,6 +55,17 @@ export default function EditServiceForm({service, setService}) {
         setService({
             ...service, 
             tutor: { _id: user_id, name: user_name }
+        })
+    }
+
+    function onChangeVet (e) {
+        
+        const vet_id = e.target.value
+        const vet_name = e.target.selectedOptions[0].text
+
+        setService({
+            ...service, 
+            vet: { _id: vet_id, name: vet_name }
         })
     }
 
@@ -85,6 +100,11 @@ export default function EditServiceForm({service, setService}) {
         setService({...service, date: date})
         //eslint-disable-next-line
     }, [date])
+
+    useEffect(() => {
+        if(!service.is_confirmed) setService({...service, vet: { _id: "", name: "" }})
+        //eslint-disable-next-line
+    }, [service.is_confirmed])
 
     useEffect(() => {
         const button = document.getElementById("confirm-button")
@@ -122,6 +142,14 @@ export default function EditServiceForm({service, setService}) {
                         />
                     </div>
                 </div>
+                {
+                    service.is_confirmed && service.service_name === Services.CONSULTA ? 
+                    <SelectVet
+                        value={service.vet._id}
+                        onChange={onChangeVet}
+                        error={vetError}/> : 
+                    <></>
+                }
                 <DatePicker id={"data-schedule"} date={date} setDate={setDate} error={dateError} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div>

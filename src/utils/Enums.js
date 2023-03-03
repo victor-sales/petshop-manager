@@ -63,7 +63,23 @@ export const UserProfiles = {
     FUNCIONARIO: "FUNCIONARIO"
 }
 
+export const UserRoles = {
+    ADMIN: "ADMINISTRADOR",
+    CLIENTE: "CLIENTE",
+    VETERINARIO: "VETERINARIO",
+    CAIXA: "CAIXA",
+    ATENDENTE: "ATENDENTE"
+}
+
 export const Services = {
     CONSULTA: "consulta",
     BANHO_E_TOSA: "banho e tosa"
+}
+
+export const DashboardNames = {
+    SELLS_BY_MONTH: "SELLS_BY_MONTH",
+    LAST_SELLS: "LAST_SELLS",
+    SCHEDULED_VS_CONFIRMED: "SCHEDULED_VS_CONFIRMED", 
+    VET_ATTEND: "VET_ATTEND"
+
 }

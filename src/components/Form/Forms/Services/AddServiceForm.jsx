@@ -17,14 +17,14 @@ import useUserAccountContext from "../../../../hooks/useUserAccountContext";
 
 export default function AddServiceForm(params) {
     
-    const serviceObject = { id: uuid(), service_name: "", tutor: { _id: userAccount?.id, name: userAccount?.name }, date: "", specie: { _id: "", name: "" }, breed: { _id: "", name: "" }, description: "",  simptoms: "", is_confirmed: false }
+    const serviceObject = { id: uuid(), service_name: "", tutor: { _id: "", name: "" }, vet: { _id: "", name: "" }, date: "", specie: { _id: "", name: "" }, breed: { _id: "", name: "" }, description: "",  simptoms: "", is_confirmed: false }
     const router = useRouter()
     const { token } = useAuthContext()
     const { userAccount } = useUserAccountContext()
     const { handleCreateService } = useServicesContext()
     const { handleCreateUserSchedule } = useUserScheduleContext()
 
-    const [isUserSchedule, setIsUserSchedule] = useState(true)
+    const [isUserSchedule, setIsUserSchedule] = useState(false)
 
     const [service, setService] = useState(serviceObject)
 
@@ -111,11 +111,11 @@ export default function AddServiceForm(params) {
     }, [userAccount, isUserSchedule])
 
     useEffect(() => {
-        const button = document.getElementById("confirm-schedule")
+        const button = document.getElementById(isUserSchedule ? "confirm-schedule": "confirm-button")
         if (button) button.addEventListener("click", createService)
 
         return () => {
-            const button = document.getElementById("confirm-schedule")
+            const button = document.getElementById(isUserSchedule ? "confirm-schedule": "confirm-button")
             if (button) button.removeEventListener("click", createService)
         }
         //eslint-disable-next-line
@@ -169,14 +169,18 @@ export default function AddServiceForm(params) {
                     value={service.description} 
                     onChange={(e) => setService({...service, description: e.target.value})}
                 />
-                <Input 
-                    labelText="Sintomas*" 
-                    name="service-simptoms" 
-                    id="service-simptoms" 
-                    value={service.simptoms} 
-                    onChange={(e) => setService({...service, simptoms: e.target.value})}
-                    error={simptomsError} 
-                />
+                {
+                    service.service_name === Services.CONSULTA ?
+                        <Input 
+                            labelText="Sintomas*" 
+                            name="service-simptoms" 
+                            id="service-simptoms" 
+                            value={service.simptoms} 
+                            onChange={(e) => setService({...service, simptoms: e.target.value})}
+                            error={simptomsError} 
+                        /> : 
+                        <></>
+                }
             </div>
         </form>
     )

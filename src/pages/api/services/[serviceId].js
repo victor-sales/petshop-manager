@@ -4,7 +4,7 @@ import Conflict from '../../../utils/ErrorsObj/Conflict';
 import NotFound from '../../../utils/ErrorsObj/NotFound';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
 import NormalizedService from '../../../utils/NormalizedService';
-import { serviceIsInvalid, userIsInvalid } from '../../../utils/Helpers';
+import { serviceIsInvalid } from '../../../utils/Helpers';
 import BadRequest from '../../../utils/ErrorsObj/BadRequest';
 import Internal from '../../../utils/ErrorsObj/Internal';
 import ValidateAuthToken from '../../../utils/ValidateAuthToken';

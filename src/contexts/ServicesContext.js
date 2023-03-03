@@ -1,7 +1,6 @@
 import { createContext, useState } from "react"
 import { APIMethods, MessageTypes, RequestActionType } from "../utils/Enums";
 import RequestHandler from "../utils/RequestHandler";
-import RequestRendler from "../utils/RequestHandler";
 
 const ServicesContext = createContext()
 
@@ -53,7 +52,7 @@ export function ServicesProvider({children}) {
         try {
             setLoadingCreateService(true)
             
-            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
 
             if (response.response?.status === 201) {
                 setLoadingCreateService(false)
@@ -83,7 +82,7 @@ export function ServicesProvider({children}) {
         try {
             setLoadingUpdateService(true)
             
-            let response = await RequestRendler(accessToken, url, method, body, RequestActionType.UPDATE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.UPDATE_ANIMAL)
 
             if (response.response?.status === 200) {
                 setLoadingUpdateService(false)
@@ -112,7 +111,7 @@ export function ServicesProvider({children}) {
         try {
             setLoadingDeleteService(true)
             
-            let response = await RequestRendler(accessToken, url, method, null, RequestActionType.DELETE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, null, RequestActionType.DELETE_ANIMAL)
 
             if (response.response?.status === 200) {
 
