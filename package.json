@@ -25,6 +25,7 @@
     "firebase": "^9.15.0",
     "firebase-admin": "^11.4.1",
     "js-cookie": "^3.0.1",
+    "jwt-decode": "^3.1.2",
     "mongodb": "^4.13.0",
     "mongoose": "^6.8.2",
     "next": "12.3.1",

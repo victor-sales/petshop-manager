@@ -3,6 +3,7 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import useAuthContext from "../../hooks/useAuthContext"
+import AccessControl from "../AccessControl/AccessControl"
 import Header from "../Header"
 
 export default function Layout (props) {
@@ -39,12 +40,14 @@ export default function Layout (props) {
                         <link rel="icon" href=""/>
                         
                     </Head>
-                    <div className="bg-gray-300 min-w-full min-h-screen">
-                        <Header />
-                        <div className="flex items-center pt-2 justify-center">
-                            {props.children}
+                    <AccessControl token={token}>
+                        <div className="bg-gray-300 min-w-full min-h-screen">
+                            <Header />
+                            <div className="flex items-center pt-2 justify-center">
+                                {props.children}
+                            </div>
                         </div>
-                    </div>
+                    </AccessControl>
                 </> : 
                 <></>
             }
