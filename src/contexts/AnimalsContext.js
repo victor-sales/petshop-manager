@@ -140,7 +140,7 @@ export function AnimalsProvider({children}) {
         if (!Object.values(data).length) {
             setAnimals(animals.filter(e => e.id !== id))
         } else {
-            const arr = animals
+            const arr = [...animals]
             const idx = arr.map(e => e.id).indexOf(id)
             
             arr[idx] = data

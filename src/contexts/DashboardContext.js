@@ -11,9 +11,15 @@ export function DashboardProvider({children}) {
 
     const [scheduleVsConfirmed, setScheduleVsConfirmed] = useState({})
     const [loadingScheduleVsConfirmed, setLoadingScheduleVsConfirmed] = useState(false)
+
+    const [sellsByMonth, setSellsByMonth] = useState([])
+    const [loadingSellsByMonth, setLoadingSellsByMonth] = useState(false)
+
+    const [byVet, setByVet] = useState([])
+    const [loadingByVet, setLoadingByVet] = useState(false)
     
-    const [dashboardMessage, setAnimalMessage] = useState("")
-    const [dashboardMessageType, setAnimalMessageType] = useState("")
+    const [dashboardMessage, setDashboardMessage] = useState("")
+    const [dashboardMessageType, setDashboardMessageType] = useState("")
 
     async function handleGetLastSells (accessToken) {
         setLoadingLastSells(true)
@@ -38,8 +44,8 @@ export function DashboardProvider({children}) {
         } catch (error) {
             setLoadingLastSells(false)
             let e = JSON.parse(error.message)
-            setAnimalMessageType(MessageTypes.ERROR)
-            setAnimalMessage(e.message)
+            setDashboardMessageType(MessageTypes.ERROR)
+            setDashboardMessage(e.message)
             return false
         }
 
@@ -68,8 +74,68 @@ export function DashboardProvider({children}) {
         } catch (error) {
             setLoadingScheduleVsConfirmed(false)
             let e = JSON.parse(error.message)
-            setAnimalMessageType(MessageTypes.ERROR)
-            setAnimalMessage(e.message)
+            setDashboardMessageType(MessageTypes.ERROR)
+            setDashboardMessage(e.message)
+            return false
+        }
+
+    }
+
+    async function handleGetSellsByMonth (accessToken) {
+        setLoadingSellsByMonth(true)
+
+        const url = `/api/dashboard`
+        const method = APIMethods.POST
+        const body = { dash_name: DashboardNames.SELLS_BY_MONTH }
+
+        try {
+            let response = await RequestHandler(accessToken, url, method, body)
+
+            if (response.response?.status === 200) {
+                setLoadingSellsByMonth(false)
+                setSellsByMonth(response.data.sort((a, b) => a._id.month - b._id.month))
+                return response.data
+            } else {
+                setLoadingSellsByMonth(false)
+                setSellsByMonth([])
+                throw new Error(JSON.stringify(response))
+            }
+                       
+        } catch (error) {
+            setLoadingSellsByMonth(false)
+            let e = JSON.parse(error.message)
+            setDashboardMessageType(MessageTypes.ERROR)
+            setDashboardMessage(e.message)
+            return false
+        }
+
+
+    }
+    async function handleGetByVet (accessToken) {
+        setLoadingByVet(true)
+
+        const url = `/api/dashboard`
+        const method = APIMethods.POST
+        const body = { dash_name: DashboardNames.VET_ATTEND }
+
+        try {
+            let response = await RequestHandler(accessToken, url, method, body)
+
+            if (response.response?.status === 200) {
+                setLoadingByVet(false)
+                setByVet(response.data.sort((a, b) => a._id.month - b._id.month))
+                return response.data
+            } else {
+                setLoadingByVet(false)
+                setByVet([])
+                throw new Error(JSON.stringify(response))
+            }
+                       
+        } catch (error) {
+            setLoadingByVet(false)
+            let e = JSON.parse(error.message)
+            setDashboardMessageType(MessageTypes.ERROR)
+            setDashboardMessage(e.message)
             return false
         }
 
@@ -81,12 +147,18 @@ export function DashboardProvider({children}) {
             value={{
                 handleGetLastSells,
                 handleGetScheduleVsConfirmed,
+                handleGetSellsByMonth,
+                handleGetByVet,
                 lastSells,
                 scheduleVsConfirmed,
-                dashboardMessage, setAnimalMessage,
-                dashboardMessageType, setAnimalMessageType,
+                sellsByMonth,
+                byVet,
+                dashboardMessage, setDashboardMessage,
+                dashboardMessageType, setDashboardMessageType,
                 loadingLastSells,
-                loadingScheduleVsConfirmed
+                loadingScheduleVsConfirmed,
+                loadingSellsByMonth,
+                loadingByVet
             }}
         >
             { children }

@@ -141,7 +141,7 @@ export function SpeciesProvider({children}) {
         if (!Object.values(data).length) {
             setSpecies(species.filter(e => e.id !== id))
         } else {
-            const arr = species
+            const arr = [...species]
             const idx = arr.map(e => e.id).indexOf(id)
             
             arr[idx] = data

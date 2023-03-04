@@ -210,6 +210,7 @@ export default async function handler (req, res) {
                     tutor: reqService.tutor,
                     breed: reqService.breed,
                     specie: reqService.specie,
+                    vet: reqService.vet,
                     description: reqService.description ?? "",
                     simptoms: reqService.simptoms ?? "",
                     is_confirmed: reqService.is_confirmed

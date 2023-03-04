@@ -52,7 +52,7 @@ export function ServicesProvider({children}) {
         try {
             setLoadingCreateService(true)
             
-            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.CREATE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.CREATE_SERVICE)
 
             if (response.response?.status === 201) {
                 setLoadingCreateService(false)
@@ -82,7 +82,7 @@ export function ServicesProvider({children}) {
         try {
             setLoadingUpdateService(true)
             
-            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.UPDATE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, body, RequestActionType.UPDATE_SERVICE)
 
             if (response.response?.status === 200) {
                 setLoadingUpdateService(false)
@@ -111,7 +111,7 @@ export function ServicesProvider({children}) {
         try {
             setLoadingDeleteService(true)
             
-            let response = await RequestHandler(accessToken, url, method, null, RequestActionType.DELETE_ANIMAL)
+            let response = await RequestHandler(accessToken, url, method, null, RequestActionType.DELETE_SERVICE)
 
             if (response.response?.status === 200) {
 
@@ -139,9 +139,8 @@ export function ServicesProvider({children}) {
         if (!Object.values(data).length) {
             setServices(services.filter(e => e.id !== id))
         } else {
-            const arr = services
+            const arr = [...services]
             const idx = arr.map(e => e.id).indexOf(id)
-            
             arr[idx] = data
             
             setServices(arr)

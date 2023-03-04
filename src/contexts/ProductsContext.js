@@ -140,7 +140,7 @@ export function ProductsProvider({children}) {
         if (!Object.values(data).length) {
             setProducts(products.filter(e => e.id !== id))
         } else {
-            const arr = products
+            const arr = [...products]
             const idx = arr.map(e => e.id).indexOf(id)
             
             arr[idx] = data

@@ -34,6 +34,21 @@ async function getData (res, dash_name) {
                 const not_confirmed = await Service.countDocuments({is_confirmed: false})
 
                 result = { confirmed: confirmed, not_confirmed: not_confirmed }
+                
+                break;
+            case DashboardNames.SELLS_BY_MONTH:
+                result = await Sell.aggregate([{
+                            $group: {
+                                _id: { month: { $month: { $toDate: "$date" } } },
+                                sells: { $sum: 1 }
+                        }}])
+                break;
+            case DashboardNames.VET_ATTEND:
+                result = await Service.aggregate([{
+                            $group: {
+                                _id: { vet: "$vet.name" },
+                                atendance: { $sum: 1 }
+                        }}])
 
                 break;
         

@@ -59,7 +59,6 @@ export default function EditServiceForm({service, setService}) {
     }
 
     function onChangeVet (e) {
-        
         const vet_id = e.target.value
         const vet_name = e.target.selectedOptions[0].text
 

@@ -18,11 +18,11 @@ export default function ScheduledServices (props) {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-        legend: {
-            position: 'top',
-        },
-        title: {
-            display: false,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: false,
             },
         },
     }
@@ -58,7 +58,7 @@ export default function ScheduledServices (props) {
                             options={options}
                             datasetIdKey='id'
                             data={{
-                                labels: ['Serviços Não Confirmados ', 'Serviços Confirmados'],
+                                labels: ['Serviços Confirmados', 'Serviços Não Confirmados'],
                                 datasets: [
                                 {
                                     label: 'Serviços',
