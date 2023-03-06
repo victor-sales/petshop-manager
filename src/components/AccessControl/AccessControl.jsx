@@ -2,27 +2,24 @@ import { useEffect, useState } from "react"
 import jwt_decode from "jwt-decode";
 import { UserProfiles } from "../../utils/Enums"
 import { useRouter } from "next/router";
+import { Spin } from "antd";
+import AccessDenied from "../AccessDenied/AccessDenied";
 
 export default function AccessControl ({token, ...props}) {
     
     const router = useRouter()
     const [allowed, setAllowed] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const pagesCliente = ["/agendamento"]
     const pagesFuncionario = ["/animais", "/especies", "/produtos", "/racas", "/servicos", "/usuarios", "/vendas"]
     const pagesAdmin = ["/", "/agendamento", "/animais", "/especies", "/produtos", "/racas", "/servicos", "/usuarios", "/vendas"]
 
-    // const allowedPages = [
-    //     { profile: UserProfiles.CLIENTE, pages: pagesCliente },
-    //     { profile: UserProfiles.FUNCIONARIO, pages: pagesFuncionario },
-    //     { profile: UserProfiles.ADMIN, pages: pagesAdmin },
-    // ]
-
-
     function verifyProfile () {
+        setLoading(true)
+        
         const decoded = jwt_decode(token)
         const profile = decoded.profile
-        console.log(profile)
 
         if (
             (profile.toUpperCase() === UserProfiles.CLIENTE && pagesCliente.some(e => e === router.pathname)) ||
@@ -33,8 +30,8 @@ export default function AccessControl ({token, ...props}) {
         } else {
             setAllowed(false)
         }
-        console.log(router)
-        console.log(decoded)
+       
+        setLoading(false)
     }
 
     useEffect(() =>  {
@@ -43,8 +40,18 @@ export default function AccessControl ({token, ...props}) {
     }, [token])
 
     return (
-        allowed ? 
-            props.children :
-            <>NotAllowed</>
+        <>
+            {
+                !loading ?
+                    allowed ? 
+                        props.children :
+                        <AccessDenied /> :
+                    <div className="absolute left-1/2 top-1/2">
+                        <div className="relative -left-1/2">
+                            <Spin />
+                        </div>
+                    </div>
+            }
+        </>
     )
 }

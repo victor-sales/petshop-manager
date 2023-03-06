@@ -40,7 +40,7 @@ export default function SellsByMonth (props) {
                 display: false
             },
         },
-        scales: {
+        scale: {
             y: {
                 type: 'linear',
                 ticks: {

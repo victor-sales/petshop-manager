@@ -33,7 +33,7 @@ export default function ConsultationByVet (props) {
                 display: false
             },
         },
-        scales: {
+        scale: {
             y: {
                 type: 'linear',
                 ticks: {

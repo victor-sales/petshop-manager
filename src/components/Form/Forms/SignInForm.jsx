@@ -12,6 +12,7 @@ import { AuthProviders, RequestActionType } from "../../../utils/Enums";
 import useUsersContext from "../../../hooks/useUsersContext";
 import BannerMessage from "../../BannerMessage/BannerMessage";
 import Link from "next/link";
+import ValidateRedirectRouter from "../../../utils/ValidateRedirectRouter";
 
 export default function SignInForm ({setSignUp}) {
 
@@ -41,7 +42,7 @@ export default function SignInForm ({setSignUp}) {
 
             } else {
                 await handleUserAndSession(firebaseUser, true)
-                Router.push("/")
+                await ValidateRedirectRouter(firebaseUser.accessToken, Router)
             }
         }
     }

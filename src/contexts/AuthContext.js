@@ -5,6 +5,7 @@ import { FirebaseError } from "firebase/app"
 import { AuthProviders, MessageTypes } from "../utils/Enums"
 import Cookies from "js-cookie"
 import { useRouter } from "next/router"
+import ValidateRedirectRouter from "../utils/ValidateRedirectRouter"
 
 const AuthContext = createContext()
 
@@ -85,7 +86,9 @@ export function AuthProvider({children}) {
     async function handleUserAndSession (firebaseUser, isLogin = false, exit = false) {        
         await manageUser(firebaseUser)
         manageSession(firebaseUser, exit)
-        if (firebaseUser && isLogin) Router.push("/")
+        if (firebaseUser && isLogin) {
+            await ValidateRedirectRouter(firebaseUser.accessToken, Router)
+        }
         
     }
 
