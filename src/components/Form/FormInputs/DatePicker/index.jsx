@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import SpanError from "../SpanError";
 registerLocale("ptBr", ptBr)
 
-export default function DatePicker (props) {
-    const { id, date, setDate, error } = props
+export default function DatePicker ({id, date, setDate, error}) {
 
     const [times, setTimes] = useState([])
 
@@ -38,6 +37,7 @@ export default function DatePicker (props) {
         <div className="flex flex-col w-full mb-1">
             <Label htmlFor={id} text={"Data*"}/>
             <ReactDatePicker 
+                id={id}
                 className="border border-gray-300 rounded-md outline-gray-300 w-full h-9 p-2" 
                 locale={"ptBr"}
                 minDate={new Date()}

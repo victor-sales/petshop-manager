@@ -6,7 +6,7 @@ import NormalizedAnimal from '../../../utils/NormalizedAnimal';
 import ValidateAccess from '../../../utils/ValidateAccess';
 import ValidateAuthToken from '../../../utils/ValidateAuthToken';
 
-async function getAnimals (res) {
+export async function getAnimals (res) {
     let result = null;
 
     try {

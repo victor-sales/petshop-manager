@@ -16,6 +16,7 @@ export default function SellDatePicker ({id, date, setDate, error}) {
         <div className="flex flex-col w-full mb-1">
             <Label htmlFor={id} text={"Data*"}/>
             <ReactDatePicker 
+                id={id}
                 className="border border-gray-300 rounded-md outline-gray-300 w-full h-9 p-2" 
                 locale={"ptBr"}
                 maxDate={new Date()}

@@ -114,11 +114,11 @@ export default function SignInForm ({setSignUp}) {
                 <span onClick={() => setSignUp(true)} className="text-sm text-center underline">Não possui cadastro? Criar uma conta</span>                
                 <SocialMediaLoginButton 
                     socialMediaName={"Google"} 
-                    socialMediaIcon={<FontAwesomeIcon icon={faGoogle} />} 
+                    socialMediaIcon={faGoogle} 
                     onClick={() => connectUserWithProvider(AuthProviders.GOOGLE)}/>
                 <SocialMediaLoginButton 
                     socialMediaName={"Facebook"} 
-                    socialMediaIcon={<FontAwesomeIcon icon={faFacebook} />} 
+                    socialMediaIcon={faFacebook} 
                     onClick={() => connectUserWithProvider(AuthProviders.FACEBOOK)}/>
                 <span onClick={() => setVisible(true)} className="text-sm text-center underline cursor-pointer">Esqueci minha senha</span>
                 <Link href="/privacy-policy">

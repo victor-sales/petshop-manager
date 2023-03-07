@@ -12,7 +12,7 @@ import ValidateAuthToken from '../../../utils/ValidateAuthToken';
 import { UserProfiles } from '../../../utils/Enums';
 import ValidateAccess from '../../../utils/ValidateAccess';
 
-async function animalIsDuplicated (req) {
+export async function animalIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
@@ -28,7 +28,7 @@ async function animalIsDuplicated (req) {
     return false
 }
 
-async function createAnimal (res, animal) {
+export async function createAnimal (res, animal) {
     try {
         const result = await Animal.create(animal)
 
@@ -43,7 +43,7 @@ async function createAnimal (res, animal) {
 
 }
 
-async function updateAnimal (res, animal) {
+export async function updateAnimal (res, animal) {
     try {
         const newAnimal = await Animal.findByIdAndUpdate(animal._id, animal, { returnDocument: "after" }).select('-__v')
 
@@ -58,7 +58,7 @@ async function updateAnimal (res, animal) {
 
 }
 
-async function deleteAnimal (res, animalId) {
+export async function deleteAnimal (res, animalId) {
     try {
 
         await Animal.findByIdAndDelete(animalId)
@@ -74,7 +74,7 @@ async function deleteAnimal (res, animalId) {
 
 }
 
-async function getAnimal (res, animal_id) {
+export async function getAnimal (res, animal_id) {
 
     try {
         const result = await Animal.findById(animal_id).exec()
