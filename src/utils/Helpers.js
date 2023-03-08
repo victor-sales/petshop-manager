@@ -269,7 +269,7 @@ export function checkUsernameValidity (value, setError) {
 
 export function checkEmailValidity (value, setError) {
     if (!value) {
-        setError("Email não pode ser vazio")
+        setError("Email não pode ser vazio.")
         return false
     }
     return true
@@ -304,7 +304,7 @@ export function checkAnimalNameValidity (value, setError) {
 
 export function checkTutorValidity (value, setError) {
     if (!value) {
-        setError("Tutor não pode ser vazio")
+        setError("Tutor não pode ser vazio.")
         return false
     }
     return true
@@ -312,7 +312,7 @@ export function checkTutorValidity (value, setError) {
 
 export function checkVetValidity (value, setError) {
     if (!value) {
-        setError("Veterinário não pode ser vazio")
+        setError("Veterinário não pode ser vazio.")
         return false
     }
     return true
@@ -450,7 +450,7 @@ export function checkAmountValidity(value, setError) {
 
 export function checkCashierValidity(value, setError) {
     if (!value) {
-        setError("Quantidade não pode ser zerado.")
+        setError("Vendedor não pode ser vazio.")
         return false
     }
 
