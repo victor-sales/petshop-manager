@@ -1,28 +1,29 @@
 import { v4 as uuid } from 'uuid';
 import Container from "../components/Container";
 import Layout from "../components/Layout";
-import { Modal, Table } from "antd";
+import { Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
 import EditProductForm from "../components/Form/Forms/Products/EditProductForm";
 import AddProductForm from "../components/Form/Forms/Products/AddProductForm";
-import ConfirmRemoveText from "../components/ConfirmRemoveText";
 import useProductsContext from "../hooks/useProductsContext";
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
 import { capitalizeFirst } from "../utils/Helpers";
-import RequestHandler from "../utils/RequestHandler";
-import { APIMethods, UserActions } from "../utils/Enums";
+import { UserActions, UserProfiles } from "../utils/Enums";
 import AntdModal from '../components/AntdModal';
 import DivActionButtons from '../components/Table/DivActionButtons';
 import RemoveProductForm from '../components/Form/Forms/Products/RemoveProductForm';
+import useUserAccountContext from '../hooks/useUserAccountContext';
 
 export default function Produtos(props) {
 
     const { token } = useAuthContext()
+    const { userAccount } = useUserAccountContext()
+
     const { handleGetProducts, products, loadingCreateProduct, loadingProducts, loadingUpdateProduct, loadingDeleteProduct, productMessage, setProductMessage, productMessageType, setProductMessageType } = useProductsContext()
+    const [showDeleteButton, setShowDeleteButton] = useState(false)
 
     const [product, setProduct] = useState({})
     const [visible, setVisible] = useState(false);
@@ -90,12 +91,15 @@ export default function Produtos(props) {
                                 icon={faPencil}
                             />
                         </button>
-                        <button onClick={(e) => onClickDelete(record)}>
-                        <FontAwesomeIcon
-                            className="h-4 w-4 text-red-600"
-                            icon={faTrash}
-                        />
-                    </button>
+                        {showDeleteButton ?
+                            <button onClick={(e) => onClickDelete(record)}>
+                                <FontAwesomeIcon
+                                    className="h-4 w-4 text-red-600"
+                                    icon={faTrash}
+                                />
+                            </button> :
+                            <></>
+                        }
                     </div>
                 );
             },
@@ -122,6 +126,12 @@ export default function Produtos(props) {
         if (token) listProducts()
         //eslint-disable-next-line
     }, [token])
+
+    useEffect(() => {
+        userAccount?.profile?.toUpperCase() === UserProfiles.ADMIN ?
+            setShowDeleteButton(true) :
+            setShowDeleteButton(false)
+    }, [userAccount])
     
     return (
         <>

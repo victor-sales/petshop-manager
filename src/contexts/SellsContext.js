@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { createContext, useState } from "react"
 import useProductsContext from "../hooks/useProductsContext";
 import { APIMethods, MessageTypes, RequestActionType } from "../utils/Enums";
@@ -173,6 +174,43 @@ export function SellsProvider({children}) {
         }
     }
 
+    function exportSales () {
+        try {
+            if (sells.length) handleExportFile(sells, `vendas.csv`)
+            else alert("Não é possível exportar com dados vazios");
+        } catch (error) {
+            alert("Erro ao processar exportação");
+        }
+    }
+
+    function handleExportFile (sales, fileName) {
+        let rows = sales.sort((a, b) => a.date - b.date).map(sale => ([
+                format(new Date(sale.date), "dd/MM/yyyy HH:mm"),
+                sale.cashier.name,
+                sale.buyer.name,
+                sale.product.name,
+                `R$ ${sale.product.value}`,
+                sale.amount,
+                `R$ ${sale.sell_value}`,
+        ]))
+       
+        let headers = ["Data", "Vendedor", "Comprador", "Nome do Produto", "Valor do Produto", "Quantidade", "Valor da Venda"]
+        
+        let table = [headers, ...rows]
+
+        table = table.map(e => e.join(",")).join("\n")
+
+        let csvContent = "data:text/csv;charset=utf-8," + table;
+        let link = document.createElement("a");
+
+        link.download = fileName;
+        link.href = csvContent;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); 
+
+    }
+
     return ( 
         <SellsContext.Provider
             value={{
@@ -180,6 +218,7 @@ export function SellsProvider({children}) {
                 handleCreateSell,
                 handleUpdateSell,
                 handleDeleteSell,
+                exportSales,
                 sells,
                 sellMessage, setSellMessage,
                 sellMessageType, setSellMessageType,
