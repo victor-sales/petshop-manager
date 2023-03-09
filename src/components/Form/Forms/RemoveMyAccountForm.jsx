@@ -44,7 +44,7 @@ export default function RemoveMyAccountForm () {
     }, [token, email])
     
     return (
-        <form>
+        <>
             <p>Confirme seu email para prosseguir com a remoção</p>
             <Input 
                 id={"confirm-email"}
@@ -54,6 +54,6 @@ export default function RemoveMyAccountForm () {
                 type={"text"}
                 error={emailError}
             />
-        </form>
+        </>
     )
 }

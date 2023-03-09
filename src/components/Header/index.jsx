@@ -2,9 +2,11 @@ import { faCaretDown, faDog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Modal } from "antd";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAuthContext from "../../hooks/useAuthContext";
+import useUserAccountContext from "../../hooks/useUserAccountContext";
 import useUsersContext from "../../hooks/useUsersContext";
+import { UserProfiles } from "../../utils/Enums";
 import AntdModal from "../AntdModal";
 import ConfirmSignOutText from "../ConfirmSignOutText";
 import ChangePasswordForm from "../Form/Forms/ChangePasswordForm";
@@ -13,10 +15,13 @@ import HeaderLink from "./HeaderLink";
 
 export default function Header(params) {
 
+    const { userAccount } = useUserAccountContext()
     const { handleSignOut, setAuthMessage, setAuthMessageType } = useAuthContext()
     const { userMessage, setUserMessage, userMessageType, setUserMessageType, loadingDeleteUser } = useUsersContext()
     
     const router = useRouter();
+    
+    const [isAdmin, setIsAdmin] = useState(false)
 
     const [navbar, setNavbar] = useState(false);
     const [changePassword, setChangePassword] = useState(false)
@@ -30,13 +35,18 @@ export default function Header(params) {
         setChangePassword(!changePassword)
 
     }
+
+    useEffect(() => {
+        userAccount?.profile?.toUpperCase() === UserProfiles.ADMIN ?
+            setIsAdmin(true) :
+            setIsAdmin(false)
+    }, [userAccount])
    
     return (
         <>
         <nav className="w-full bg-white border-b border-gray-300 shadow-md">
-            <div className="justify-between px-4 mx-auto items-center lg:max-w-7xl md:items-center md:flex md:px-8">
-                <div className="flex items-center justify-between py-3 md:py-5 md:block">
-                    <FontAwesomeIcon className="h-6 w-6 text-gray-800" icon={faDog} />
+            <div className="justify-between px-4 mx-auto items-center lg:max-w-7xl md:items-center md:flex md:p-2">
+                <div className="flex items-center justify-between py-3 md:block">
                     <div className="md:hidden">
                         <button className="p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border" onClick={() => setNavbar(!navbar)}>
                             {navbar ? 
@@ -62,41 +72,39 @@ export default function Header(params) {
                         </button>
                     </div>
                 </div>
-                <div>
-                    <div
-                        className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${navbar ? "block" : "hidden" }`}>
-                        <ul className="items-center justify-center space-y-6 md:flex md:space-x-6 md:space-y-0 m-0">
-                            {router.asPath === "/agendamento" ? <></> :
-                                <>
-                                    <HeaderLink key="dashboard" url="/" title="Dashboard" />
-                                    <HeaderLink key="servicos" url="/servicos" title="Serviços" />
-                                    <HeaderLink key="usuarios" url="/usuarios" title="Usuários" />
-                                    <HeaderLink key="animais" url="/animais" title="Animais" />
-                                    <HeaderLink key="especies" url="/especies" title="Espécies" />
-                                    <HeaderLink key="racas" url="/racas" title="Raças" />
-                                    <HeaderLink key="produtos" url="/produtos" title="Produtos" />
-                                    <HeaderLink key="vendas" url="/vendas" title="Vendas" />
-                                </>
-                            }
-                        </ul>
-                        <div className="mt-4 space-y-2 md:hidden flex flex-col items-center gap-3">
-                            <button onClick={() => setModalChangePwdVisible(true)} className="inline-block w-full p-2 text-sm text-gray-900 border border-gray-900 rounded-md">Alterar Senha</button>
+                <div
+                    className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${navbar ? "block" : "hidden" }`}>
+                    <ul className="items-center justify-center space-y-6 md:flex md:space-x-6 md:space-y-0 m-0">
+                        {router.asPath === "/agendamento" ? <></> :
+                            <>
+                                {isAdmin ? <HeaderLink key="dashboard" url="/" title="Dashboard" /> : <></>}
+                                <HeaderLink key="servicos" url="/servicos" title="Serviços" />
+                                <HeaderLink key="usuarios" url="/usuarios" title="Usuários" />
+                                <HeaderLink key="animais" url="/animais" title="Animais" />
+                                <HeaderLink key="especies" url="/especies" title="Espécies" />
+                                <HeaderLink key="racas" url="/racas" title="Raças" />
+                                <HeaderLink key="produtos" url="/produtos" title="Produtos" />
+                                <HeaderLink key="vendas" url="/vendas" title="Vendas" />
+                            </>
+                        }
+                    </ul>
+                    <div className="mt-4 space-y-2 md:hidden flex flex-col items-center gap-3">
+                        <button onClick={() => setModalChangePwdVisible(true)} className="inline-block w-full p-2 text-sm text-gray-900 border border-gray-900 rounded-md">Alterar Senha</button>
+                        <button
+                            onClick={() => setModalExitVisible(true)}
+                            className="inline-block w-full p-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">
+                            Sair
+                        </button>
+                        {router.asPath === "/agendamento" ?
                             <button
-                                onClick={() => setModalExitVisible(true)}
-                                className="inline-block w-full p-2 text-center text-white bg-gray-600 rounded-md shadow hover:bg-gray-800">
-                                Sair
-                            </button>
-                            {router.asPath === "/agendamento" ?
-                                <button
-                                    onClick={() => setModalRemoveMyAccount(true)}                        
-                                    className="inline-block w-full p-2 text-red-600 border border-red-600 bg-white rounded-md shadow hover:bg-red-600 hover:text-white">
-                                    Remover minha conta
-                                </button> :
-                                <></>
-                            }
-                        </div>
-                        
+                                onClick={() => setModalRemoveMyAccount(true)}                        
+                                className="inline-block w-full p-2 text-red-600 border border-red-600 bg-white rounded-md shadow hover:bg-red-600 hover:text-white">
+                                Remover minha conta
+                            </button> :
+                            <></>
+                        }
                     </div>
+                    
                 </div>
                 
                 <div className="hidden space-x-2 md:flex md:items-center">

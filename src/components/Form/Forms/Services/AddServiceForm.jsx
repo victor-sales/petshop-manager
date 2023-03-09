@@ -57,6 +57,7 @@ export default function AddServiceForm(params) {
             }
 
             setService(serviceObject)
+            setDate("")
 
         } else {
             return false

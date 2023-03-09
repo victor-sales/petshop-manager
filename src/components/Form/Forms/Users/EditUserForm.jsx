@@ -32,7 +32,7 @@ export default function EditUserForm({users, setUsers, user, setUser}) {
             const response = await handleUpdateUser(token, user)
 
             if (response) {
-                const arr = users
+                const arr = [...users]
                 const idx = arr.map(e => e.email).indexOf(response.data.email)
 
                 arr[idx] = response.data
@@ -94,7 +94,7 @@ export default function EditUserForm({users, setUsers, user, setUser}) {
                 error={phoneError}
                 />
             <Select 
-                labelText="Perfil"
+                labelText="Perfil*"
                 id="Perfil"
                 value={user.profile}
                 onChange={(e) => setUser({...user, profile: e.target.value})}
@@ -104,7 +104,7 @@ export default function EditUserForm({users, setUsers, user, setUser}) {
                 { Profiles.map((e, key) => <option key={e.id} value={e.name}>{capitalizeFirst(e.name)}</option>) }
             </Select>
             <Select 
-                labelText="Função"
+                labelText="Função*"
                 id="Funcao"
                 value={user.role}
                 onChange={(e) => setUser({...user, role: e.target.value})}

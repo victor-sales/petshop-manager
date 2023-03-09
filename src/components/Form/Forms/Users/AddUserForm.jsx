@@ -100,7 +100,7 @@ export default function AddUserForm({users, setUsers, ...props}) {
                     error={phoneError}
                     />
                 <Select 
-                    labelText="Perfil"
+                    labelText="Perfil*"
                     id="Perfil"
                     value={user.profile}
                     onChange={(e) => setUser({...user, profile: e.target.value})}
@@ -110,7 +110,7 @@ export default function AddUserForm({users, setUsers, ...props}) {
                     { Profiles.map((e, key) => <option key={e.id} value={e.name}>{capitalizeFirst(e.name)}</option>) }
                 </Select>
                 <Select 
-                    labelText="Função"
+                    labelText="Função*"
                     id="Funcao"
                     value={user.role}
                     onChange={(e) => setUser({...user, role: e.target.value})}
