@@ -136,6 +136,42 @@ export function ProductsProvider({children}) {
         }
     }
 
+    function exportProducts () {
+        try {
+            if (products.length) handleExportFile(products, `produtos.csv`)
+            else alert("Não é possível exportar com dados vazios");
+        } catch (error) {
+            alert("Erro ao processar exportação");
+        }
+    }
+
+    function handleExportFile (products, fileName) {
+        let rows = products.sort((a, b) => a.date - b.date).map(product => ([
+                product.product_name,
+                product.brand,
+                product.type,
+                `R$ ${product.price}`,
+                product.amount,
+                
+        ]))
+       
+        let headers = ["Produto", "Marca", "Tipo", "Preço", "Quantidade"]
+        
+        let table = [headers, ...rows]
+
+        table = table.map(e => e.join(",")).join("\n")
+
+        let csvContent = "data:text/csv;charset=utf-8," + table;
+        let link = document.createElement("a");
+
+        link.download = fileName;
+        link.href = csvContent;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); 
+
+    }
+
     function findOnArrayAndUpdate (id, data) {
         if (!Object.values(data).length) {
             setProducts(products.filter(e => e.id !== id))
@@ -157,6 +193,7 @@ export function ProductsProvider({children}) {
                 handleCreateProduct,
                 handleUpdateProduct,
                 handleDeleteProduct,
+                exportProducts,
                 products,
                 productMessage, setProductMessage,
                 productMessageType, setProductMessageType,

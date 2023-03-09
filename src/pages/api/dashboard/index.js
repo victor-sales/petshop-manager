@@ -43,6 +43,13 @@ async function getData (res, dash_name) {
                                 sells: { $sum: 1 }
                         }}])
                 break;
+            case DashboardNames.SCHEDULES_BY_MONTH:
+                result = await Service.aggregate([{
+                            $group: {
+                                _id: { month: { $month: { $toDate: "$date" } } },
+                                services: { $sum: 1 }
+                        }}])
+                break;
             case DashboardNames.VET_ATTEND:
                 result = await Service.aggregate([{
                             $group: {

@@ -15,6 +15,9 @@ export function DashboardProvider({children}) {
     const [sellsByMonth, setSellsByMonth] = useState([])
     const [loadingSellsByMonth, setLoadingSellsByMonth] = useState(false)
 
+    const [servicesByMonth, setServicesByMonth] = useState([])
+    const [loadingServicesByMonth, setLoadingServicesByMonth] = useState(false)
+
     const [byVet, setByVet] = useState([])
     const [loadingByVet, setLoadingByVet] = useState(false)
     
@@ -108,9 +111,37 @@ export function DashboardProvider({children}) {
             setDashboardMessage(e.message)
             return false
         }
-
-
     }
+
+    async function handleGetServicesByMonth (accessToken) {
+        setLoadingServicesByMonth(true)
+
+        const url = `/api/dashboard`
+        const method = APIMethods.POST
+        const body = { dash_name: DashboardNames.SCHEDULES_BY_MONTH }
+
+        try {
+            let response = await RequestHandler(accessToken, url, method, body)
+
+            if (response.response?.status === 200) {
+                setLoadingServicesByMonth(false)
+                setServicesByMonth(response.data.sort((a, b) => a._id.month - b._id.month))
+                return response.data
+            } else {
+                setLoadingServicesByMonth(false)
+                setServicesByMonth([])
+                throw new Error(JSON.stringify(response))
+            }
+                       
+        } catch (error) {
+            setLoadingServicesByMonth(false)
+            let e = JSON.parse(error.message)
+            setDashboardMessageType(MessageTypes.ERROR)
+            setDashboardMessage(e.message)
+            return false
+        }
+    }
+
     async function handleGetByVet (accessToken) {
         setLoadingByVet(true)
 
@@ -148,16 +179,19 @@ export function DashboardProvider({children}) {
                 handleGetLastSells,
                 handleGetScheduleVsConfirmed,
                 handleGetSellsByMonth,
+                handleGetServicesByMonth,
                 handleGetByVet,
                 lastSells,
                 scheduleVsConfirmed,
                 sellsByMonth,
+                servicesByMonth,
                 byVet,
                 dashboardMessage, setDashboardMessage,
                 dashboardMessageType, setDashboardMessageType,
                 loadingLastSells,
                 loadingScheduleVsConfirmed,
                 loadingSellsByMonth,
+                loadingServicesByMonth,
                 loadingByVet
             }}
         >

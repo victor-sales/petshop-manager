@@ -162,6 +162,41 @@ export function UsersProvider({children}) {
         }
     }
 
+    function exportUsers () {
+        try {
+            if (users.length) handleExportFile(users, `usuarios.csv`)
+            else alert("Não é possível exportar com dados vazios");
+        } catch (error) {
+            alert("Erro ao processar exportação");
+        }
+    }
+
+    function handleExportFile (users, fileName) {
+        let rows = users.sort((a, b) => a.user_name.localeCompare(b.user_name)).map(user => ([
+                user.user_name,
+                user.email,
+                user.phone_number,
+                user.profile,
+                user.role
+        ]))
+       
+        let headers = ["Nome", "E-mail", "Telefone", "Perfil", "Função"]
+        
+        let table = [headers, ...rows]
+
+        table = table.map(e => e.join(",")).join("\n")
+
+        let csvContent = "data:text/csv;charset=utf-8," + table;
+        let link = document.createElement("a");
+
+        link.download = fileName;
+        link.href = csvContent;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); 
+
+    }
+
     return ( 
         <UsersContext.Provider
             value={{
@@ -170,6 +205,7 @@ export function UsersProvider({children}) {
                 handleCreateUser,
                 handleUpdateUser,
                 handleDeleteUser,
+                exportUsers,
                 users,
                 userMessage, setUserMessage,
                 userMessageType, setUserMessageType,

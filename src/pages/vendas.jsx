@@ -1,20 +1,16 @@
-import { v4 as uuid } from 'uuid';
 import Container from "../components/Container";
 import Layout from "../components/Layout";
-import { Modal, Table } from "antd";
+import { Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileCsv, faPencil, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faFileCsv, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
 import EditSellForm from "../components/Form/Forms/Sells/EditSellForm";
 import AddSellForm from "../components/Form/Forms/Sells/AddSellForm";
-import ConfirmRemoveText from "../components/ConfirmRemoveText";
 import useSellsContext from "../hooks/useSellsContext";
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
-import { capitalizeFirst } from "../utils/Helpers";
-import RequestHandler from "../utils/RequestHandler";
-import { APIMethods, UserActions, UserProfiles } from "../utils/Enums";
+import { UserActions } from "../utils/Enums";
 import AntdModal from '../components/AntdModal';
 import DivActionButtons from '../components/Table/DivActionButtons';
 import RemoveSellForm from '../components/Form/Forms/Sells/RemoveSellForm';
@@ -24,10 +20,9 @@ import useUserAccountContext from '../hooks/useUserAccountContext';
 export default function Vendas(props) {
 
     const { token } = useAuthContext()
-    const { userAccount } = useUserAccountContext()
+    const { isAdmin } = useUserAccountContext()
     const { handleGetSells, sells, loadingCreateSell, loadingSells, loadingUpdateSell, loadingDeleteSell, sellMessage, setSellMessage, sellMessageType, setSellMessageType, exportSales } = useSellsContext()
 
-    const [isAdmin, setIsAdmin] = useState(false)
     const [sell, setSell] = useState({})
     const [visible, setVisible] = useState(false);
     const [action, setAction] = useState("")
@@ -142,12 +137,6 @@ export default function Vendas(props) {
         if (token) listSells()
         //eslint-disable-next-line
     }, [token])
-
-    useEffect(() => {
-        userAccount?.profile?.toUpperCase() === UserProfiles.ADMIN ?
-            setIsAdmin(true) :
-            setIsAdmin(false)
-    }, [userAccount])
     
     return (
         <>

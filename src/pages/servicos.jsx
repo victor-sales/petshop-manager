@@ -2,7 +2,7 @@ import Container from "../components/Container";
 import Layout from "../components/Layout";
 import { Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faFileCsv, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import useServicesContext from "../hooks/useServicesContext";
 import useAuthContext from "../hooks/useAuthContext";
@@ -15,11 +15,14 @@ import AddServiceForm from "../components/Form/Forms/Services/AddServiceForm";
 import EditServiceForm from "../components/Form/Forms/Services/EditServiceForm";
 import RemoveServiceForm from "../components/Form/Forms/Services/RemoveServiceForm";
 import { format } from "date-fns";
+import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
+import useUserAccountContext from "../hooks/useUserAccountContext";
 
 export default function Servicos(props) {
 
+    const { isAdmin } = useUserAccountContext()
     const { token } = useAuthContext()
-    const { handleGetServices, services, loadingCreateService, loadingServices, loadingUpdateService, loadingDeleteService, serviceMessage, setServiceMessage, serviceMessageType, setServiceMessageType } = useServicesContext()
+    const { handleGetServices, services, loadingCreateService, loadingServices, loadingUpdateService, loadingDeleteService, serviceMessage, setServiceMessage, serviceMessageType, setServiceMessageType, exportServices } = useServicesContext()
 
     const [service, setService] = useState({})
     const [visible, setVisible] = useState(false);
@@ -143,7 +146,10 @@ export default function Servicos(props) {
             <Layout>
                 <Container>
                     <div className="flex flex-col w-full">
-                        <DivActionButtons onClickNew={onClickNew} onClickUpdate={listServices}/>
+                        <DivActionButtons 
+                            onClickNew={onClickNew} 
+                            onClickUpdate={listServices}
+                            extra={isAdmin ? <IconButton id={"export"} iconName={faFileCsv} title="Exportar" onClick={exportServices}/> : <></>}/>
                         <div className="w-full border border-gray-300">
                             <Table
                                 size="small" 

@@ -3,7 +3,7 @@ import Container from "../components/Container";
 import Layout from "../components/Layout";
 import { Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faFileCsv, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import EditProductForm from "../components/Form/Forms/Products/EditProductForm";
 import AddProductForm from "../components/Form/Forms/Products/AddProductForm";
@@ -16,14 +16,14 @@ import AntdModal from '../components/AntdModal';
 import DivActionButtons from '../components/Table/DivActionButtons';
 import RemoveProductForm from '../components/Form/Forms/Products/RemoveProductForm';
 import useUserAccountContext from '../hooks/useUserAccountContext';
+import IconButton from '../components/Form/FormInputs/Buttons/IconButton';
 
 export default function Produtos(props) {
 
+    const { isAdmin } = useUserAccountContext()
     const { token } = useAuthContext()
-    const { userAccount } = useUserAccountContext()
 
-    const { handleGetProducts, products, loadingCreateProduct, loadingProducts, loadingUpdateProduct, loadingDeleteProduct, productMessage, setProductMessage, productMessageType, setProductMessageType } = useProductsContext()
-    const [showDeleteButton, setShowDeleteButton] = useState(false)
+    const { handleGetProducts, products, loadingCreateProduct, loadingProducts, loadingUpdateProduct, loadingDeleteProduct, productMessage, setProductMessage, productMessageType, setProductMessageType, exportProducts } = useProductsContext()
 
     const [product, setProduct] = useState({})
     const [visible, setVisible] = useState(false);
@@ -91,7 +91,7 @@ export default function Produtos(props) {
                                 icon={faPencil}
                             />
                         </button>
-                        {showDeleteButton ?
+                        {isAdmin ?
                             <button onClick={(e) => onClickDelete(record)}>
                                 <FontAwesomeIcon
                                     className="h-4 w-4 text-red-600"
@@ -126,19 +126,16 @@ export default function Produtos(props) {
         if (token) listProducts()
         //eslint-disable-next-line
     }, [token])
-
-    useEffect(() => {
-        userAccount?.profile?.toUpperCase() === UserProfiles.ADMIN ?
-            setShowDeleteButton(true) :
-            setShowDeleteButton(false)
-    }, [userAccount])
     
     return (
         <>
             <Layout>
                 <Container>
                     <div className="flex flex-col w-full">
-                        <DivActionButtons onClickNew={onClickNew} onClickUpdate={listProducts}/>
+                        <DivActionButtons 
+                            onClickNew={onClickNew} 
+                            onClickUpdate={listProducts}
+                            extra={isAdmin ? <IconButton id={"export"} iconName={faFileCsv} title="Exportar" onClick={exportProducts}/> : <></>}/>
                         <div className="w-full border border-gray-300">
                             <Table
                                 size="small" 

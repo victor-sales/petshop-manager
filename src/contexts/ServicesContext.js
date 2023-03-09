@@ -135,6 +135,44 @@ export function ServicesProvider({children}) {
         }
     }
 
+    function exportServices () {
+        try {
+            if (services.length) handleExportFile(services, `servicos.csv`)
+            else alert("Não é possível exportar com dados vazios");
+        } catch (error) {
+            alert("Erro ao processar exportação");
+        }
+    }
+
+    function handleExportFile (services, fileName) {
+        let rows = services.sort((a, b) => a.date - b.date).map(service => ([
+                service.service_name,
+                service.tutor.name,
+                service.date,
+                service.breed.animal,
+                service.specie.name,
+                service.simptoms,
+                service.is_confimed ? "SIM" : "NÃO",
+                service?.vet?.name ?? ""
+        ]))
+       
+        let headers = ["Serviço", "Tutor", "Data", "Raça", "Espécie", "Sintomas", "Confirmado", "Veterinário"]
+        
+        let table = [headers, ...rows]
+
+        table = table.map(e => e.join(",")).join("\n")
+
+        let csvContent = "data:text/csv;charset=utf-8," + table;
+        let link = document.createElement("a");
+
+        link.download = fileName;
+        link.href = csvContent;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); 
+
+    }
+
     function findOnArrayAndUpdate (id, data) {
         if (!Object.values(data).length) {
             setServices(services.filter(e => e.id !== id))
@@ -155,6 +193,7 @@ export function ServicesProvider({children}) {
                 handleCreateService,
                 handleUpdateService,
                 handleDeleteService,
+                exportServices,
                 services,
                 serviceMessage, setServiceMessage,
                 serviceMessageType, setServiceMessageType,

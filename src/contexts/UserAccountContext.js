@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react"
 import useAuthContext from "../hooks/useAuthContext";
-import { APIMethods, MessageTypes } from "../utils/Enums";
+import { APIMethods, MessageTypes, UserProfiles } from "../utils/Enums";
 import RequestHandler from "../utils/RequestHandler";
 
 const UserAccountContext = createContext()
@@ -9,6 +9,7 @@ export function UserAccountProvider({children}) {
 
     const { token } = useAuthContext()
 
+    const [isAdmin, setIsAdmin] = useState(false)
     const [userAccount, setUserAccount] = useState({})
     const [userAccountMessage, setUserAccountMessage] = useState("")
     const [userAccountMessageType, setUserAccountMessageType] = useState("")
@@ -44,7 +45,6 @@ export function UserAccountProvider({children}) {
 
     }
 
-
     useEffect(() => {
         const loadMyAccount = async () => {
             await handleGetMyAccount(token)
@@ -53,9 +53,16 @@ export function UserAccountProvider({children}) {
         if (token) loadMyAccount()
     }, [token])
 
+    useEffect(() => {
+        userAccount?.profile?.toUpperCase() === UserProfiles.ADMIN ?
+            setIsAdmin(true) :
+            setIsAdmin(false)
+    }, [userAccount])
+
     return ( 
         <UserAccountContext.Provider
             value={{
+                isAdmin,
                 userAccount,
                 userAccountMessage, setUserAccountMessage,
                 userAccountMessageType, setUserAccountMessageType,

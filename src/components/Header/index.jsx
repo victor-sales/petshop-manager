@@ -15,14 +15,12 @@ import HeaderLink from "./HeaderLink";
 
 export default function Header(params) {
 
-    const { userAccount } = useUserAccountContext()
+    const { isAdmin } = useUserAccountContext()
     const { handleSignOut, setAuthMessage, setAuthMessageType } = useAuthContext()
     const { userMessage, setUserMessage, userMessageType, setUserMessageType, loadingDeleteUser } = useUsersContext()
     
     const router = useRouter();
     
-    const [isAdmin, setIsAdmin] = useState(false)
-
     const [navbar, setNavbar] = useState(false);
     const [changePassword, setChangePassword] = useState(false)
     const [modalExitVisible, setModalExitVisible] = useState(false)
@@ -35,12 +33,6 @@ export default function Header(params) {
         setChangePassword(!changePassword)
 
     }
-
-    useEffect(() => {
-        userAccount?.profile?.toUpperCase() === UserProfiles.ADMIN ?
-            setIsAdmin(true) :
-            setIsAdmin(false)
-    }, [userAccount])
    
     return (
         <>

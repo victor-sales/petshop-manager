@@ -2,7 +2,7 @@ import Container from "../components/Container";
 import Layout from "../components/Layout";
 import { Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faFileCsv, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import AddUserForm from "../components/Form/Forms/Users/AddUserForm";
 import EditUserForm from "../components/Form/Forms/Users/EditUserForm";
@@ -12,10 +12,13 @@ import DivActionButtons from '../components/Table/DivActionButtons';
 import { UserActions } from '../utils/Enums';
 import AntdModal from '../components/AntdModal';
 import { capitalizeFirst } from '../utils/Helpers';
+import IconButton from "../components/Form/FormInputs/Buttons/IconButton";
+import useUserAccountContext from "../hooks/useUserAccountContext";
 
 export default function Usuarios(props) {
     
-    const { handleGetUsers, loadingUsers, loadingCreateUser, loadingUpdateUser, userMessage, setUserMessage, userMessageType, setUserMessageType, } = useUsersContext()
+    const { isAdmin } = useUserAccountContext()
+    const { handleGetUsers, loadingUsers, loadingCreateUser, loadingUpdateUser, userMessage, setUserMessage, userMessageType, setUserMessageType, exportUsers } = useUsersContext()
     const { token } = useAuthContext()
 
     const [visible, setVisible] = useState(false);
@@ -114,7 +117,10 @@ export default function Usuarios(props) {
             <Layout>
                 <Container>
                     <div className="flex flex-col w-full">
-                        <DivActionButtons onClickNew={onClickNew} onClickUpdate={listUsers}/>
+                        <DivActionButtons 
+                            onClickNew={onClickNew} 
+                            onClickUpdate={listUsers}
+                            extra={isAdmin ? <IconButton id={"export"} iconName={faFileCsv} title="Exportar" onClick={exportUsers}/> : <></>}/>
                         <div className="w-full border border-gray-300">
                             <Table
                                 size="small" 

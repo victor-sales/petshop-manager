@@ -6,6 +6,7 @@ import ConsultationByVet from "../components/Charts/ConsultationByVet"
 import LastSells from "../components/Charts/LastSells"
 import ScheduledServices from "../components/Charts/ScheduledServices"
 import SellsByMonth from "../components/Charts/SellsByMonth"
+import ServicesByMonth from "../components/Charts/ServicesByMonth"
 import Layout from "../components/Layout"
 import useDashboardContext from "../hooks/useDashboardContext"
 
@@ -24,6 +25,7 @@ export default function Home() {
 
     function handleUpdateAll () {
         document.getElementById("sells-by-month")?.click()
+        document.getElementById("service-by-month")?.click()
         document.getElementById("by-vet")?.click()
         document.getElementById("last-sells")?.click()
         document.getElementById("not-vs-confirmed")?.click()
@@ -41,6 +43,7 @@ export default function Home() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
                         <SellsByMonth />
+                        <ServicesByMonth />
                         <ScheduledServices />
                         <ConsultationByVet />
                         <LastSells />
