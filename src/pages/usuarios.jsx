@@ -81,14 +81,20 @@ export default function Usuarios(props) {
             key: "actions",
             render: (record) => {
                 return (
-                    <div className="flex flex-row gap-3">
-                        <button onClick={(e) => onClickEdit(record)}>
-                            <FontAwesomeIcon
-                                className="h-4 w-4 text-blue-600"
-                                icon={faPencil}
-                            />
-                        </button>
-                    </div>
+                    <>
+                        {
+                            isAdmin ?
+                                <div className="flex flex-row gap-3">
+                                    <button onClick={(e) => onClickEdit(record)}>
+                                        <FontAwesomeIcon
+                                            className="h-4 w-4 text-blue-600"
+                                            icon={faPencil}
+                                        />
+                                    </button>
+                                </div> :
+                                <></>
+                        }
+                    </>
                 );
             },
         },
