@@ -15,9 +15,9 @@ async function productIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Product.find({product_name: body.product_name, 'brand': body.brand}).exec()
+    const product = await Product.find({product_name: body.product_name, 'brand': body.brand}).exec()
 
-    if (userExists.length > 0) {
+    if (product.length > 0) {
         let error = Conflict()
         error = {...error, details: `Product ${body.product_name} of Brand ${body.brand} already exists`}
         
@@ -156,17 +156,14 @@ export default async function handler (req, res) {
             hasPermission = ValidateAccess(profile.profile, postPermissions)
 
             if (hasPermission) {
-                // Valida campos obrigatórios
                 invalid = productIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
-                // Valida duplicidade de usuários
                 duplicated = await productIsDuplicated(req)
 
                 if (duplicated) return res.json(duplicated)
 
-                // Cria novo usuário
                 const reqProduct = JSON.parse(req.body)
 
                 product = new Product({
@@ -192,12 +189,10 @@ export default async function handler (req, res) {
 
             if (hasPermission) {
 
-                // Valida campos obrigatórios
                 invalid = productIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
-                //Edita usuário
                 const reqProduct = JSON.parse(req.body)
                 
                 product = new Product({

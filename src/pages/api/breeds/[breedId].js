@@ -15,9 +15,9 @@ async function breedIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Breed.find({breed_name: body.breed_name, 'specie._id': body.specie._id}).exec()
+    const breed = await Breed.find({breed_name: body.breed_name, 'specie._id': body.specie._id}).exec()
 
-    if (userExists.length > 0) {
+    if (breed.length > 0) {
         let error = Conflict()
         error = {...error, details: `Breed ${body.breed_name} of Specie ${body.specie.name} already exists`}
         
@@ -156,17 +156,15 @@ export default async function handler (req, res) {
             hasPermission = ValidateAccess(profile.profile, postPermissions)
 
             if (hasPermission) {
-                // Valida campos obrigatórios
+
                 invalid = breedIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
-                // Valida duplicidade de usuários
                 duplicated = await breedIsDuplicated(req)
 
                 if (duplicated) return res.json(duplicated)
 
-                // Cria novo usuário
                 const reqBreed = JSON.parse(req.body)
 
                 breed = new Breed({
@@ -190,12 +188,10 @@ export default async function handler (req, res) {
 
             if (hasPermission) {
 
-                // Valida campos obrigatórios
                 invalid = breedIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
-                //Edita usuário
                 const reqBreed = JSON.parse(req.body)
                 
                 breed = new Breed({

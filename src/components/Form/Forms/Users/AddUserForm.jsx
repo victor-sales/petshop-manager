@@ -8,10 +8,12 @@ import { capitalizeFirst, checkEmailValidity, checkProfileValidity, checkRoleVal
 import useUsersContext from "../../../../hooks/useUsersContext";
 import useAuthContext from "../../../../hooks/useAuthContext";
 import { RequestActionType } from "../../../../utils/Enums";
+import useUserAccountContext from "../../../../hooks/useUserAccountContext";
 
 export default function AddUserForm({users, setUsers, ...props}) {
 
     const userObject = {username: "", email: "", phoneNumber: "", profile: "", role: ""}
+    const { isAdmin } = useUserAccountContext()
     const { handleCreateUser } = useUsersContext()
     const { token } = useAuthContext()
 
@@ -107,7 +109,7 @@ export default function AddUserForm({users, setUsers, ...props}) {
                     error={profileError}
                 >
                     <option value={""} disabled>...</option>
-                    { Profiles.map((e, key) => <option key={e.id} value={e.name}>{capitalizeFirst(e.name)}</option>) }
+                    { Profiles.map((e, key) => <option key={e.id} value={e.name} disabled={!isAdmin && e.name === "administrador"}>{capitalizeFirst(e.name)}</option>) }
                 </Select>
                 <Select 
                     labelText="Função*"
@@ -117,7 +119,7 @@ export default function AddUserForm({users, setUsers, ...props}) {
                     error={roleError}
                 >   
                     <option value={""} disabled>...</option>
-                    { Roles.map((e, key) => <option key={e.id} value={e.name}>{capitalizeFirst(e.name)}</option>) }
+                    { Roles.map((e, key) => <option key={e.id} value={e.name} disabled={!isAdmin && e.name === "administrador"}>{capitalizeFirst(e.name)}</option>) }
                 </Select>
             </div>
     )

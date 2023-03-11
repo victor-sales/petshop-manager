@@ -15,11 +15,11 @@ async function serviceIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Service.find({service_name: body.service_name, 'tutor._id': body.tutor._id, date: body.date}).exec()
+    const service = await Service.find({service_name: body.service_name, date: body.date}).exec()
 
-    if (userExists.length > 0) {
+    if (service.length > 0) {
         let error = Conflict()
-        error = {...error, details: `Service ${body.service_name} for Tutor ${body.tutor.name} on this date already exists`}
+        error = {...error, details: `Already exists a ${body.service_name} scheduled for this date`}
         
         return error
     }

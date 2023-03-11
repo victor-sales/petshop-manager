@@ -16,9 +16,9 @@ export async function animalIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Animal.find({animal_name: body.animal_name, 'tutor._id': body.tutor._id}).exec()
+    const animal = await Animal.find({animal_name: body.animal_name, 'tutor._id': body.tutor._id}).exec()
 
-    if (userExists.length > 0) {
+    if (animal.length > 0) {
         let error = Conflict()
         error = {...error, details: `Animal ${body.animal_name} of Tutor ${body.tutor.name} already exists`}
         

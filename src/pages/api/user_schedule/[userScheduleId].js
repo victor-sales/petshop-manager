@@ -1,11 +1,9 @@
 import dbConnect from '../../../../db/connect';
 import Service from '../../../../models/Service';
 import Conflict from '../../../utils/ErrorsObj/Conflict';
-import NotFound from '../../../utils/ErrorsObj/NotFound';
 import NotAuthorized from '../../../utils/ErrorsObj/NotAuthorized';
 import NormalizedService from '../../../utils/NormalizedService';
-import { serviceIsInvalid, userIsInvalid } from '../../../utils/Helpers';
-import BadRequest from '../../../utils/ErrorsObj/BadRequest';
+import { serviceIsInvalid } from '../../../utils/Helpers';
 import Internal from '../../../utils/ErrorsObj/Internal';
 import ValidateAuthToken from '../../../utils/ValidateAuthToken';
 import { UserProfiles } from '../../../utils/Enums';
@@ -15,11 +13,11 @@ async function serviceIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Service.find({service_name: body.service_name, 'tutor._id': body.tutor._id, date: body.date}).exec()
+    const service = await Service.find({service_name: body.service_name, date: body.date}).exec()
 
-    if (userExists.length > 0) {
+    if (service.length > 0) {
         let error = Conflict()
-        error = {...error, details: `Service ${body.service_name} for Tutor ${body.tutor.name} on this date already exists`}
+        error = {...error, details: `Already exists a ${body.service_name} for this date/time`}
         
         return error
     }

@@ -15,9 +15,9 @@ async function specieIsDuplicated (req) {
 
     const body = JSON.parse(req.body)
 
-    const userExists = await Specie.find({specie_name: body.specie_name}).exec()
+    const specie = await Specie.find({specie_name: body.specie_name}).exec()
 
-    if (userExists.length > 0) {
+    if (specie.length > 0) {
         let error = Conflict()
         error = {...error, details: `Specie ${body.specie_name} already exists`}
         
@@ -156,17 +156,15 @@ export default async function handler (req, res) {
             hasPermission = ValidateAccess(profile.profile, postPermissions)
 
             if (hasPermission) {
-                // Valida campos obrigatórios
+
                 invalid = specieIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
-                // Valida duplicidade de usuários
                 duplicated = await specieIsDuplicated(req)
 
                 if (duplicated) return res.json(duplicated)
 
-                // Cria novo usuário
                 const reqSpecie = JSON.parse(req.body)
 
                 specie = new Specie({
@@ -189,12 +187,10 @@ export default async function handler (req, res) {
 
             if (hasPermission) {
 
-                // Valida campos obrigatórios
                 invalid = specieIsInvalid(req)
 
                 if (invalid) return res.json(invalid)
 
-                //Edita usuário
                 const reqSpecie = JSON.parse(req.body)
 
                 specie = new Specie({
