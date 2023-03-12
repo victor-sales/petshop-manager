@@ -25,7 +25,7 @@ export default function Home() {
 
     function handleUpdateAll () {
         document.getElementById("sells-by-month")?.click()
-        document.getElementById("service-by-month")?.click()
+        document.getElementById("services-by-month")?.click()
         document.getElementById("by-vet")?.click()
         document.getElementById("last-sells")?.click()
         document.getElementById("not-vs-confirmed")?.click()
