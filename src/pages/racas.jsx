@@ -55,12 +55,14 @@ export default function Racas(props) {
             title: "Nome",
             dataIndex: "breed_name",
             key: "breed_name",
+            sorter: (a, b) => a.breed_name.localeCompare(b.breed_name)
         },
         {
             title: "Espécies",
             dataIndex: ["specie", "name"],
             key: "specie",
-            render: (specie) => capitalizeFirst(specie)
+            render: (specie) => capitalizeFirst(specie),
+            sorter: (a, b) => a.specie.name.localeCompare(b.specie.name)
         },
         {
             title: "Descrição",

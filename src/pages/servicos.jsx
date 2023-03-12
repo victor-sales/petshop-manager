@@ -55,30 +55,38 @@ export default function Servicos(props) {
             title: "Serviço",
             dataIndex: "service_name",
             key: "service_name",
-            render: (name) => capitalizeFirst(name)
+            render: (name) => capitalizeFirst(name),
+            sorter: (a, b) => a.service_name.localeCompare(b.service_name)
         },
         {
             title: "Tutor",
             dataIndex: ["tutor", "name"],
             key: "tutor",
+            sorter: (a, b) => a.tutor.name.localeCompare(b.tutor.name)
         },
         {
             title: "Data/Hora",
             dataIndex: "date",
             key: "date",
-            render: (date) => format(new Date(date), 'dd/MM/yyyy HH:mm')
+            render: (date) => format(new Date(date), 'dd/MM/yyyy HH:mm'),
+            sorter: (a, b) => new Date(a.date) - new Date(b.date)
+
         },
         {
             title: "Raça",
             dataIndex: ["breed", "name"],
             key: "breed",
-            render: (breed) => capitalizeFirst(breed)
+            render: (breed) => capitalizeFirst(breed),
+            sorter: (a, b) => a.breed.name.localeCompare(b.breed.name)
+
         },
         {
             title: "Espécies",
             dataIndex: ["specie", "name"],
             key: "specie",
-            render: (specie) => capitalizeFirst(specie)
+            render: (specie) => capitalizeFirst(specie),
+            sorter: (a, b) => a.specie.name.localeCompare(b.specie.name)
+
         },
         {
             title: "Descrição",
@@ -94,7 +102,9 @@ export default function Servicos(props) {
             title: "Confirmado",
             dataIndex: "is_confirmed",
             key: "is_confirmed",
-            render: (confirmed) => confirmed ? "SIM" : "NÃO" 
+            render: (confirmed) => confirmed ? "SIM" : "NÃO",
+            sorter: (a, b) => a.is_confirmed - b.is_confirmed
+
         },
         {
             title: "Ações",

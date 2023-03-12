@@ -55,23 +55,28 @@ export default function Animais(props) {
             title: "Nome",
             dataIndex: "animal_name",
             key: "animal_name",
+            sorter: (a, b) => a.animal_name.localeCompare(b.animal_name)
         },
         {
             title: "Tutor",
             dataIndex: ["tutor", "name"],
             key: "tutor",
+            sorter: (a, b) => a.tutor.name.localeCompare(b.tutor.name)
         },
         {
             title: "Raça",
             dataIndex: ["breed", "name"],
             key: "breed",
-            render: (breed) => capitalizeFirst(breed)
+            render: (breed) => capitalizeFirst(breed),
+            sorter: (a, b) => a.breed.name.localeCompare(b.breed.name)
         },
         {
             title: "Espécies",
             dataIndex: ["specie", "name"],
             key: "specie",
-            render: (specie) => capitalizeFirst(specie)
+            render: (specie) => capitalizeFirst(specie),
+            sorter: (a, b) => a.specie.name.localeCompare(b.specie.name)
+
         },
         {
             title: "Descrição",

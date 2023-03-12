@@ -51,30 +51,34 @@ export default function Usuarios(props) {
             title: "Nome",
             dataIndex: "user_name",
             key: "user_name",
+            sorter: (a, b) => a.user_name.localeCompare(b.user_name)
         },
         {
             title: "E-mail",
             dataIndex: "email",
             key: "email",
+            sorter: (a, b) => a.email.localeCompare(b.email)
         },
         {
             title: "Telefone",
             dataIndex: "phone_number",
             key: "phone_number",
-            render: (phone) => phone ? phone : "-" 
+            render: (phone) => phone ? phone : "-",
+            sorter: (a, b) => a.phone.localeCompare(b.phone)
         },
         {
             title: "Perfil",
             dataIndex: "profile",
             key: "profile",
-            render: (profile) => capitalizeFirst(profile)
+            render: (profile) => capitalizeFirst(profile),
+            sorter: (a, b) => a.profile.localeCompare(b.profile)
         },
         {
             title: "Função",
             dataIndex: "role",
             key: "role",
-            render: (role) => capitalizeFirst(role)
-
+            render: (role) => capitalizeFirst(role),
+            sorter: (a, b) => a.role.localeCompare(b.role)
         },
         {
             title: "Ações",

@@ -54,6 +54,7 @@ export default function Especies(props) {
             title: "Nome",
             dataIndex: "specie_name",
             key: "specie_name",
+            sorter: (a, b) => a.specie_name.localeCompare(b.specie_name)
         },
         {
             title: "Descrição",

@@ -56,28 +56,33 @@ export default function Produtos(props) {
             title: "Nome",
             dataIndex: "product_name",
             key: "product_name",
+            sorter: (a, b) => a.product_name.localeCompare(b.product_name)
         },
         {
             title: "Marca",
             dataIndex: "brand",
             key: "brand",
-            render: (brand) => capitalizeFirst(brand)
+            render: (brand) => capitalizeFirst(brand),
+            sorter: (a, b) => a.brand.localeCompare(b.brand)
         },
         {
             title: "Tipo",
             dataIndex: "type",
             key: "type",
-            render: (type) => capitalizeFirst(type)
+            render: (type) => capitalizeFirst(type),
+            sorter: (a, b) => a.type.localeCompare(b.type)
         },
         {
             title: "Preço",
             dataIndex: "price",
             key: "price",
+            sorter: (a, b) => a.price.localeCompare(b.price)
         },
         {
             title: "Quantidade",
             dataIndex: "amount",
             key: "amount",
+            sorter: (a, b) => a.amount - b.amount
         },
         {
             title: "Ações",

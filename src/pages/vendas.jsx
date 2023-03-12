@@ -54,33 +54,44 @@ export default function Vendas(props) {
             title: "Date",
             dataIndex: "date",
             key: "date",
-            render: (date) => format(new Date(date), "dd/MM/yyyy HH:mm")
+            render: (date) => format(new Date(date), "dd/MM/yyyy HH:mm"),
+            sorter: (a, b) => new Date(a.date) - new Date(b.date)
         },
         {
             title: "Vendedor",
             dataIndex: ["cashier", "name"],
             key: "cashier",
+            sorter: (a, b) => a.cashier.name.localeCompare(b.cashier.name)
+
         },
         {
             title: "Comprador",
             dataIndex: ["buyer", "name"],
             key: "buyer",
+            sorter: (a, b) => a.buyer.name.localeCompare(b.buyer.name)
+
         },
         {
             title: "Produto",
             dataIndex: ["product", "name"],
             key: "product",
+            sorter: (a, b) => a.product.name.localeCompare(b.product.name)
+
         },
         {
             title: "Quantidade",
             dataIndex: "amount",
             key: "amount",
+            sorter: (a, b) => a.amount - b.amount
+
         },
         {
             title: "Valor da venda",
             dataIndex: "sell_value",
             key: "sell_value",
-            render: (sell_value) => `R$ ${sell_value}`
+            render: (sell_value) => `R$ ${sell_value}`,
+            sorter: (a, b) => a.sell_value.localeCompare(b.sell_value)
+
         },
         {
             title: "Observações",
